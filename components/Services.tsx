@@ -4,22 +4,22 @@ const services = [
   {
     title: "Custom Bouquets",
     description:
-      "Hand-selected blooms arranged around your palette, occasion, and the feeling you want to send.",
+      "Fresh, expressive arrangements built around your palette, occasion, and personal style.",
   },
   {
     title: "Events & Celebrations",
     description:
-      "Romantic floral moments for showers, dinners, birthdays, intimate weddings, and special gatherings.",
+      "Modern floral moments for showers, dinners, birthdays, intimate weddings, and brand gatherings.",
   },
   {
     title: "Seasonal Arrangements",
     description:
-      "Fresh, graceful designs guided by the season's prettiest textures, stems, and color stories.",
+      "Statement-making stems guided by the season's strongest textures, shapes, and color stories.",
   },
   {
     title: "Local Delivery or Pickup",
     description:
-      "Simple ordering for thoughtful gifts, table flowers, and just-because arrangements close to home.",
+      "Streamlined ordering for thoughtful gifts, table flowers, and custom pieces close to home.",
   },
 ];
 
@@ -27,25 +27,27 @@ export function Services() {
   return (
     <section
       id="services"
-      className="border-y border-[#eadfcf] bg-[#fffdf8] px-5 py-20 sm:px-8 lg:px-12"
+      className="border-y-2 border-[#171512] bg-[#fffaf0] px-5 py-20 sm:px-8 lg:px-12"
     >
       <div className="mx-auto max-w-7xl">
         <SectionHeader
           eyebrow="Offerings"
-          title="Floral design for soft, memorable occasions"
-          description="Every arrangement is composed with a gentle eye for color, texture, and natural movement."
+          title="Florals with shape, color, and point of view"
+          description="Every arrangement is composed with a confident eye for palette, negative space, texture, and scale."
         />
         <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {services.map((service) => (
+          {services.map((service, index) => (
             <article
               key={service.title}
-              className="rounded-3xl border border-[#eadbc6] bg-[#fffaf0] p-6 shadow-[0_18px_45px_rgba(65,57,46,0.07)]"
+              className="rounded-[1.25rem] border-2 border-[#171512] bg-[#fffdf8] p-6 shadow-[8px_8px_0_#171512]"
             >
-              <div className="mb-6 h-1.5 w-16 rounded-full bg-[#f3d8d8]" />
-              <h3 className="font-serif text-2xl font-medium tracking-normal text-[#312d28]">
+              <div className="mb-8 flex h-12 w-12 items-center justify-center rounded-full bg-[#f2d7dd] text-sm font-black text-[#171512]">
+                0{index + 1}
+              </div>
+              <h3 className="text-2xl font-black uppercase leading-none tracking-normal text-[#171512]">
                 {service.title}
               </h3>
-              <p className="mt-4 text-sm leading-7 text-[#70665b]">
+              <p className="mt-4 text-sm font-medium leading-7 text-[#5d574f]">
                 {service.description}
               </p>
             </article>
