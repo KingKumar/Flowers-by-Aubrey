@@ -19,7 +19,7 @@ const services = [
   {
     title: "Local Delivery or Pickup",
     description:
-      "Streamlined ordering for thoughtful gifts, table flowers, and custom pieces close to home.",
+      "Thoughtful Los Angeles delivery or pickup for gifts, table flowers, and custom pieces close to home.",
   },
 ];
 

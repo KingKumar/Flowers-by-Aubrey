@@ -7,8 +7,8 @@ export function About() {
       <div className="mx-auto grid max-w-7xl items-center gap-10 lg:grid-cols-[0.95fr_1.05fr]">
         <div className="relative aspect-[4/5] overflow-hidden border-2 border-[#1b120c] bg-[#f26a21] shadow-[8px_8px_0_#ed2b82]">
           <Image
-            src="/images/IMG_5946.JPG"
-            alt="Deep red and magenta floral arrangement in a glass vase"
+            src="/images/green-amaranth-lily-garden.png"
+            alt="Green hydrangea and lily arrangement with hanging amaranthus"
             fill
             sizes="(min-width: 1024px) 42vw, 100vw"
             className="object-cover saturate-[1.08]"
@@ -22,7 +22,7 @@ export function About() {
           />
           <div className="mt-7 space-y-5 font-mono text-base font-bold leading-8 text-[#344f20] sm:text-lg">
             <p>
-              Flowers by Aubrey began with a love for expressive color, clean
+              Aubrey Florals began with a love for expressive color, clean
               composition, and the way fresh flowers can make a room feel
               instantly considered.
             </p>

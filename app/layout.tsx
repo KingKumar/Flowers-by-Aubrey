@@ -13,9 +13,14 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Flowers by Aubrey | Boutique Floral Design",
+  title: "Aubrey Florals | Boutique Floral Design",
   description:
     "Premium, romantic floral arrangements for everyday beauty, celebrations, gifts, and meaningful moments.",
+  icons: {
+    icon: "/icon.svg",
+    shortcut: "/icon.svg",
+    apple: "/icon.svg",
+  },
 };
 
 export default function RootLayout({

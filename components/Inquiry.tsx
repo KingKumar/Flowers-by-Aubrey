@@ -6,7 +6,7 @@ export function Inquiry() {
     >
       <div className="mx-auto max-w-5xl border-2 border-[#1b120c] bg-[#fff2df] px-6 py-12 text-center shadow-[8px_8px_0_#ed2b82] sm:px-10 lg:px-16">
         <p className="font-mono text-xs font-black uppercase tracking-[0.18em] text-[#344f20]">
-          Custom inquiries
+          Custom contact
         </p>
         <h2 className="mx-auto mt-4 max-w-4xl text-5xl font-black uppercase leading-[0.9] tracking-normal text-[#1b120c] sm:text-7xl">
           Tell Aubrey what you are dreaming up, and she will help shape the
@@ -18,13 +18,13 @@ export function Inquiry() {
         </p>
         <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <a
-            href="mailto:hello@flowersbyaubrey.com"
+            href="mailto:hello@aubreyflorals.com"
             className="inline-flex min-h-12 items-center justify-center border-2 border-[#1b120c] bg-[#ed2b82] px-8 py-3 font-mono text-sm font-black uppercase tracking-[0.08em] text-[#fff2df] shadow-[4px_4px_0_#1b120c] transition hover:-translate-y-0.5"
           >
-            Start an Inquiry
+            Contact Aubrey
           </a>
           <p className="font-mono text-sm font-bold leading-6 text-[#344f20]">
-            hello@flowersbyaubrey.com · (555) 014-2783
+            hello@aubreyflorals.com · (555) 014-2783
           </p>
         </div>
       </div>

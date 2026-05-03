@@ -4,7 +4,7 @@ export function Footer() {
       <div className="mx-auto flex max-w-7xl flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <p className="text-4xl font-black uppercase leading-none tracking-normal text-[#c7da38]">
-            Flowers by Aubrey
+            Aubrey Florals
           </p>
           <p className="mt-3 max-w-md font-mono text-sm font-bold leading-6 text-[#fff2df]">
             Bold, thoughtful florals for everyday beauty and meaningful moments.
@@ -15,13 +15,13 @@ export function Footer() {
             Instagram
           </a>
           <a
-            href="mailto:hello@flowersbyaubrey.com"
+            href="mailto:hello@aubreyflorals.com"
             className="transition hover:text-[#c7da38]"
           >
             Contact
           </a>
-          <a href="#order" className="transition hover:text-[#c7da38]">
-            Order
+          <a href="#gallery" className="transition hover:text-[#c7da38]">
+            Lookbook
           </a>
         </div>
       </div>
