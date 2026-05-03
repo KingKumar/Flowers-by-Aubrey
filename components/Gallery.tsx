@@ -88,7 +88,7 @@ export function Gallery() {
             </p>
           </div>
 
-          <div className="flex w-full flex-col gap-3 lg:w-auto lg:flex-row lg:items-center">
+          <div className="hidden w-full flex-col gap-3 sm:flex lg:w-auto lg:flex-row lg:items-center">
             <div
               className="grid w-full grid-cols-3 border-2 border-[#1b120c] bg-white lg:w-auto"
               aria-label="Lookbook layout"
