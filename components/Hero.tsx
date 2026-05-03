@@ -1,4 +1,10 @@
+"use client";
+
 import Image from "next/image";
+
+function scrollToSection(sectionId: string) {
+  document.getElementById(sectionId)?.scrollIntoView({ behavior: "smooth" });
+}
 
 export function Hero() {
   return (
@@ -8,23 +14,36 @@ export function Hero() {
       </div>
 
       <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-7 sm:px-8 lg:px-12">
-        <a
-          href="#"
+        <button
+          type="button"
+          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
           className="text-3xl font-black uppercase leading-none tracking-[0.08em] text-[#f24b12]"
         >
           Aubrey
           <span className="block">Florals</span>
-        </a>
+        </button>
         <nav className="hidden items-center gap-10 font-mono text-sm font-black uppercase tracking-[0.08em] text-[#253712] md:flex">
-          <a href="#gallery" className="transition hover:text-[#f24b12]">
+          <button
+            type="button"
+            onClick={() => scrollToSection("gallery")}
+            className="transition hover:text-[#f24b12]"
+          >
             Lookbook
-          </a>
-          <a href="#about" className="transition hover:text-[#f24b12]">
+          </button>
+          <button
+            type="button"
+            onClick={() => scrollToSection("about")}
+            className="transition hover:text-[#f24b12]"
+          >
             About
-          </a>
-          <a href="#inquiry" className="transition hover:text-[#f24b12]">
+          </button>
+          <button
+            type="button"
+            onClick={() => scrollToSection("inquiry")}
+            className="transition hover:text-[#f24b12]"
+          >
             Contact
-          </a>
+          </button>
         </nav>
       </div>
 
@@ -38,18 +57,20 @@ export function Hero() {
             Bold custom florals in Los Angeles.
           </p>
           <div className="mt-9 flex flex-col gap-4 sm:flex-row sm:items-center">
-            <a
-              href="#gallery"
+            <button
+              type="button"
+              onClick={() => scrollToSection("gallery")}
               className="inline-flex min-h-12 items-center justify-center bg-[#f24b12] px-7 py-3 font-mono text-sm font-black uppercase tracking-[0.08em] text-[#fff2df] transition hover:bg-[#ed2b82]"
             >
               View lookbook &rarr;
-            </a>
-            <a
-              href="#inquiry"
+            </button>
+            <button
+              type="button"
+              onClick={() => scrollToSection("inquiry")}
               className="inline-flex min-h-12 items-center justify-center border-b-2 border-[#253712] px-2 py-3 font-mono text-sm font-black uppercase tracking-[0.08em] text-[#253712] transition hover:text-[#f24b12]"
             >
               Contact Aubrey &rarr;
-            </a>
+            </button>
           </div>
         </div>
 

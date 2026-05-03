@@ -162,7 +162,7 @@ export function Gallery() {
               </button>
               <article className="grid gap-6 lg:grid-cols-[minmax(0,1.15fr)_minmax(280px,0.85fr)] lg:items-start">
                 <div
-                  className="relative h-[calc(100svh-15rem)] max-h-[900px] min-h-[360px] overflow-hidden border-4 bg-white sm:h-[100svh] sm:min-h-[560px]"
+                  className="relative h-[calc(100svh-15rem)] min-h-[360px] overflow-hidden border-4 bg-white sm:min-h-[560px] lg:h-[620px] lg:max-h-none xl:h-[720px]"
                   style={{ borderColor: activeLook.cardColor }}
                 >
                   <LookbookImage

@@ -1,3 +1,9 @@
+"use client";
+
+function scrollToSection(sectionId: string) {
+  document.getElementById(sectionId)?.scrollIntoView({ behavior: "smooth" });
+}
+
 export function Footer() {
   return (
     <footer className="border-t-2 border-[#1b120c] bg-[#ed2b82] px-5 py-10 sm:px-8 lg:px-12">
@@ -20,9 +26,13 @@ export function Footer() {
           >
             Contact
           </a>
-          <a href="#gallery" className="transition hover:text-[#c7da38]">
+          <button
+            type="button"
+            onClick={() => scrollToSection("gallery")}
+            className="transition hover:text-[#c7da38]"
+          >
             Lookbook
-          </a>
+          </button>
         </div>
       </div>
     </footer>
