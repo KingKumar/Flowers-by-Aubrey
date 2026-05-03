@@ -18,14 +18,11 @@ export function Inquiry() {
         </p>
         <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <a
-            href="mailto:hello@aubreyflorals.com"
+            href="mailto:aubrey.glassberg@gmail.com"
             className="inline-flex min-h-12 items-center justify-center border-2 border-[#1b120c] bg-[#ed2b82] px-8 py-3 font-mono text-sm font-black uppercase tracking-[0.08em] text-[#fff2df] shadow-[4px_4px_0_#1b120c] transition hover:-translate-y-0.5"
           >
             Contact Aubrey
           </a>
-          <p className="font-mono text-sm font-bold leading-6 text-[#344f20]">
-            hello@aubreyflorals.com · (555) 014-2783
-          </p>
         </div>
       </div>
     </section>

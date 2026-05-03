@@ -15,7 +15,7 @@ export function Footer() {
             Instagram
           </a>
           <a
-            href="mailto:hello@aubreyflorals.com"
+            href="mailto:aubrey.glassberg@gmail.com"
             className="transition hover:text-[#c7da38]"
           >
             Contact

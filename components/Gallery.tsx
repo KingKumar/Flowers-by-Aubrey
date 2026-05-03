@@ -141,7 +141,7 @@ export function Gallery() {
               )}
             </div>
             <a
-              href={`mailto:hello@aubreyflorals.com?subject=Lookbook inquiry&body=${inquiryBody}`}
+              href={`mailto:aubrey.glassberg@gmail.com?subject=Lookbook inquiry&body=${inquiryBody}`}
               className="inline-flex min-h-11 shrink-0 items-center justify-center border-2 border-[#1b120c] bg-[#f24b12] px-5 font-mono text-xs font-black uppercase tracking-[0.08em] text-[#fff2df] shadow-[3px_3px_0_#1b120c] transition hover:-translate-y-0.5"
             >
               Inquire about the looks
