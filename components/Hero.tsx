@@ -40,10 +40,10 @@ export function Hero() {
           </p>
           <div className="mt-9 flex flex-col gap-3 sm:flex-row">
             <a
-              href="#inquiry"
+              href="#order"
               className="inline-flex min-h-12 items-center justify-center rounded-full bg-[#171512] px-7 py-3 text-sm font-black uppercase tracking-[0.08em] text-[#fffaf0] shadow-sm transition hover:bg-[#354126]"
             >
-              Inquire About Flowers
+              Order Flowers
             </a>
             <a
               href="#gallery"

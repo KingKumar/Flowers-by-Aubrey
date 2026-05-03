@@ -20,8 +20,8 @@ export function Footer() {
           >
             Contact
           </a>
-          <a href="#inquiry" className="transition hover:text-[#8d7652]">
-            Inquire
+          <a href="#order" className="transition hover:text-[#8d7652]">
+            Order
           </a>
         </div>
       </div>

@@ -1,38 +1,17 @@
+"use client";
+
 import Image from "next/image";
+import { flowerOfferings } from "./flowerOfferings";
 import { SectionHeader } from "./SectionHeader";
 
-const arrangements = [
-  {
-    label: "Soft Romance",
-    description: "Blush garden roses, creamy petals, and graphic greenery.",
-    src: "https://images.unsplash.com/photo-1521543832500-49eefa983db0?auto=format&fit=crop&w=900&q=85",
-  },
-  {
-    label: "Garden Pastels",
-    description: "Airy stems in butter yellow, pale pink, and modern sage.",
-    src: "https://images.unsplash.com/photo-1526047932273-341f2a7631f9?auto=format&fit=crop&w=900&q=85",
-  },
-  {
-    label: "Celebration Bouquet",
-    description: "A polished gathering of fresh, joyful, high-impact blooms.",
-    src: "https://images.unsplash.com/photo-1519378058457-4c29a0a2efac?auto=format&fit=crop&w=900&q=85",
-  },
-  {
-    label: "Petite Gesture",
-    description: "A compact arrangement with clean shape and standout color.",
-    src: "https://images.unsplash.com/photo-1494972308805-463bc619d34e?auto=format&fit=crop&w=900&q=85",
-  },
-  {
-    label: "Table Flowers",
-    description: "Low, architectural florals for dinners and intimate gatherings.",
-    src: "https://images.unsplash.com/photo-1468327768560-75b778cbb551?auto=format&fit=crop&w=900&q=85",
-  },
-  {
-    label: "Seasonal Grace",
-    description: "Fresh textures and expressive tones chosen at their prettiest.",
-    src: "https://images.unsplash.com/photo-1533616688419-b7a585564566?auto=format&fit=crop&w=900&q=85",
-  },
-];
+function addToCart(offeringId: string) {
+  window.dispatchEvent(
+    new CustomEvent("flowers:add-to-cart", {
+      detail: { offeringId },
+    })
+  );
+  document.getElementById("order")?.scrollIntoView({ behavior: "smooth" });
+}
 
 export function Gallery() {
   return (
@@ -44,26 +23,40 @@ export function Gallery() {
           tone="light"
         />
         <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {arrangements.map((arrangement) => (
+          {flowerOfferings.map((offering) => (
             <article
-              key={arrangement.label}
+              key={offering.id}
               className="group overflow-hidden rounded-[1.25rem] border-2 border-[#fffaf0] bg-[#fffaf0]"
             >
               <div className="relative aspect-[4/5] overflow-hidden bg-[#f4e6d8]">
                 <Image
-                  src={arrangement.src}
-                  alt={`${arrangement.label} floral arrangement`}
+                  src={offering.image}
+                  alt={`${offering.name} floral arrangement`}
                   fill
                   sizes="(min-width: 1024px) 31vw, (min-width: 640px) 48vw, 100vw"
                   className="object-cover saturate-[1.08] transition duration-500 group-hover:scale-[1.03]"
                 />
+                <div className="absolute inset-x-4 bottom-4 translate-y-3 opacity-0 transition duration-300 group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:translate-y-0 group-focus-within:opacity-100">
+                  <button
+                    type="button"
+                    onClick={() => addToCart(offering.id)}
+                    className="inline-flex min-h-11 w-full items-center justify-center rounded-full bg-[#171512] px-5 py-2 text-xs font-black uppercase tracking-[0.08em] text-[#fffaf0] shadow-lg transition hover:bg-[#354126]"
+                  >
+                    Add to cart
+                  </button>
+                </div>
               </div>
               <div className="border-t-2 border-[#171512] p-6">
-                <h3 className="text-2xl font-black uppercase leading-none tracking-normal text-[#171512]">
-                  {arrangement.label}
-                </h3>
+                <div className="flex items-start justify-between gap-4">
+                  <h3 className="text-2xl font-black uppercase leading-none tracking-normal text-[#171512]">
+                    {offering.name}
+                  </h3>
+                  <p className="text-base font-black text-[#5f6f44]">
+                    ${offering.price}
+                  </p>
+                </div>
                 <p className="mt-3 text-sm font-medium leading-7 text-[#5d574f]">
-                  {arrangement.description}
+                  {offering.description}
                 </p>
               </div>
             </article>
