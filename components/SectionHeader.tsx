@@ -22,15 +22,15 @@ export function SectionHeader({
       }`}
     >
       <p
-        className={`text-xs font-black uppercase tracking-[0.32em] ${
-          isLight ? "text-[#f3d8d8]" : "text-[#5f6f44]"
+        className={`font-mono text-xs font-black uppercase tracking-[0.18em] ${
+          isLight ? "text-[#c7da38]" : "text-[#344f20]"
         }`}
       >
         {eyebrow}
       </p>
       <h2
-        className={`mt-4 text-4xl font-black uppercase leading-[0.95] tracking-normal sm:text-5xl lg:text-6xl ${
-          isLight ? "text-[#fffaf0]" : "text-[#171512]"
+        className={`mt-4 text-5xl font-black uppercase leading-[0.9] tracking-normal sm:text-6xl lg:text-7xl ${
+          isLight ? "text-[#fff2df]" : "text-[#1b120c]"
         }`}
       >
         {title}
@@ -38,7 +38,7 @@ export function SectionHeader({
       {description ? (
         <p
           className={`mt-5 max-w-2xl text-base leading-8 sm:text-lg ${
-            isLight ? "text-[#e6dccc]" : "text-[#625d55]"
+            isLight ? "text-[#fff2df]" : "text-[#344f20]"
           }`}
         >
           {description}

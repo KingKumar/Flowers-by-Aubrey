@@ -27,7 +27,7 @@ export function Services() {
   return (
     <section
       id="services"
-      className="border-y-2 border-[#171512] bg-[#fffaf0] px-5 py-20 sm:px-8 lg:px-12"
+      className="paper-grain border-y-2 border-[#1b120c] bg-[#fff2df] px-5 py-20 sm:px-8 lg:px-12"
     >
       <div className="mx-auto max-w-7xl">
         <SectionHeader
@@ -39,15 +39,15 @@ export function Services() {
           {services.map((service, index) => (
             <article
               key={service.title}
-              className="rounded-[1.25rem] border-2 border-[#171512] bg-[#fffdf8] p-6 shadow-[8px_8px_0_#171512]"
+              className="border-2 border-[#1b120c] bg-[#fff2df] p-6 shadow-[6px_6px_0_#f26a21]"
             >
-              <div className="mb-8 flex h-12 w-12 items-center justify-center rounded-full bg-[#f2d7dd] text-sm font-black text-[#171512]">
+              <div className="mb-8 flex h-12 w-12 items-center justify-center border-2 border-[#1b120c] bg-[#ed2b82] text-sm font-black text-[#fff2df]">
                 0{index + 1}
               </div>
-              <h3 className="text-2xl font-black uppercase leading-none tracking-normal text-[#171512]">
+              <h3 className="font-mono text-2xl font-black uppercase leading-none tracking-normal text-[#1b120c]">
                 {service.title}
               </h3>
-              <p className="mt-4 text-sm font-medium leading-7 text-[#5d574f]">
+              <p className="mt-4 font-mono text-sm font-bold leading-7 text-[#344f20]">
                 {service.description}
               </p>
             </article>

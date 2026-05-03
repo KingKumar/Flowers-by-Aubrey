@@ -45,42 +45,42 @@ const cardOptions = [
     price: 0,
     tone: "Just flowers",
     message: "Skip the printed card.",
-    swatch: "bg-[#fffaf0]",
+    swatch: "bg-[#fff2df]",
   },
   {
     name: "Blush",
     price: 8,
     tone: "Soft pink",
     message: "A warm blush card for a soft, romantic finish.",
-    swatch: "bg-[#f2d7dd]",
+    swatch: "bg-[#b83a73]",
   },
   {
     name: "Sage",
     price: 8,
     tone: "Muted green",
     message: "A calm sage card with an understated garden feel.",
-    swatch: "bg-[#dce8c8]",
+    swatch: "bg-[#344f20]",
   },
   {
     name: "Cream",
     price: 10,
     tone: "Deckled cream",
     message: "A premium cream card with a more elevated paper texture.",
-    swatch: "bg-[#f7ead5]",
+    swatch: "bg-[#c85f22]",
   },
   {
     name: "Ivory",
     price: 8,
     tone: "Linen ivory",
     message: "A simple ivory card that works for almost any note.",
-    swatch: "bg-[#f3efe7]",
+    swatch: "bg-[#fff2df]",
   },
   {
     name: "Butter",
     price: 9,
     tone: "Pale yellow",
     message: "A pale yellow card for something bright and gentle.",
-    swatch: "bg-[#f4e9b8]",
+    swatch: "bg-[#d88943]",
   },
 ];
 
@@ -304,7 +304,7 @@ export function OrderExperience() {
   return (
     <section
       id="order"
-      className="border-y-2 border-[#171512] bg-[#fffaf0] px-5 py-20 sm:px-8 lg:px-12"
+      className="paper-grain border-y-2 border-[#1b120c] bg-[#fff2df] px-5 py-20 sm:px-8 lg:px-12"
     >
       <div className="mx-auto max-w-7xl">
         <SectionHeader
@@ -316,7 +316,7 @@ export function OrderExperience() {
         <div className="mt-12 grid min-w-0 gap-6 lg:grid-cols-[minmax(0,1.45fr)_minmax(320px,0.85fr)]">
           <div className="min-w-0 space-y-6">
             <div>
-              <h3 className="text-sm font-black uppercase tracking-[0.18em] text-[#5f6f44]">
+              <h3 className="font-mono text-sm font-black uppercase tracking-[0.16em] text-[#344f20]">
                 Select bouquets
               </h3>
               <div className="mt-4 max-w-full overflow-x-auto overscroll-x-contain pb-4">
@@ -328,57 +328,63 @@ export function OrderExperience() {
                   return (
                     <article
                       key={offering.id}
-                      className={`w-[72vw] shrink-0 snap-start overflow-hidden rounded-[1rem] border-2 bg-[#fffdf8] transition sm:w-[42vw] lg:w-[calc((100%-3rem)/4)] ${
+                      className={`w-[72vw] shrink-0 snap-start overflow-hidden border-2 bg-white transition sm:w-[42vw] lg:w-[calc((100%-3rem)/4)] ${
                         isSelected
-                          ? "border-[#171512] shadow-[8px_8px_0_#dce8c8]"
-                          : "border-[#e3d7c6] hover:border-[#171512]"
+                          ? "shadow-[7px_7px_0_#ed2b82]"
+                          : "hover:shadow-[7px_7px_0_#f26a21]"
                       }`}
+                      style={{ borderColor: isSelected ? offering.cardColor : "#1b120c" }}
                     >
                       <button
                         type="button"
                         onClick={() => addOffering(offering.id)}
-                        className="relative block aspect-[5/4] w-full bg-[#f3eadc]"
+                        className="relative block aspect-[5/4] w-full overflow-hidden border-b-4 bg-white"
+                        style={{ borderColor: offering.cardColor }}
                       >
+                        <div
+                          className="pointer-events-none absolute inset-x-0 top-0 h-2"
+                          style={{ backgroundColor: offering.cardColor }}
+                        />
                         <Image
-                          src={offering.image}
+                          src={offering.cutoutImage}
                           alt={`${offering.name} bouquet`}
                           fill
                           sizes="310px"
-                          className="object-cover saturate-[1.06]"
+                          className="sticker-image object-contain p-4"
                         />
                       </button>
                       <div className="p-4">
                         <span className="block">
-                          <span className="flex min-h-10 items-end text-base font-black uppercase leading-none text-[#171512]">
+                          <span className="flex min-h-10 items-end font-mono text-lg font-black uppercase leading-none text-[#1b120c]">
                             {offering.name}
                           </span>
-                          <span className="mt-2 block text-base font-black text-[#5f6f44]">
+                          <span className="mt-2 block font-mono text-base font-black text-[#ed2b82]">
                             {currency(offering.price)}
                           </span>
                         </span>
-                        <span className="mt-2 line-clamp-2 block text-sm font-medium leading-6 text-[#5d574f]">
+                        <span className="mt-2 line-clamp-2 block font-mono text-xs font-bold leading-5 text-[#344f20]">
                           {offering.description}
                         </span>
                         <div className="mt-4 space-y-3">
                           <button
                             type="button"
                             onClick={() => addOffering(offering.id)}
-                            className="inline-flex min-h-11 w-full items-center justify-center rounded-full bg-[#171512] px-5 py-2 text-xs font-black uppercase tracking-[0.08em] text-[#fffaf0] transition hover:bg-[#354126]"
+                            className="inline-flex min-h-11 w-full items-center justify-center border-2 border-[#1b120c] bg-[#ed2b82] px-5 py-2 font-mono text-xs font-black uppercase tracking-[0.08em] text-[#fff2df] shadow-[3px_3px_0_#1b120c] transition hover:-translate-y-0.5"
                           >
                             Add to cart
                           </button>
-                          <div className="flex min-h-11 w-full items-center justify-between rounded-full border-2 border-[#171512] bg-[#fffaf0]">
+                          <div className="flex min-h-11 w-full items-center justify-between border-2 border-[#1b120c] bg-[#fff2df]">
                             <button
                               type="button"
                               onClick={() =>
                                 updateQuantity(offering.id, quantity - 1)
                               }
-                              className="flex h-10 w-10 items-center justify-center text-lg font-black text-[#171512]"
+                              className="flex h-10 w-10 items-center justify-center text-lg font-black text-[#1b120c]"
                               aria-label={`Decrease ${offering.name} quantity`}
                             >
                               -
                             </button>
-                            <span className="w-8 text-center text-sm font-black text-[#171512]">
+                            <span className="w-8 text-center font-mono text-sm font-black text-[#1b120c]">
                               {quantity}
                             </span>
                             <button
@@ -386,7 +392,7 @@ export function OrderExperience() {
                               onClick={() =>
                                 updateQuantity(offering.id, quantity + 1)
                               }
-                              className="flex h-10 w-10 items-center justify-center text-lg font-black text-[#171512]"
+                              className="flex h-10 w-10 items-center justify-center text-lg font-black text-[#1b120c]"
                               aria-label={`Increase ${offering.name} quantity`}
                             >
                               +
@@ -402,7 +408,7 @@ export function OrderExperience() {
             </div>
 
             <div>
-              <h3 className="text-sm font-black uppercase tracking-[0.18em] text-[#5f6f44]">
+              <h3 className="text-sm font-bold uppercase tracking-[0.16em] text-[#344f20]">
                 Add a card
               </h3>
               <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -414,14 +420,14 @@ export function OrderExperience() {
                       key={card.name}
                       type="button"
                       onClick={() => setSelectedCard(card)}
-                      className={`rounded-[1rem] border-2 bg-[#fffdf8] p-4 text-left transition ${
+                    className={`border-2 bg-[#fff2df] p-4 text-left transition ${
                         isSelected
-                          ? "border-[#171512] shadow-[7px_7px_0_#f2d7dd]"
-                          : "border-[#e3d7c6] hover:border-[#171512]"
+                          ? "border-[#344f20] shadow-[0_10px_24px_rgba(36,23,15,0.12)]"
+                          : "border-[#1b120c] hover:border-[#1b120c]"
                       }`}
                     >
                       <span
-                        className={`block h-24 rounded-[0.75rem] border-2 border-[#171512]/15 ${card.swatch}`}
+                        className={`block h-24 rounded-[0.75rem] border-2 border-[#1b120c]/15 ${card.swatch}`}
                       >
                         <span className="flex h-full items-center justify-center px-4 text-center text-lg font-serif italic leading-6 text-[#3c372f]">
                           {card.name}
@@ -429,18 +435,18 @@ export function OrderExperience() {
                       </span>
                       <span className="mt-4 flex items-start justify-between gap-3">
                         <span>
-                          <span className="block text-base font-black uppercase leading-none text-[#171512]">
+                          <span className="block font-mono text-lg font-black uppercase leading-none text-[#1b120c]">
                             {card.name}
                           </span>
-                          <span className="mt-2 block text-xs font-black uppercase tracking-[0.14em] text-[#5f6f44]">
+                          <span className="mt-2 block text-xs font-black uppercase tracking-[0.14em] text-[#344f20]">
                             {card.tone}
                           </span>
                         </span>
-                        <span className="text-sm font-black text-[#5f6f44]">
+                        <span className="text-sm font-black text-[#344f20]">
                           {card.price ? `+${currency(card.price)}` : "Free"}
                         </span>
                       </span>
-                      <span className="mt-3 block text-sm font-medium leading-6 text-[#5d574f]">
+                      <span className="mt-3 block text-sm font-medium leading-6 text-[#344f20]">
                         {card.message}
                       </span>
                     </button>
@@ -449,8 +455,8 @@ export function OrderExperience() {
               </div>
             </div>
 
-            <div className="rounded-[1rem] border-2 border-[#171512] bg-[#fffdf8] p-5 sm:p-6">
-              <h3 className="text-sm font-black uppercase tracking-[0.18em] text-[#5f6f44]">
+            <div className="border-2 border-[#1b120c] bg-[#fff2df] p-5 sm:p-6">
+              <h3 className="text-sm font-bold uppercase tracking-[0.16em] text-[#344f20]">
                 Delivery details
               </h3>
 
@@ -465,17 +471,17 @@ export function OrderExperience() {
                       onClick={() => setDeliveryOption(option)}
                       className={`rounded-[0.8rem] border-2 p-4 text-left transition ${
                         isSelected
-                          ? "border-[#171512] bg-[#f2d7dd]"
-                          : "border-[#e3d7c6] bg-[#fffaf0] hover:border-[#171512]"
+                          ? "border-[#344f20] bg-[#eef4e8]"
+                          : "border-[#1b120c] bg-[#fff2df] hover:border-[#1b120c]"
                       }`}
                     >
-                      <span className="block text-base font-black uppercase leading-none text-[#171512]">
+                      <span className="block font-mono text-lg font-black uppercase leading-none text-[#1b120c]">
                         {option.label}
                       </span>
-                      <span className="mt-2 block text-sm font-medium leading-5 text-[#5d574f]">
+                      <span className="mt-2 block text-sm font-medium leading-5 text-[#344f20]">
                         {option.note}
                       </span>
-                      <span className="mt-3 block text-sm font-black text-[#5f6f44]">
+                      <span className="mt-3 block text-sm font-black text-[#344f20]">
                         {option.fee ? `+${currency(option.fee)}` : "No rush fee"}
                       </span>
                     </button>
@@ -485,7 +491,7 @@ export function OrderExperience() {
 
               <div className="mt-6 grid gap-4 md:grid-cols-2">
                 <label className="block">
-                  <span className="text-xs font-black uppercase tracking-[0.16em] text-[#5d574f]">
+                  <span className="text-xs font-black uppercase tracking-[0.16em] text-[#344f20]">
                     Delivery address
                   </span>
                   <input
@@ -497,10 +503,10 @@ export function OrderExperience() {
                       setIsCalculatingDistance(false);
                     }}
                     placeholder="Street, city, zip"
-                    className="mt-2 min-h-12 w-full rounded-[0.65rem] border-2 border-[#d8ccb9] bg-white px-4 text-sm font-medium text-[#171512] outline-none transition placeholder:text-[#9b9284] focus:border-[#171512]"
+                    className="mt-2 min-h-12 w-full rounded-[0.65rem] border-2 border-[#1b120c] bg-white px-4 text-sm font-medium text-[#1b120c] outline-none transition placeholder:text-[#9b9284] focus:border-[#1b120c]"
                   />
                   {isCalculatingDistance ? (
-                    <span className="mt-2 block text-xs font-bold leading-5 text-[#5f6f44]">
+                    <span className="mt-2 block text-xs font-bold leading-5 text-[#344f20]">
                       Updating delivery estimate...
                     </span>
                   ) : null}
@@ -512,13 +518,13 @@ export function OrderExperience() {
                 </label>
 
                 <label className="block">
-                  <span className="text-xs font-black uppercase tracking-[0.16em] text-[#5d574f]">
+                  <span className="text-xs font-black uppercase tracking-[0.16em] text-[#344f20]">
                     Drop-off time
                   </span>
                   <select
                     value={dropOffWindow}
                     onChange={(event) => setDropOffWindow(event.target.value)}
-                    className="mt-2 min-h-12 w-full rounded-[0.65rem] border-2 border-[#d8ccb9] bg-white px-4 text-sm font-medium text-[#171512] outline-none transition focus:border-[#171512]"
+                    className="mt-2 min-h-12 w-full rounded-[0.65rem] border-2 border-[#1b120c] bg-white px-4 text-sm font-medium text-[#1b120c] outline-none transition focus:border-[#1b120c]"
                   >
                     {dropOffWindows.map((window) => (
                       <option key={window} value={window}>
@@ -531,20 +537,20 @@ export function OrderExperience() {
 
               {deliveryOption.id === "scheduled" ? (
                 <label className="mt-4 block">
-                  <span className="text-xs font-black uppercase tracking-[0.16em] text-[#5d574f]">
+                  <span className="text-xs font-black uppercase tracking-[0.16em] text-[#344f20]">
                     Desired date
                   </span>
                   <input
                     value={desiredDate}
                     onChange={(event) => setDesiredDate(event.target.value)}
                     type="date"
-                    className="mt-2 min-h-12 w-full rounded-[0.65rem] border-2 border-[#d8ccb9] bg-white px-4 text-sm font-medium text-[#171512] outline-none transition focus:border-[#171512]"
+                    className="mt-2 min-h-12 w-full rounded-[0.65rem] border-2 border-[#1b120c] bg-white px-4 text-sm font-medium text-[#1b120c] outline-none transition focus:border-[#1b120c]"
                   />
                 </label>
               ) : null}
 
               <label className="mt-4 block">
-                <span className="text-xs font-black uppercase tracking-[0.16em] text-[#5d574f]">
+                <span className="text-xs font-black uppercase tracking-[0.16em] text-[#344f20]">
                   Gift note
                 </span>
                 <textarea
@@ -552,20 +558,20 @@ export function OrderExperience() {
                   onChange={(event) => setNote(event.target.value)}
                   rows={3}
                   placeholder="Optional message for the recipient"
-                  className="mt-2 w-full rounded-[0.65rem] border-2 border-[#d8ccb9] bg-white px-4 py-3 text-sm font-medium text-[#171512] outline-none transition placeholder:text-[#9b9284] focus:border-[#171512]"
+                  className="mt-2 w-full rounded-[0.65rem] border-2 border-[#1b120c] bg-white px-4 py-3 text-sm font-medium text-[#1b120c] outline-none transition placeholder:text-[#9b9284] focus:border-[#1b120c]"
                 />
               </label>
             </div>
           </div>
 
-          <aside className="h-fit rounded-[1rem] border-2 border-[#171512] bg-[#f2d7dd] p-6 shadow-[10px_10px_0_#171512] lg:sticky lg:top-6">
-            <p className="text-xs font-black uppercase tracking-[0.22em] text-[#5f6f44]">
+          <aside className="h-fit border-2 border-[#1b120c] bg-[#fff2df] p-6 shadow-[7px_7px_0_#f26a21] lg:sticky lg:top-6">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#344f20]">
               Order summary
             </p>
-            <h3 className="mt-4 text-3xl font-black uppercase leading-none text-[#171512]">
+            <h3 className="mt-4 font-mono text-3xl font-black uppercase leading-none text-[#1b120c]">
               Your flowers
             </h3>
-            <p className="mt-3 text-sm font-bold leading-6 text-[#5d574f]">
+            <p className="mt-3 text-sm font-bold leading-6 text-[#344f20]">
               {selectedCard.name === "No card"
                 ? "No printed card"
                 : `${selectedCard.name} card included`}
@@ -576,7 +582,7 @@ export function OrderExperience() {
                 cartItems.map((item) => (
                   <div
                     key={item.offering.id}
-                    className="flex justify-between gap-4 border-b border-[#171512]/20 pb-3"
+                    className="flex justify-between gap-4 border-b border-[#1b120c]/20 pb-3"
                   >
                     <span>
                       {item.quantity} x {item.offering.name}
@@ -587,20 +593,20 @@ export function OrderExperience() {
                   </div>
                 ))
               ) : (
-                <div className="flex justify-between gap-4 border-b border-[#171512]/20 pb-3">
+                <div className="flex justify-between gap-4 border-b border-[#1b120c]/20 pb-3">
                   <span>No bouquets selected</span>
                   <span>{currency(0)}</span>
                 </div>
               )}
-              <div className="flex justify-between gap-4 border-b border-[#171512]/20 pb-3">
+              <div className="flex justify-between gap-4 border-b border-[#1b120c]/20 pb-3">
                 <span>Card</span>
                 <span>{selectedCard.price ? currency(selectedCard.price) : "Free"}</span>
               </div>
-              <div className="flex justify-between gap-4 border-b border-[#171512]/20 pb-3">
+              <div className="flex justify-between gap-4 border-b border-[#1b120c]/20 pb-3">
                 <span>{deliveryOption.label} delivery</span>
                 <span>{currency(12 + deliveryOption.fee)}</span>
               </div>
-              <div className="flex justify-between gap-4 border-b border-[#171512]/20 pb-3">
+              <div className="flex justify-between gap-4 border-b border-[#1b120c]/20 pb-3">
                 <span>
                   {isCalculatingDistance ? "Estimating delivery" : "Address-based delivery"}
                 </span>
@@ -611,21 +617,21 @@ export function OrderExperience() {
             </div>
 
             <div className="mt-6 flex items-end justify-between gap-4">
-              <span className="text-sm font-black uppercase tracking-[0.16em] text-[#5d574f]">
+              <span className="text-sm font-black uppercase tracking-[0.16em] text-[#344f20]">
                 Estimated total
               </span>
-              <span className="text-4xl font-black leading-none text-[#171512]">
+              <span className="text-4xl font-black leading-none text-[#1b120c]">
                 {currency(pricing.total)}
               </span>
             </div>
 
             <a
               href={`mailto:hello@flowersbyaubrey.com?subject=Flower order request&body=${mailtoBody}`}
-              className="mt-7 inline-flex min-h-12 w-full items-center justify-center rounded-full bg-[#171512] px-6 py-3 text-sm font-black uppercase tracking-[0.08em] text-[#fffaf0] transition hover:bg-[#354126]"
+              className="mt-7 inline-flex min-h-12 w-full items-center justify-center rounded-full bg-[#1b120c] px-6 py-3 text-sm font-black uppercase tracking-[0.08em] text-[#fff2df] transition hover:bg-[#344f20]"
             >
               Request This Order
             </a>
-            <p className="mt-4 text-xs font-medium leading-5 text-[#5d574f]">
+            <p className="mt-4 text-xs font-medium leading-5 text-[#344f20]">
               Final pricing is confirmed after address validation, stem
               availability, and delivery window approval.
             </p>

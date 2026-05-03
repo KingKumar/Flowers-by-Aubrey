@@ -1,8 +1,15 @@
+@import url("https://fonts.cdnfonts.com/css/anemone");
 @import "tailwindcss";
 
 :root {
-  --background: #fff8df;
-  --foreground: #171512;
+  --background: #fff2df;
+  --foreground: #1b120c;
+  --hot-pink: #ed2b82;
+  --orange: #f26a21;
+  --acid-green: #c7da38;
+  --olive: #344f20;
+  --paper: #fff2df;
+  --ink: #1b120c;
 }
 
 @theme inline {
@@ -18,10 +25,44 @@ body {
   font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
 }
 
+.font-display {
+  font-family: "Anemone", "Cormorant Garamond", Georgia, serif;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
 .font-serif {
   font-family: Georgia, "Times New Roman", serif;
 }
 
 html {
   scroll-behavior: smooth;
+}
+
+.paper-grain {
+  background-image:
+    radial-gradient(circle at 12% 18%, rgba(237, 43, 130, 0.08) 0 1px, transparent 1px),
+    radial-gradient(circle at 78% 34%, rgba(242, 106, 33, 0.08) 0 1px, transparent 1px),
+    radial-gradient(circle at 44% 72%, rgba(52, 79, 32, 0.08) 0 1px, transparent 1px);
+  background-size: 42px 42px, 56px 56px, 38px 38px;
+}
+
+.lace-frame {
+  background-image:
+    radial-gradient(circle at 12px 12px, transparent 9px, rgba(255, 242, 223, 0.82) 10px 12px, transparent 13px),
+    radial-gradient(circle at 38px 12px, transparent 9px, rgba(255, 242, 223, 0.82) 10px 12px, transparent 13px);
+  background-size: 52px 28px;
+}
+
+.sticker-image {
+  filter:
+    drop-shadow(0 0 0 #fff2df)
+    drop-shadow(5px 5px 0 rgba(27, 18, 12, 0.28))
+    saturate(1.14)
+    contrast(1.05);
+}
+
+.stamp-label {
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
 }

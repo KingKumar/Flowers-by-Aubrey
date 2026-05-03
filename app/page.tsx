@@ -8,11 +8,11 @@ import { Services } from "@/components/Services";
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-[#fffaf0] text-[#2c2824]">
+    <main className="min-h-screen bg-[#fff2df] text-[#1b120c]">
       <Hero />
-      <Services />
-      <OrderExperience />
       <Gallery />
+      <OrderExperience />
+      <Services />
       <About />
       <Inquiry />
       <Footer />
