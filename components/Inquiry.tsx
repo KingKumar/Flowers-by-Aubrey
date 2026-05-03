@@ -5,10 +5,7 @@ export function Inquiry() {
       className="paper-grain bg-[#344f20] px-5 py-20 sm:px-8 lg:px-12"
     >
       <div className="mx-auto max-w-5xl border-2 border-[#1b120c] bg-[#fff2df] px-6 py-12 text-center shadow-[8px_8px_0_#ed2b82] sm:px-10 lg:px-16">
-        <p className="font-mono text-xs font-black uppercase tracking-[0.18em] text-[#344f20]">
-          Custom contact
-        </p>
-        <h2 className="mx-auto mt-4 max-w-4xl text-5xl font-black uppercase leading-[0.9] tracking-normal text-[#1b120c] sm:text-7xl">
+        <h2 className="mx-auto max-w-4xl text-5xl font-black uppercase leading-[0.9] tracking-normal text-[#1b120c] sm:text-7xl">
           Tell Aubrey what you are dreaming up, and she will help shape the
           flowers around it.
         </h2>

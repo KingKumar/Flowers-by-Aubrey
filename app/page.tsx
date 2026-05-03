@@ -7,7 +7,7 @@ import { Services } from "@/components/Services";
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-[#fff2df] text-[#1b120c]">
+    <main className="min-h-screen overflow-x-clip bg-[#fff2df] text-[#1b120c]">
       <Hero />
       <Gallery />
       <Services />

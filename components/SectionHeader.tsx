@@ -1,5 +1,5 @@
 type SectionHeaderProps = {
-  eyebrow: string;
+  eyebrow?: string;
   title: string;
   description?: string;
   align?: "left" | "center";
@@ -21,15 +21,17 @@ export function SectionHeader({
         align === "center" ? "text-center" : "text-left"
       }`}
     >
-      <p
-        className={`font-mono text-xs font-black uppercase tracking-[0.18em] ${
-          isLight ? "text-[#c7da38]" : "text-[#344f20]"
-        }`}
-      >
-        {eyebrow}
-      </p>
+      {eyebrow ? (
+        <p
+          className={`font-mono text-xs font-black uppercase tracking-[0.18em] ${
+            isLight ? "text-[#c7da38]" : "text-[#344f20]"
+          }`}
+        >
+          {eyebrow}
+        </p>
+      ) : null}
       <h2
-        className={`mt-4 text-5xl font-black uppercase leading-[0.9] tracking-normal sm:text-6xl lg:text-7xl ${
+        className={`${eyebrow ? "mt-4" : ""} text-5xl font-black uppercase leading-[0.9] tracking-normal sm:text-6xl lg:text-7xl ${
           isLight ? "text-[#fff2df]" : "text-[#1b120c]"
         }`}
       >
@@ -38,6 +40,8 @@ export function SectionHeader({
       {description ? (
         <p
           className={`mt-5 max-w-2xl text-base leading-8 sm:text-lg ${
+            align === "center" ? "mx-auto" : ""
+          } ${
             isLight ? "text-[#fff2df]" : "text-[#344f20]"
           }`}
         >

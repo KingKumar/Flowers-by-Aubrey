@@ -31,7 +31,6 @@ export function Services() {
     >
       <div className="mx-auto max-w-7xl">
         <SectionHeader
-          eyebrow="Offerings"
           title="Florals with shape, color, and point of view"
           description="Every arrangement is composed with a confident eye for palette, negative space, texture, and scale."
         />

@@ -160,17 +160,15 @@ export function Gallery() {
               >
                 &larr;
               </button>
-              <article className="grid gap-6 lg:grid-cols-[minmax(0,1.15fr)_minmax(280px,0.85fr)] lg:items-stretch">
+              <article className="grid gap-6 lg:grid-cols-[minmax(0,1.15fr)_minmax(280px,0.85fr)] lg:items-start">
                 <div
-                  className="relative min-h-[560px] overflow-hidden border-4 bg-white"
+                  className="relative h-[100svh] max-h-[900px] min-h-[560px] overflow-hidden border-4 bg-white"
                   style={{ borderColor: activeLook.cardColor }}
                 >
-                  <Image
+                  <LookbookImage
                     src={activeLook.image}
                     alt={activeLook.name}
-                    fill
                     sizes="(min-width: 1024px) 58vw, 100vw"
-                    className="object-cover"
                     priority
                   />
                   <SaveButton
@@ -261,16 +259,14 @@ export function Gallery() {
                     className="pointer-events-none absolute inset-x-0 top-0 h-2"
                     style={{ backgroundColor: offering.cardColor }}
                   />
-                  <Image
+                  <LookbookImage
                     src={offering.image}
                     alt={offering.name}
-                    fill
                     sizes={
                       mode === "dense"
                         ? "(min-width: 1024px) 18vw, (min-width: 640px) 30vw, 100vw"
                         : "(min-width: 1024px) 31vw, (min-width: 640px) 46vw, 100vw"
                     }
-                    className="object-cover transition duration-500 group-hover:scale-[1.04]"
                   />
                   <SaveButton
                     isSaved={savedLookIds.includes(offering.id)}
@@ -295,6 +291,40 @@ export function Gallery() {
   );
 }
 
+function LookbookImage({
+  src,
+  alt,
+  sizes,
+  priority = false,
+}: {
+  src: string;
+  alt: string;
+  sizes: string;
+  priority?: boolean;
+}) {
+  return (
+    <>
+      <Image
+        src={src}
+        alt=""
+        aria-hidden="true"
+        fill
+        sizes={sizes}
+        priority={priority}
+        className="z-0 scale-110 object-cover opacity-35 blur-xl saturate-[1.08]"
+      />
+      <Image
+        src={src}
+        alt={alt}
+        fill
+        sizes={sizes}
+        priority={priority}
+        className="relative z-10 object-contain transition duration-500 group-hover:scale-[1.04]"
+      />
+    </>
+  );
+}
+
 function SaveButton({
   isSaved,
   label,
@@ -308,7 +338,7 @@ function SaveButton({
     <button
       type="button"
       onClick={onClick}
-      className={`absolute bottom-3 right-3 flex h-12 w-12 items-center justify-center border-2 border-[#1b120c] text-2xl font-black shadow-[3px_3px_0_#1b120c] transition hover:-translate-y-0.5 ${
+      className={`absolute bottom-3 right-3 z-20 flex h-12 w-12 items-center justify-center border-2 border-[#1b120c] text-2xl font-black shadow-[3px_3px_0_#1b120c] transition hover:-translate-y-0.5 ${
         isSaved
           ? "bg-[#ed2b82] text-[#fff2df]"
           : "bg-white text-[#ed2b82]"

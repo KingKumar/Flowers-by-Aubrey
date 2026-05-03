@@ -30,7 +30,7 @@ export function Hero() {
 
       <div className="relative mx-auto grid min-h-[78vh] max-w-7xl items-center gap-8 px-5 pb-12 sm:px-8 lg:grid-cols-[0.82fr_1.18fr] lg:px-12">
         <div className="z-10">
-          <h1 className="max-w-3xl text-7xl font-black uppercase leading-[0.82] text-[#253712] sm:text-8xl lg:text-9xl">
+          <h1 className="max-w-3xl text-6xl font-black uppercase leading-[0.86] text-[#253712] sm:text-8xl lg:text-9xl">
             Flowers that hit
             <span className="block text-[#f24b12]">different.</span>
           </h1>
@@ -57,11 +57,20 @@ export function Hero() {
           <div className="absolute -right-16 top-6 h-[86%] w-[70%] bg-[#f24b12]" />
           <Image
             src="/images/sage-ribbon-vase.png"
+            alt=""
+            aria-hidden="true"
+            fill
+            priority
+            sizes="(min-width: 1024px) 58vw, 100vw"
+            className="z-0 scale-110 object-cover opacity-35 blur-xl saturate-[1.08]"
+          />
+          <Image
+            src="/images/sage-ribbon-vase.png"
             alt="Orange Rose Hydrangea Bouquet"
             fill
             priority
             sizes="(min-width: 1024px) 58vw, 100vw"
-            className="relative z-10 object-cover object-[50%_50%] saturate-[1.08]"
+            className="relative z-10 object-contain saturate-[1.08]"
           />
           <div className="absolute bottom-12 right-10 z-20 hidden h-28 w-28 items-center justify-center rounded-full border border-[#fff2df] p-4 text-center font-mono text-xs font-black uppercase leading-4 text-[#fff2df] lg:flex">
             Handmade with love
