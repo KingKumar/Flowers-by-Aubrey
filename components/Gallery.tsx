@@ -88,9 +88,9 @@ export function Gallery() {
             </p>
           </div>
 
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+          <div className="flex w-full flex-col gap-3 lg:w-auto lg:flex-row lg:items-center">
             <div
-              className="inline-flex border-2 border-[#1b120c] bg-white"
+              className="grid w-full grid-cols-3 border-2 border-[#1b120c] bg-white lg:w-auto"
               aria-label="Lookbook layout"
             >
               {modeLabels.map((option) => (
@@ -98,7 +98,7 @@ export function Gallery() {
                   key={option.id}
                   type="button"
                   onClick={() => setMode(option.id)}
-                  className={`min-h-11 border-r-2 border-[#1b120c] px-4 font-mono text-xs font-black uppercase tracking-[0.08em] last:border-r-0 ${
+                  className={`min-h-11 border-r-2 border-[#1b120c] px-3 font-mono text-xs font-black uppercase tracking-[0.08em] last:border-r-0 lg:px-4 ${
                     mode === option.id
                       ? "bg-[#ed2b82] text-[#fff2df]"
                       : "text-[#253712] hover:bg-[#fff2df]"
@@ -155,14 +155,14 @@ export function Gallery() {
               <button
                 type="button"
                 onClick={showPreviousLook}
-                className="hidden h-14 w-14 items-center justify-center border-2 border-[#1b120c] bg-white font-mono text-3xl font-black text-[#253712] shadow-[4px_4px_0_#f26a21] transition hover:-translate-y-0.5 lg:flex"
+                className="hidden h-14 w-14 items-center justify-center border-2 border-[#1b120c] bg-white font-mono text-3xl font-black text-[#253712] shadow-[4px_4px_0_#f26a21] transition hover:-translate-y-0.5 xl:flex"
                 aria-label="Previous look"
               >
                 &larr;
               </button>
               <article className="grid gap-6 lg:grid-cols-[minmax(0,1.15fr)_minmax(280px,0.85fr)] lg:items-start">
                 <div
-                  className="relative h-[100svh] max-h-[900px] min-h-[560px] overflow-hidden border-4 bg-white"
+                  className="relative h-[calc(100svh-15rem)] max-h-[900px] min-h-[360px] overflow-hidden border-4 bg-white sm:h-[100svh] sm:min-h-[560px]"
                   style={{ borderColor: activeLook.cardColor }}
                 >
                   <LookbookImage
@@ -176,8 +176,44 @@ export function Gallery() {
                     label={activeLook.name}
                     onClick={() => toggleSavedLook(activeLook.id)}
                   />
+                  <button
+                    type="button"
+                    onClick={showPreviousLook}
+                    className="absolute left-3 top-1/2 z-20 flex h-12 w-12 -translate-y-1/2 items-center justify-center border-2 border-[#1b120c] bg-white/95 font-mono text-2xl font-black text-[#253712] shadow-[3px_3px_0_#f26a21] transition hover:-translate-y-[calc(50%+2px)] xl:hidden"
+                    aria-label="Previous look"
+                  >
+                    &larr;
+                  </button>
+                  <button
+                    type="button"
+                    onClick={showNextLook}
+                    className="absolute right-3 top-1/2 z-20 flex h-12 w-12 -translate-y-1/2 items-center justify-center border-2 border-[#1b120c] bg-white/95 font-mono text-2xl font-black text-[#253712] shadow-[3px_3px_0_#f26a21] transition hover:-translate-y-[calc(50%+2px)] xl:hidden"
+                    aria-label="Next look"
+                  >
+                    &rarr;
+                  </button>
+                  <div className="absolute bottom-3 left-3 z-20 border-2 border-[#1b120c] bg-white/95 px-3 py-2 font-mono text-xs font-black uppercase tracking-[0.08em] text-[#253712] shadow-[3px_3px_0_#f26a21] lg:hidden">
+                    {activeIndex + 1} / {flowerOfferings.length}
+                  </div>
                 </div>
-                <div className="border-2 border-[#1b120c] bg-white p-6 shadow-[7px_7px_0_#ed2b82]">
+                <div className="border-2 border-[#1b120c] bg-white p-4 shadow-[4px_4px_0_#ed2b82] lg:hidden">
+                  <h3 className="text-2xl font-black uppercase leading-none text-[#1b120c]">
+                    {activeLook.name}
+                  </h3>
+                  <p className="mt-3 line-clamp-2 font-mono text-xs font-bold leading-5 text-[#344f20]">
+                    {activeLook.description}
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => toggleSavedLook(activeLook.id)}
+                    className="mt-4 inline-flex min-h-10 w-full items-center justify-center border-2 border-[#1b120c] bg-[#ed2b82] px-4 font-mono text-xs font-black uppercase tracking-[0.08em] text-[#fff2df] shadow-[3px_3px_0_#1b120c]"
+                  >
+                    {savedLookIds.includes(activeLook.id)
+                      ? "Remove from inquiry"
+                      : "Add this look"}
+                  </button>
+                </div>
+                <div className="hidden border-2 border-[#1b120c] bg-white p-6 shadow-[7px_7px_0_#ed2b82] lg:block">
                   <p className="font-mono text-xs font-black uppercase tracking-[0.18em] text-[#344f20]">
                     Look {activeIndex + 1} of {flowerOfferings.length}
                   </p>
@@ -196,28 +232,12 @@ export function Gallery() {
                       ? "Remove from inquiry"
                       : "Add this look"}
                   </button>
-                  <div className="mt-5 flex gap-3 lg:hidden">
-                    <button
-                      type="button"
-                      onClick={showPreviousLook}
-                      className="min-h-11 flex-1 border-2 border-[#1b120c] bg-white font-mono text-sm font-black uppercase"
-                    >
-                      Previous
-                    </button>
-                    <button
-                      type="button"
-                      onClick={showNextLook}
-                      className="min-h-11 flex-1 border-2 border-[#1b120c] bg-white font-mono text-sm font-black uppercase"
-                    >
-                      Next
-                    </button>
-                  </div>
                 </div>
               </article>
               <button
                 type="button"
                 onClick={showNextLook}
-                className="hidden h-14 w-14 items-center justify-center border-2 border-[#1b120c] bg-white font-mono text-3xl font-black text-[#253712] shadow-[4px_4px_0_#f26a21] transition hover:-translate-y-0.5 lg:flex"
+                className="hidden h-14 w-14 items-center justify-center border-2 border-[#1b120c] bg-white font-mono text-3xl font-black text-[#253712] shadow-[4px_4px_0_#f26a21] transition hover:-translate-y-0.5 xl:flex"
                 aria-label="Next look"
               >
                 &rarr;
