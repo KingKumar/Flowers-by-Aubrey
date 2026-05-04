@@ -51,7 +51,7 @@ export function Hero() {
         <div className="z-10">
           <h1 className="max-w-3xl text-6xl font-black uppercase leading-[0.86] text-[#253712] sm:text-8xl lg:text-9xl">
             Flowers that hit
-            <span className="block text-[#f24b12]">different.</span>
+            <span className="block text-[#ed2b82]">different.</span>
           </h1>
           <p className="mt-7 max-w-lg font-mono text-base font-black uppercase leading-7 text-[#253712]">
             Bold custom florals in Los Angeles.
