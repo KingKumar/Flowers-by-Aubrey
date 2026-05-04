@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import type { MouseEvent } from "react";
 import { useEffect, useMemo, useState } from "react";
 
 type SelectedBouquet = {
@@ -92,9 +93,12 @@ export function PriceEstimatePanel({
   selectedBouquets: SelectedBouquet[];
 }) {
   const [selections, setSelections] = useState<Record<string, SelectionState>>({});
+  const [customerName, setCustomerName] = useState("");
+  const [customerEmail, setCustomerEmail] = useState("");
   const [deliveryAddress, setDeliveryAddress] = useState("");
   const [deliveryNotes, setDeliveryNotes] = useState("");
   const [showDeliveryWarning, setShowDeliveryWarning] = useState(false);
+  const [showNameWarning, setShowNameWarning] = useState(false);
   const [mobileStepIndex, setMobileStepIndex] = useState(0);
 
   const bouquetLines = selectedBouquets.map((bouquet) => {
@@ -133,40 +137,66 @@ export function PriceEstimatePanel({
     );
   }, [mobileSteps.length]);
 
-  const inquiryBody = useMemo(
-    () =>
-      encodeURIComponent(
-        [
-          "Hi Aubrey Florals,",
-          "",
-          "I am interested in requesting these arrangements:",
-          "",
-          ...bouquetLines.flatMap((line, index) => [
-            `${index + 1}. ${line.bouquet.name}`,
-            `Description: ${line.bouquet.description}`,
-            `Size: ${line.size.label} (${line.size.dimensions})`,
-            `Presentation: ${line.vase.label}`,
-            `Item estimate: ${formatPrice(line.itemPrice)}`,
-            "",
-          ]),
-          `Bouquet subtotal: ${formatPrice(bouquetSubtotal)}`,
-          `Delivery address: ${deliveryAddress.trim() || "Not provided yet"}`,
-          `Delivery notes: ${deliveryNotes.trim() || "None provided yet"}`,
-          "Final pricing note: Final pricing to be confirmed after Aubrey reviews.",
-          "",
-          "Occasion:",
-          "Date:",
-          "Location: Los Angeles",
-          "Notes:",
-        ].join("\n")
-      ),
-    [
-      bouquetLines,
-      bouquetSubtotal,
-      deliveryAddress,
-      deliveryNotes,
-    ]
-  );
+  const bouquetName =
+    bouquetLines.map((line) => line.bouquet.name).join(", ") || "Custom Arrangement";
+  const sizeSummary = bouquetLines
+    .map(
+      (line) =>
+        `${line.bouquet.name}: ${line.size.label} (${line.size.dimensions})`
+    )
+    .join("; ");
+  const vaseSummary = bouquetLines
+    .map((line) => `${line.bouquet.name}: ${line.vase.label}`)
+    .join("; ");
+  const mailtoLink = useMemo(() => {
+    const trimmedName = customerName.trim();
+    const trimmedEmail = customerEmail.trim();
+    const subject = `Arrangement Request — ${bouquetName}`;
+    const bodyLines = [
+      "Hi Aubrey,",
+      "",
+      `I’d love to request an arrangement inspired by the ${bouquetName}.`,
+      "",
+      "Customer:",
+      `• Name: ${trimmedName}`,
+      ...(trimmedEmail ? [`• Email: ${trimmedEmail}`] : []),
+      "",
+      "Here are the details:",
+      `• Size: ${sizeSummary}`,
+      `• Vase: ${vaseSummary}`,
+      `• Estimated budget: around ${formatPrice(bouquetSubtotal)}`,
+      "",
+      "Delivery:",
+      `• Address: ${deliveryAddress.trim()}`,
+      `• Notes: ${deliveryNotes.trim()}`,
+      "",
+      "Additional details (optional):",
+      "• Occasion (e.g. Mother’s Day, birthday):",
+      "• Preferred colors or tones:",
+      "• Specific flowers to include/avoid:",
+      "• Card message:",
+      "• Requested delivery date/time:",
+      "",
+      "Please let me know if this is possible and if you recommend any adjustments.",
+      "",
+      "Thank you,",
+      trimmedName,
+    ];
+    const body = bodyLines.join("\r\n");
+
+    return `mailto:aubrey.glassberg@gmail.com?subject=${encodeURIComponent(
+      subject
+    )}&body=${encodeURIComponent(body)}`;
+  }, [
+    bouquetName,
+    bouquetSubtotal,
+    customerEmail,
+    customerName,
+    deliveryAddress,
+    deliveryNotes,
+    sizeSummary,
+    vaseSummary,
+  ]);
 
   function updateSelection(
     bouquetId: string,
@@ -182,7 +212,13 @@ export function PriceEstimatePanel({
     }));
   }
 
-  function handleRequestClick() {
+  function handleRequestClick(event: MouseEvent<HTMLAnchorElement>) {
+    if (!customerName.trim()) {
+      event.preventDefault();
+      setShowNameWarning(true);
+      return;
+    }
+
     setShowDeliveryWarning(!deliveryAddress.trim());
   }
 
@@ -337,7 +373,46 @@ export function PriceEstimatePanel({
 
                 {activeMobileStep?.kind === "delivery" ? (
                   <div className="border-2 border-[#1b120c] bg-white p-2">
-                    <h3 className="text-xl font-black uppercase leading-none text-[#1b120c]">
+                    <div className="grid gap-1.5">
+                      <label>
+                        <span className="font-mono text-[11px] font-black uppercase tracking-[0.12em] text-[#344f20]">
+                          Your Name
+                        </span>
+                        <input
+                          type="text"
+                          name="customerName"
+                          required
+                          value={customerName}
+                          onChange={(event) => {
+                            setCustomerName(event.target.value);
+                            if (event.target.value.trim()) {
+                              setShowNameWarning(false);
+                            }
+                          }}
+                          placeholder="Your name"
+                          className="mt-1 min-h-9 w-full border-2 border-[#1b120c] bg-[#fff8eb] px-2 font-mono text-base font-bold text-[#1b120c] outline-none focus:border-[#ed2b82]"
+                        />
+                      </label>
+                      {showNameWarning ? (
+                        <p className="font-mono text-[9px] font-bold leading-3 text-[#ed2b82]">
+                          Please add your name before requesting.
+                        </p>
+                      ) : null}
+                      <label>
+                        <span className="font-mono text-[11px] font-black uppercase tracking-[0.12em] text-[#344f20]">
+                          Your Email
+                        </span>
+                        <input
+                          type="email"
+                          name="customerEmail"
+                          value={customerEmail}
+                          onChange={(event) => setCustomerEmail(event.target.value)}
+                          placeholder="you@example.com"
+                          className="mt-1 min-h-9 w-full border-2 border-[#1b120c] bg-[#fff8eb] px-2 font-mono text-base font-bold text-[#1b120c] outline-none focus:border-[#ed2b82]"
+                        />
+                      </label>
+                    </div>
+                    <h3 className="mt-2 text-xl font-black uppercase leading-none text-[#1b120c]">
                       Delivery
                     </h3>
                     <p className="mt-1 font-mono text-[10px] font-bold leading-3 text-[#344f20]">
@@ -408,11 +483,16 @@ export function PriceEstimatePanel({
                   </div>
                   {isFinalMobileStep ? (
                     <a
-                      href={`mailto:aubrey.glassberg@gmail.com?subject=Arrangement estimate inquiry&body=${inquiryBody}`}
+                      href={customerName.trim() ? mailtoLink : "#price-estimate"}
                       onClick={handleRequestClick}
-                      className="inline-flex min-h-9 items-center justify-center border-2 border-[#1b120c] bg-[#ed2b82] px-3 text-center font-mono text-[10px] font-black uppercase tracking-[0.08em] text-[#fff2df] shadow-[3px_3px_0_#1b120c]"
+                      aria-disabled={!customerName.trim()}
+                      className={`inline-flex min-h-9 items-center justify-center border-2 border-[#1b120c] px-3 text-center font-mono text-[9px] font-black uppercase tracking-[0.08em] shadow-[3px_3px_0_#1b120c] ${
+                        customerName.trim()
+                          ? "bg-[#ed2b82] text-[#fff2df]"
+                          : "bg-white text-[#344f20] opacity-70"
+                      }`}
                     >
-                      Request
+                      Request This Arrangement
                     </a>
                   ) : (
                     <button
@@ -579,7 +659,46 @@ export function PriceEstimatePanel({
 
             <div className="mt-8 grid gap-6 lg:grid-cols-[minmax(0,1fr)_380px]">
               <div className="border-2 border-[#1b120c] bg-white p-5 shadow-[5px_5px_0_#f26a21]">
-                <h3 className="text-3xl font-black uppercase leading-none text-[#1b120c]">
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <label className="block">
+                    <span className="font-mono text-xs font-black uppercase tracking-[0.12em] text-[#344f20]">
+                      Your Name
+                    </span>
+                    <input
+                      type="text"
+                      name="customerName"
+                      required
+                      value={customerName}
+                      onChange={(event) => {
+                        setCustomerName(event.target.value);
+                        if (event.target.value.trim()) {
+                          setShowNameWarning(false);
+                        }
+                      }}
+                      placeholder="Your name"
+                      className="mt-2 min-h-12 w-full border-2 border-[#1b120c] bg-[#fff8eb] px-3 font-mono text-base font-bold text-[#1b120c] outline-none focus:border-[#ed2b82]"
+                    />
+                    {showNameWarning ? (
+                      <span className="mt-2 block font-mono text-xs font-bold leading-5 text-[#ed2b82]">
+                        Please add your name before requesting.
+                      </span>
+                    ) : null}
+                  </label>
+                  <label className="block">
+                    <span className="font-mono text-xs font-black uppercase tracking-[0.12em] text-[#344f20]">
+                      Your Email
+                    </span>
+                    <input
+                      type="email"
+                      name="customerEmail"
+                      value={customerEmail}
+                      onChange={(event) => setCustomerEmail(event.target.value)}
+                      placeholder="you@example.com"
+                      className="mt-2 min-h-12 w-full border-2 border-[#1b120c] bg-[#fff8eb] px-3 font-mono text-base font-bold text-[#1b120c] outline-none focus:border-[#ed2b82]"
+                    />
+                  </label>
+                </div>
+                <h3 className="mt-6 text-3xl font-black uppercase leading-none text-[#1b120c]">
                   Delivery
                 </h3>
                 <p className="mt-3 font-mono text-sm font-bold leading-6 text-[#344f20]">
@@ -648,9 +767,14 @@ export function PriceEstimatePanel({
                 </p>
 
                 <a
-                  href={`mailto:aubrey.glassberg@gmail.com?subject=Arrangement estimate inquiry&body=${inquiryBody}`}
+                  href={customerName.trim() ? mailtoLink : "#price-estimate"}
                   onClick={handleRequestClick}
-                  className="mt-7 inline-flex min-h-12 w-full items-center justify-center border-2 border-[#1b120c] bg-[#ed2b82] px-5 text-center font-mono text-xs font-black uppercase tracking-[0.08em] text-[#fff2df] shadow-[4px_4px_0_#1b120c] transition hover:-translate-y-0.5"
+                  aria-disabled={!customerName.trim()}
+                  className={`mt-7 inline-flex min-h-12 w-full items-center justify-center border-2 border-[#1b120c] px-5 text-center font-mono text-xs font-black uppercase tracking-[0.08em] shadow-[4px_4px_0_#1b120c] transition hover:-translate-y-0.5 ${
+                    customerName.trim()
+                      ? "bg-[#ed2b82] text-[#fff2df]"
+                      : "bg-white text-[#344f20] opacity-70"
+                  }`}
                 >
                   Request This Arrangement
                 </a>
