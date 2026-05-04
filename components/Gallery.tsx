@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useMemo, useState } from "react";
 import { flowerOfferings } from "./flowerOfferings";
+import { PriceEstimatePanel } from "./PriceEstimatePanel";
 
 type LookbookMode = "big" | "dense" | "gallery";
 
@@ -21,22 +22,6 @@ export function Gallery() {
   const savedLooks = useMemo(
     () => flowerOfferings.filter((look) => savedLookIds.includes(look.id)),
     [savedLookIds]
-  );
-  const inquiryBody = encodeURIComponent(
-    [
-      "Hi Aubrey Florals,",
-      "",
-      savedLooks.length
-        ? `I am interested in looks similar to: ${savedLooks
-            .map((look) => look.name)
-            .join(", ")}.`
-        : "I am interested in talking through a custom floral look.",
-      "",
-      "Occasion:",
-      "Date:",
-      "Location: Los Angeles",
-      "Notes:",
-    ].join("\n")
   );
 
   function toggleSavedLook(lookId: string) {
@@ -57,6 +42,22 @@ export function Gallery() {
     setActiveIndex((currentIndex) =>
       currentIndex === flowerOfferings.length - 1 ? 0 : currentIndex + 1
     );
+  }
+
+  function showPriceEstimate() {
+    const estimateSection = document.getElementById("price-estimate");
+
+    if (!estimateSection) {
+      return;
+    }
+
+    const stickyOffset = window.matchMedia("(max-width: 639px)").matches
+      ? 112
+      : 110;
+    const estimateTop =
+      estimateSection.getBoundingClientRect().top + window.scrollY - stickyOffset;
+
+    window.scrollTo({ top: estimateTop, behavior: "smooth" });
   }
 
   const gridClass =
@@ -111,23 +112,23 @@ export function Gallery() {
           </div>
         </div>
 
-        <div className="sticky top-0 z-30 mt-8 border-y-2 border-[#1b120c] bg-[#fff2df]/95 py-4 shadow-[0_8px_24px_rgba(27,18,12,0.08)] backdrop-blur">
-          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        <div className="sticky top-0 z-30 mt-8 border-y-2 border-[#1b120c] bg-[#fff2df]/95 py-2 shadow-[0_8px_24px_rgba(27,18,12,0.08)] backdrop-blur sm:py-4">
+          <div className="flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between">
             <div className="min-w-0">
-              <p className="font-mono text-sm font-black uppercase tracking-[0.08em] text-[#253712]">
+              <p className="font-mono text-[11px] font-black uppercase tracking-[0.08em] text-[#253712] sm:text-sm">
                 {savedCountLabel}
               </p>
               {savedLooks.length ? (
-                <div className="mt-3 flex flex-wrap gap-2">
+                <div className="mt-1 flex gap-1 overflow-x-auto pb-1 sm:mt-3 sm:flex-wrap sm:gap-2 sm:overflow-visible sm:pb-0">
                   {savedLooks.map((look) => (
                     <button
                       key={look.id}
                       type="button"
                       onClick={() => toggleSavedLook(look.id)}
-                      className="inline-flex min-h-9 items-center gap-2 border-2 border-[#1b120c] bg-white px-3 font-mono text-xs font-black uppercase leading-none text-[#344f20] shadow-[2px_2px_0_#f26a21] transition hover:-translate-y-0.5"
+                      className="inline-flex min-h-7 max-w-40 shrink-0 items-center gap-1 border-2 border-[#1b120c] bg-white px-2 font-mono text-[10px] font-black uppercase leading-none text-[#344f20] shadow-[2px_2px_0_#f26a21] transition hover:-translate-y-0.5 sm:min-h-9 sm:max-w-none sm:gap-2 sm:px-3 sm:text-xs"
                       aria-label={`Remove ${look.name}`}
                     >
-                      <span>{look.name}</span>
+                      <span className="truncate">{look.name}</span>
                       <span className="text-[#ed2b82]" aria-hidden="true">
                         x
                       </span>
@@ -135,17 +136,18 @@ export function Gallery() {
                   ))}
                 </div>
               ) : (
-                <p className="mt-2 font-mono text-xs font-bold leading-5 text-[#344f20]">
+                <p className="mt-1 font-mono text-[10px] font-bold leading-4 text-[#344f20] sm:mt-2 sm:text-xs sm:leading-5">
                   Tap the flower on any look to save it for your inquiry.
                 </p>
               )}
             </div>
-            <a
-              href={`mailto:aubrey.glassberg@gmail.com?subject=Lookbook inquiry&body=${inquiryBody}`}
-              className="inline-flex min-h-11 shrink-0 items-center justify-center border-2 border-[#1b120c] bg-[#f24b12] px-5 font-mono text-xs font-black uppercase tracking-[0.08em] text-[#fff2df] shadow-[3px_3px_0_#1b120c] transition hover:-translate-y-0.5"
+            <button
+              type="button"
+              onClick={showPriceEstimate}
+              className="inline-flex min-h-9 shrink-0 items-center justify-center border-2 border-[#1b120c] bg-[#f24b12] px-4 font-mono text-[10px] font-black uppercase tracking-[0.08em] text-[#fff2df] shadow-[3px_3px_0_#1b120c] transition hover:-translate-y-0.5 sm:min-h-11 sm:px-5 sm:text-xs"
             >
-              Inquire about the looks
-            </a>
+              Estimate selected looks
+            </button>
           </div>
         </div>
 
@@ -308,6 +310,8 @@ export function Gallery() {
             ))}
           </div>
         )}
+
+        <PriceEstimatePanel selectedBouquets={savedLooks} />
       </div>
     </section>
   );
