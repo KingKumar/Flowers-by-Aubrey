@@ -215,7 +215,7 @@ export function PriceEstimatePanel({
               </div>
             </>
           ) : (
-            <div className="flex h-[70svh] min-h-[520px] flex-col overflow-hidden">
+            <div className="flex h-[85svh] min-h-[560px] flex-col overflow-hidden">
               <MobileEstimateHeader />
 
               <div className="mt-1 flex items-center justify-between gap-3 border-y-2 border-[#1b120c] py-1 font-mono text-[clamp(10px,1.25svh,14px)] font-black uppercase tracking-[0.08em] text-[#344f20]">
