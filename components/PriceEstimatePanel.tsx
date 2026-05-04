@@ -413,7 +413,7 @@ export function PriceEstimatePanel({
                     </h3>
                     <div className="mt-2 grid gap-1.5">
                       <div className="grid grid-cols-2 gap-2">
-                        <label>
+                        <label className="min-w-0">
                           <span className="font-mono text-[11px] font-black uppercase tracking-[0.12em] text-[#344f20]">
                             Desired date
                           </span>
@@ -422,10 +422,10 @@ export function PriceEstimatePanel({
                             name="deliveryDate"
                             value={deliveryDate}
                             onChange={(event) => setDeliveryDate(event.target.value)}
-                            className="mt-1 min-h-9 w-full border-2 border-[#1b120c] bg-[#fff8eb] px-2 font-mono text-base font-bold text-[#1b120c] outline-none focus:border-[#ed2b82]"
+                            className="mt-1 h-11 w-full appearance-none border-2 border-[#1b120c] bg-[#fff8eb] px-2 font-mono text-base font-bold leading-none text-[#1b120c] outline-none focus:border-[#ed2b82]"
                           />
                         </label>
-                        <label>
+                        <label className="min-w-0">
                           <span className="font-mono text-[11px] font-black uppercase tracking-[0.12em] text-[#344f20]">
                             Time window
                           </span>
@@ -435,7 +435,7 @@ export function PriceEstimatePanel({
                             onChange={(event) =>
                               setDeliveryTimeWindow(event.target.value)
                             }
-                            className="mt-1 min-h-9 w-full border-2 border-[#1b120c] bg-[#fff8eb] px-2 font-mono text-base font-bold text-[#1b120c] outline-none focus:border-[#ed2b82]"
+                            className="mt-1 h-11 w-full appearance-none border-2 border-[#1b120c] bg-[#fff8eb] px-2 font-mono text-base font-bold leading-none text-[#1b120c] outline-none focus:border-[#ed2b82]"
                           >
                             <option value="">Select</option>
                             {DELIVERY_TIME_WINDOWS.map((timeWindow) => (
@@ -729,7 +729,7 @@ export function PriceEstimatePanel({
                         name="deliveryDate"
                         value={deliveryDate}
                         onChange={(event) => setDeliveryDate(event.target.value)}
-                        className="mt-2 min-h-12 w-full border-2 border-[#1b120c] bg-[#fff8eb] px-3 font-mono text-base font-bold text-[#1b120c] outline-none focus:border-[#ed2b82]"
+                        className="mt-2 h-12 w-full appearance-none border-2 border-[#1b120c] bg-[#fff8eb] px-3 font-mono text-base font-bold leading-none text-[#1b120c] outline-none focus:border-[#ed2b82]"
                       />
                     </label>
                     <label className="block">
@@ -742,7 +742,7 @@ export function PriceEstimatePanel({
                         onChange={(event) =>
                           setDeliveryTimeWindow(event.target.value)
                         }
-                        className="mt-2 min-h-12 w-full border-2 border-[#1b120c] bg-[#fff8eb] px-3 font-mono text-base font-bold text-[#1b120c] outline-none focus:border-[#ed2b82]"
+                        className="mt-2 h-12 w-full appearance-none border-2 border-[#1b120c] bg-[#fff8eb] px-3 font-mono text-base font-bold leading-none text-[#1b120c] outline-none focus:border-[#ed2b82]"
                       >
                         <option value="">Select a window</option>
                         {DELIVERY_TIME_WINDOWS.map((timeWindow) => (
