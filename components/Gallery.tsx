@@ -167,6 +167,7 @@ export function Gallery() {
                 >
                   <LookbookImage
                     src={activeLook.image}
+                    backdropSrc={activeLook.backdropImage}
                     alt={activeLook.name}
                     sizes="(min-width: 1024px) 58vw, 100vw"
                     priority
@@ -281,6 +282,7 @@ export function Gallery() {
                   />
                   <LookbookImage
                     src={offering.image}
+                    backdropSrc={offering.backdropImage}
                     alt={offering.name}
                     sizes={
                       mode === "dense"
@@ -313,11 +315,13 @@ export function Gallery() {
 
 function LookbookImage({
   src,
+  backdropSrc,
   alt,
   sizes,
   priority = false,
 }: {
   src: string;
+  backdropSrc?: string;
   alt: string;
   sizes: string;
   priority?: boolean;
@@ -325,7 +329,7 @@ function LookbookImage({
   return (
     <>
       <Image
-        src={src}
+        src={backdropSrc ?? src}
         alt=""
         aria-hidden="true"
         fill

@@ -1,12 +1,13 @@
-export const flowerOfferings = [
-  {
-    id: "citrus-daisy-posy",
-    name: "Citrus Daisy Posy",
-    description:
-      "White daisies, yellow button mums, white hydrangea, and fresh green accents.",
-    image: "/images/IMG_1655.JPG",
-    cardColor: "#f26a21",
-  },
+export type FlowerOffering = {
+  id: string;
+  name: string;
+  description: string;
+  image: string;
+  cardColor: string;
+  backdropImage?: string;
+};
+
+export const flowerOfferings: FlowerOffering[] = [
   {
     id: "tangerine-gerbera-bouquet",
     name: "Tangerine Gerbera Bouquet",
@@ -168,14 +169,6 @@ export const flowerOfferings = [
     cardColor: "#f26a21",
   },
   {
-    id: "white-gerbera-gladiolus-bouquet",
-    name: "White Gerbera Gladiolus Bouquet",
-    description:
-      "White gerbera daisies, peach gerberas, white hydrangea, tall gladiolus, and ribbon grass.",
-    image: "/images/IMG_7403.JPG",
-    cardColor: "#c7da38",
-  },
-  {
     id: "pink-star-lily-bouquet",
     name: "Pink Star Lily Bouquet",
     description:
@@ -199,6 +192,12 @@ export const flowerOfferings = [
     image: "/images/green-amaranth-lily-garden.png",
     cardColor: "#344f20",
   },
+  {
+    id: "apricot-rose-amaranth-bouquet",
+    name: "Apricot Rose Amaranth Bouquet",
+    description:
+      "Apricot roses, white hydrangea, magenta spray roses, trailing amaranthus, and variegated greenery.",
+    image: "/images/apricot-rose-amaranth-bouquet.png",
+    cardColor: "#f26a21",
+  },
 ];
-
-export type FlowerOffering = (typeof flowerOfferings)[number];
