@@ -152,7 +152,7 @@ export function PriceEstimatePanel({
           `Bouquet subtotal: ${formatPrice(bouquetSubtotal)}`,
           `Delivery address: ${deliveryAddress.trim() || "Not provided yet"}`,
           `Delivery notes: ${deliveryNotes.trim() || "None provided yet"}`,
-          "Delivery pricing note: Delivery pricing to be confirmed after address review.",
+          "Final pricing note: Final pricing to be confirmed after Aubrey reviews.",
           "",
           "Occasion:",
           "Date:",
@@ -387,7 +387,8 @@ export function PriceEstimatePanel({
 
               <div className="border-t-2 border-[#1b120c] bg-[#fff8eb] pt-1.5">
                 <div className="mb-1 line-clamp-1 font-mono text-[9px] font-bold leading-3 text-[#344f20]">
-                  Delivery pricing will be confirmed after Aubrey reviews.
+                  Final pricing will be confirmed after Aubrey reviews.
+                  Estimate may vary.
                 </div>
                 <div className="flex items-center justify-between gap-3">
                   <button
@@ -637,7 +638,7 @@ export function PriceEstimatePanel({
                   </div>
                   <div className="border-t border-[#fff2df]/50 pt-4">
                     <p className="leading-6 text-[#c7da38]">
-                      Delivery pricing will be confirmed after Aubrey reviews.
+                      Final pricing will be confirmed after Aubrey reviews.
                     </p>
                   </div>
                 </div>
