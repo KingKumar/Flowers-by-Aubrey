@@ -387,8 +387,7 @@ export function PriceEstimatePanel({
 
               <div className="border-t-2 border-[#1b120c] bg-[#fff8eb] pt-1.5">
                 <div className="mb-1 line-clamp-1 font-mono text-[9px] font-bold leading-3 text-[#344f20]">
-                  Delivery pricing will be confirmed after Aubrey reviews the
-                  address.
+                  Delivery pricing will be confirmed after Aubrey reviews.
                 </div>
                 <div className="flex items-center justify-between gap-3">
                   <button
@@ -638,8 +637,7 @@ export function PriceEstimatePanel({
                   </div>
                   <div className="border-t border-[#fff2df]/50 pt-4">
                     <p className="leading-6 text-[#c7da38]">
-                      Delivery pricing will be confirmed after Aubrey reviews
-                      the address.
+                      Delivery pricing will be confirmed after Aubrey reviews.
                     </p>
                   </div>
                 </div>
