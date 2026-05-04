@@ -76,6 +76,13 @@ const VASE_OPTIONS = {
   },
 };
 
+const DELIVERY_TIME_WINDOWS = [
+  "8am-11am",
+  "11am-2pm",
+  "2pm-5pm",
+  "3pm-6pm",
+];
+
 const DEFAULT_SELECTION: SelectionState = {
   sizeId: "classic",
   vaseId: "wrapped",
@@ -404,10 +411,6 @@ export function PriceEstimatePanel({
                     <h3 className="mt-2 text-xl font-black uppercase leading-none text-[#1b120c]">
                       Delivery
                     </h3>
-                    <p className="mt-1 font-mono text-[10px] font-bold leading-3 text-[#344f20]">
-                      Enter the delivery address and Aubrey will confirm
-                      availability and delivery pricing.
-                    </p>
                     <div className="mt-2 grid gap-1.5">
                       <div className="grid grid-cols-2 gap-2">
                         <label>
@@ -426,16 +429,21 @@ export function PriceEstimatePanel({
                           <span className="font-mono text-[11px] font-black uppercase tracking-[0.12em] text-[#344f20]">
                             Time window
                           </span>
-                          <input
-                            type="text"
+                          <select
                             name="deliveryTimeWindow"
                             value={deliveryTimeWindow}
                             onChange={(event) =>
                               setDeliveryTimeWindow(event.target.value)
                             }
-                            placeholder="10am-1pm"
                             className="mt-1 min-h-9 w-full border-2 border-[#1b120c] bg-[#fff8eb] px-2 font-mono text-base font-bold text-[#1b120c] outline-none focus:border-[#ed2b82]"
-                          />
+                          >
+                            <option value="">Select</option>
+                            {DELIVERY_TIME_WINDOWS.map((timeWindow) => (
+                              <option key={timeWindow} value={timeWindow}>
+                                {timeWindow}
+                              </option>
+                            ))}
+                          </select>
                         </label>
                       </div>
                       <label>
@@ -455,7 +463,7 @@ export function PriceEstimatePanel({
                           className="mt-1 min-h-9 w-full border-2 border-[#1b120c] bg-[#fff8eb] px-2 font-mono text-base font-bold text-[#1b120c] outline-none focus:border-[#ed2b82]"
                         />
                       </label>
-                      {showDeliveryWarning || !deliveryAddress.trim() ? (
+                      {showDeliveryWarning ? (
                         <p className="font-mono text-[9px] font-bold leading-3 text-[#ed2b82]">
                           You can still request this arrangement without an
                           address. Aubrey will confirm delivery details.
@@ -728,16 +736,21 @@ export function PriceEstimatePanel({
                       <span className="font-mono text-xs font-black uppercase tracking-[0.12em] text-[#344f20]">
                         Time window
                       </span>
-                      <input
-                        type="text"
+                      <select
                         name="deliveryTimeWindow"
                         value={deliveryTimeWindow}
                         onChange={(event) =>
                           setDeliveryTimeWindow(event.target.value)
                         }
-                        placeholder="10am-1pm"
                         className="mt-2 min-h-12 w-full border-2 border-[#1b120c] bg-[#fff8eb] px-3 font-mono text-base font-bold text-[#1b120c] outline-none focus:border-[#ed2b82]"
-                      />
+                      >
+                        <option value="">Select a window</option>
+                        {DELIVERY_TIME_WINDOWS.map((timeWindow) => (
+                          <option key={timeWindow} value={timeWindow}>
+                            {timeWindow}
+                          </option>
+                        ))}
+                      </select>
                     </label>
                   </div>
                   <label className="block">
