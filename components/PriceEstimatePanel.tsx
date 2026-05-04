@@ -94,7 +94,6 @@ export function PriceEstimatePanel({
 }) {
   const [selections, setSelections] = useState<Record<string, SelectionState>>({});
   const [customerName, setCustomerName] = useState("");
-  const [customerEmail, setCustomerEmail] = useState("");
   const [deliveryAddress, setDeliveryAddress] = useState("");
   const [deliveryNotes, setDeliveryNotes] = useState("");
   const [showDeliveryWarning, setShowDeliveryWarning] = useState(false);
@@ -150,7 +149,6 @@ export function PriceEstimatePanel({
     .join("; ");
   const mailtoLink = useMemo(() => {
     const trimmedName = customerName.trim();
-    const trimmedEmail = customerEmail.trim();
     const subject = `Arrangement Request — ${bouquetName}`;
     const bodyLines = [
       "Hi Aubrey,",
@@ -159,7 +157,6 @@ export function PriceEstimatePanel({
       "",
       "Customer:",
       `• Name: ${trimmedName}`,
-      ...(trimmedEmail ? [`• Email: ${trimmedEmail}`] : []),
       "",
       "Here are the details:",
       `• Size: ${sizeSummary}`,
@@ -190,7 +187,6 @@ export function PriceEstimatePanel({
   }, [
     bouquetName,
     bouquetSubtotal,
-    customerEmail,
     customerName,
     deliveryAddress,
     deliveryNotes,
@@ -398,19 +394,6 @@ export function PriceEstimatePanel({
                           Please add your name before requesting.
                         </p>
                       ) : null}
-                      <label>
-                        <span className="font-mono text-[11px] font-black uppercase tracking-[0.12em] text-[#344f20]">
-                          Your Email
-                        </span>
-                        <input
-                          type="email"
-                          name="customerEmail"
-                          value={customerEmail}
-                          onChange={(event) => setCustomerEmail(event.target.value)}
-                          placeholder="you@example.com"
-                          className="mt-1 min-h-9 w-full border-2 border-[#1b120c] bg-[#fff8eb] px-2 font-mono text-base font-bold text-[#1b120c] outline-none focus:border-[#ed2b82]"
-                        />
-                      </label>
                     </div>
                     <h3 className="mt-2 text-xl font-black uppercase leading-none text-[#1b120c]">
                       Delivery
@@ -659,7 +642,7 @@ export function PriceEstimatePanel({
 
             <div className="mt-8 grid gap-6 lg:grid-cols-[minmax(0,1fr)_380px]">
               <div className="border-2 border-[#1b120c] bg-white p-5 shadow-[5px_5px_0_#f26a21]">
-                <div className="grid gap-4 sm:grid-cols-2">
+                <div className="grid gap-4">
                   <label className="block">
                     <span className="font-mono text-xs font-black uppercase tracking-[0.12em] text-[#344f20]">
                       Your Name
@@ -683,19 +666,6 @@ export function PriceEstimatePanel({
                         Please add your name before requesting.
                       </span>
                     ) : null}
-                  </label>
-                  <label className="block">
-                    <span className="font-mono text-xs font-black uppercase tracking-[0.12em] text-[#344f20]">
-                      Your Email
-                    </span>
-                    <input
-                      type="email"
-                      name="customerEmail"
-                      value={customerEmail}
-                      onChange={(event) => setCustomerEmail(event.target.value)}
-                      placeholder="you@example.com"
-                      className="mt-2 min-h-12 w-full border-2 border-[#1b120c] bg-[#fff8eb] px-3 font-mono text-base font-bold text-[#1b120c] outline-none focus:border-[#ed2b82]"
-                    />
                   </label>
                 </div>
                 <h3 className="mt-6 text-3xl font-black uppercase leading-none text-[#1b120c]">
