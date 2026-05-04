@@ -47,7 +47,7 @@ export function Hero() {
         </nav>
       </div>
 
-      <div className="relative mx-auto grid min-h-[78vh] max-w-7xl items-center gap-8 px-5 pb-12 sm:px-8 lg:grid-cols-[0.82fr_1.18fr] lg:pl-28 lg:pr-12 xl:pl-12">
+      <div className="relative mx-auto grid min-h-[78vh] max-w-7xl items-center gap-8 px-5 pb-12 sm:px-8 lg:grid-cols-[0.82fr_1.18fr] lg:px-12 2xl:pl-28">
         <div className="z-10">
           <h1 className="max-w-3xl text-6xl font-black uppercase leading-[0.86] text-[#253712] sm:text-8xl lg:text-[clamp(5.5rem,8vw,8rem)] xl:text-9xl">
             Flowers that hit
@@ -99,7 +99,7 @@ export function Hero() {
         </div>
       </div>
 
-      <div className="hidden lg:block">
+      <div className="hidden 2xl:block">
         <div className="absolute left-0 top-10 flex h-[calc(100%-2.5rem)] w-16 items-center justify-center bg-[#253712] font-mono text-xs font-black uppercase tracking-[0.18em] text-[#fff2df] [writing-mode:vertical-rl]">
           For bold souls.
         </div>
