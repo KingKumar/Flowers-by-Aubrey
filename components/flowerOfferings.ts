@@ -34,9 +34,9 @@ export const flowerOfferings: FlowerOffering[] = [
   },
   {
     id: "pink-star-lily-bouquet",
-    name: "Pink Star Lily Bouquet",
+    name: "Pink Rose Lily Bouquet",
     description:
-      "Pink star lilies, magenta button mums, white lily buds, and leafy green stems.",
+      "Pink rose lilies, magenta button mums, white lily buds, and leafy green stems.",
     image: "/images/IMG_8177.JPG",
     cardColor: "#ed2b82",
   },
@@ -44,15 +44,15 @@ export const flowerOfferings: FlowerOffering[] = [
     id: "peach-rose-hydrangea-bouquet",
     name: "Peach Rose Hydrangea Bouquet",
     description:
-      "Peach roses, white hydrangea, white chamomile, and soft cream filler.",
+      "Peach roses, white hydrangea, and white chamomile.",
     image: "/images/IMG_8049.JPG",
     cardColor: "#f26a21",
   },
   {
     id: "citrus-rose-mum-bouquet",
-    name: "Citrus Rose Mum Bouquet",
+    name: "Citrus Dahlia Bouquet",
     description:
-      "Yellow roses, orange roses, orange mums, and fresh green filler.",
+      "Yellow dahlias and orange dahlias with fresh green filler.",
     image: "/images/IMG_9150.JPG",
     cardColor: "#f26a21",
   },
@@ -156,7 +156,7 @@ export const flowerOfferings: FlowerOffering[] = [
     id: "pink-rose-hydrangea-dome",
     name: "Pink Rose Hydrangea Dome",
     description:
-      "Pink roses, blush orchids, green hydrangea, and a rounded garden silhouette.",
+      "Pink roses, green hydrangea, and a rounded garden silhouette.",
     image: "/images/IMG_5415.JPG",
     cardColor: "#ed2b82",
   },
@@ -196,7 +196,7 @@ export const flowerOfferings: FlowerOffering[] = [
     id: "tangerine-gerbera-bouquet",
     name: "Tangerine Gerbera Bouquet",
     description:
-      "Orange gerbera daisies with pink spray roses, purple veronica, and leafy greens.",
+      "Orange gerbera daisies with pink berries, purple veronica, and leafy greens.",
     image: "/images/IMG_2338.JPG",
     cardColor: "#ed2b82",
   },
