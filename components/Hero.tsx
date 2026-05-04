@@ -13,7 +13,7 @@ export function Hero() {
         Los Angeles floral design studio &rarr;
       </div>
 
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-7 sm:px-8 lg:px-12">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-7 sm:px-8 lg:px-12 xl:px-12">
         <button
           type="button"
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
@@ -47,9 +47,9 @@ export function Hero() {
         </nav>
       </div>
 
-      <div className="relative mx-auto grid min-h-[78vh] max-w-7xl items-center gap-8 px-5 pb-12 sm:px-8 lg:grid-cols-[0.82fr_1.18fr] lg:px-12">
+      <div className="relative mx-auto grid min-h-[78vh] max-w-7xl items-center gap-8 px-5 pb-12 sm:px-8 lg:grid-cols-[0.82fr_1.18fr] lg:pl-28 lg:pr-12 xl:pl-12">
         <div className="z-10">
-          <h1 className="max-w-3xl text-6xl font-black uppercase leading-[0.86] text-[#253712] sm:text-8xl lg:text-9xl">
+          <h1 className="max-w-3xl text-6xl font-black uppercase leading-[0.86] text-[#253712] sm:text-8xl lg:text-[clamp(5.5rem,8vw,8rem)] xl:text-9xl">
             Flowers that hit
             <span className="block text-[#ed2b82]">different.</span>
           </h1>
