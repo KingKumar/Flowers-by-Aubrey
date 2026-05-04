@@ -359,7 +359,7 @@ export function PriceEstimatePanel({
                             }
                           }}
                           placeholder="Street address, city"
-                          className="mt-1 min-h-9 w-full border-2 border-[#1b120c] bg-[#fff8eb] px-2 font-mono text-xs font-bold text-[#1b120c] outline-none focus:border-[#ed2b82]"
+                          className="mt-1 min-h-9 w-full border-2 border-[#1b120c] bg-[#fff8eb] px-2 font-mono text-base font-bold text-[#1b120c] outline-none focus:border-[#ed2b82]"
                         />
                       </label>
                       {showDeliveryWarning || !deliveryAddress.trim() ? (
@@ -377,7 +377,7 @@ export function PriceEstimatePanel({
                           onChange={(event) => setDeliveryNotes(event.target.value)}
                           rows={2}
                           placeholder="Gate code, timing, handoff notes"
-                          className="mt-1 w-full resize-none border-2 border-[#1b120c] bg-[#fff8eb] px-2 py-1.5 font-mono text-xs font-bold text-[#1b120c] outline-none focus:border-[#ed2b82]"
+                          className="mt-1 w-full resize-none border-2 border-[#1b120c] bg-[#fff8eb] px-2 py-1.5 font-mono text-base font-bold text-[#1b120c] outline-none focus:border-[#ed2b82]"
                         />
                       </label>
                     </div>
@@ -601,7 +601,7 @@ export function PriceEstimatePanel({
                         }
                       }}
                       placeholder="Street address, city"
-                      className="mt-2 min-h-12 w-full border-2 border-[#1b120c] bg-[#fff8eb] px-3 font-mono text-sm font-bold text-[#1b120c] outline-none focus:border-[#ed2b82]"
+                      className="mt-2 min-h-12 w-full border-2 border-[#1b120c] bg-[#fff8eb] px-3 font-mono text-base font-bold text-[#1b120c] outline-none focus:border-[#ed2b82]"
                     />
                   </label>
                   {showDeliveryWarning || !deliveryAddress.trim() ? (
@@ -620,7 +620,7 @@ export function PriceEstimatePanel({
                       onChange={(event) => setDeliveryNotes(event.target.value)}
                       rows={4}
                       placeholder="Gate code, timing, handoff notes"
-                      className="mt-2 w-full resize-y border-2 border-[#1b120c] bg-[#fff8eb] px-3 py-3 font-mono text-sm font-bold text-[#1b120c] outline-none focus:border-[#ed2b82]"
+                      className="mt-2 w-full resize-y border-2 border-[#1b120c] bg-[#fff8eb] px-3 py-3 font-mono text-base font-bold text-[#1b120c] outline-none focus:border-[#ed2b82]"
                     />
                   </label>
                 </div>
