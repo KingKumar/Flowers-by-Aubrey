@@ -94,6 +94,8 @@ export function PriceEstimatePanel({
 }) {
   const [selections, setSelections] = useState<Record<string, SelectionState>>({});
   const [customerName, setCustomerName] = useState("");
+  const [deliveryDate, setDeliveryDate] = useState("");
+  const [deliveryTimeWindow, setDeliveryTimeWindow] = useState("");
   const [deliveryAddress, setDeliveryAddress] = useState("");
   const [deliveryNotes, setDeliveryNotes] = useState("");
   const [showDeliveryWarning, setShowDeliveryWarning] = useState(false);
@@ -164,6 +166,8 @@ export function PriceEstimatePanel({
       `• Estimated budget: around ${formatPrice(bouquetSubtotal)}`,
       "",
       "Delivery:",
+      `• Desired delivery date: ${deliveryDate}`,
+      `• Desired time window: ${deliveryTimeWindow}`,
       `• Address: ${deliveryAddress.trim()}`,
       `• Notes: ${deliveryNotes.trim()}`,
       "",
@@ -189,7 +193,9 @@ export function PriceEstimatePanel({
     bouquetSubtotal,
     customerName,
     deliveryAddress,
+    deliveryDate,
     deliveryNotes,
+    deliveryTimeWindow,
     sizeSummary,
     vaseSummary,
   ]);
@@ -403,6 +409,35 @@ export function PriceEstimatePanel({
                       availability and delivery pricing.
                     </p>
                     <div className="mt-2 grid gap-1.5">
+                      <div className="grid grid-cols-2 gap-2">
+                        <label>
+                          <span className="font-mono text-[11px] font-black uppercase tracking-[0.12em] text-[#344f20]">
+                            Desired date
+                          </span>
+                          <input
+                            type="date"
+                            name="deliveryDate"
+                            value={deliveryDate}
+                            onChange={(event) => setDeliveryDate(event.target.value)}
+                            className="mt-1 min-h-9 w-full border-2 border-[#1b120c] bg-[#fff8eb] px-2 font-mono text-base font-bold text-[#1b120c] outline-none focus:border-[#ed2b82]"
+                          />
+                        </label>
+                        <label>
+                          <span className="font-mono text-[11px] font-black uppercase tracking-[0.12em] text-[#344f20]">
+                            Time window
+                          </span>
+                          <input
+                            type="text"
+                            name="deliveryTimeWindow"
+                            value={deliveryTimeWindow}
+                            onChange={(event) =>
+                              setDeliveryTimeWindow(event.target.value)
+                            }
+                            placeholder="10am-1pm"
+                            className="mt-1 min-h-9 w-full border-2 border-[#1b120c] bg-[#fff8eb] px-2 font-mono text-base font-bold text-[#1b120c] outline-none focus:border-[#ed2b82]"
+                          />
+                        </label>
+                      </div>
                       <label>
                         <span className="font-mono text-[11px] font-black uppercase tracking-[0.12em] text-[#344f20]">
                           Delivery address
@@ -676,6 +711,35 @@ export function PriceEstimatePanel({
                   availability and delivery pricing.
                 </p>
                 <div className="mt-5 grid gap-4">
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <label className="block">
+                      <span className="font-mono text-xs font-black uppercase tracking-[0.12em] text-[#344f20]">
+                        Desired delivery date
+                      </span>
+                      <input
+                        type="date"
+                        name="deliveryDate"
+                        value={deliveryDate}
+                        onChange={(event) => setDeliveryDate(event.target.value)}
+                        className="mt-2 min-h-12 w-full border-2 border-[#1b120c] bg-[#fff8eb] px-3 font-mono text-base font-bold text-[#1b120c] outline-none focus:border-[#ed2b82]"
+                      />
+                    </label>
+                    <label className="block">
+                      <span className="font-mono text-xs font-black uppercase tracking-[0.12em] text-[#344f20]">
+                        Time window
+                      </span>
+                      <input
+                        type="text"
+                        name="deliveryTimeWindow"
+                        value={deliveryTimeWindow}
+                        onChange={(event) =>
+                          setDeliveryTimeWindow(event.target.value)
+                        }
+                        placeholder="10am-1pm"
+                        className="mt-2 min-h-12 w-full border-2 border-[#1b120c] bg-[#fff8eb] px-3 font-mono text-base font-bold text-[#1b120c] outline-none focus:border-[#ed2b82]"
+                      />
+                    </label>
+                  </div>
                   <label className="block">
                     <span className="font-mono text-xs font-black uppercase tracking-[0.12em] text-[#344f20]">
                       Delivery address
