@@ -1,7 +1,9 @@
 "use client";
 
 import Image from "next/image";
-import { useMemo, useState } from "react";
+import type { TouchEvent } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import type { FlowerMedia } from "./flowerOfferings";
 import { flowerOfferings } from "./flowerOfferings";
 import { PriceEstimatePanel } from "./PriceEstimatePanel";
 
@@ -170,6 +172,7 @@ export function Gallery() {
                   <LookbookImage
                     src={activeLook.image}
                     backdropSrc={activeLook.backdropImage}
+                    media={activeLook.media}
                     alt={activeLook.name}
                     sizes="(min-width: 1024px) 58vw, 100vw"
                     priority
@@ -285,6 +288,7 @@ export function Gallery() {
                   <LookbookImage
                     src={offering.image}
                     backdropSrc={offering.backdropImage}
+                    media={offering.media}
                     alt={offering.name}
                     sizes={
                       mode === "dense"
@@ -320,20 +324,75 @@ export function Gallery() {
 function LookbookImage({
   src,
   backdropSrc,
+  media,
   alt,
   sizes,
   priority = false,
 }: {
   src: string;
   backdropSrc?: string;
+  media?: FlowerMedia[];
   alt: string;
   sizes: string;
   priority?: boolean;
 }) {
+  const mediaItems = media?.length ? media : [{ type: "image" as const, src, alt }];
+  const [activeMediaIndex, setActiveMediaIndex] = useState(0);
+  const [touchStartX, setTouchStartX] = useState<number | null>(null);
+  const activeMedia = mediaItems[activeMediaIndex] ?? mediaItems[0];
+  const activeBackdrop =
+    activeMedia.type === "image" ? activeMedia.src : activeMedia.poster ?? src;
+
+  function showPreviousMedia() {
+    const nextIndex =
+      activeMediaIndex === 0 ? mediaItems.length - 1 : activeMediaIndex - 1;
+
+    setActiveMediaIndex(nextIndex);
+  }
+
+  function showNextMedia() {
+    const nextIndex =
+      activeMediaIndex === mediaItems.length - 1 ? 0 : activeMediaIndex + 1;
+
+    setActiveMediaIndex(nextIndex);
+  }
+
+  function showMedia(index: number) {
+    setActiveMediaIndex(index);
+  }
+
+  function handleTouchEnd(event: TouchEvent<HTMLDivElement>) {
+    if (touchStartX === null || mediaItems.length < 2) {
+      return;
+    }
+
+    const touchEndX = event.changedTouches[0]?.clientX;
+
+    if (touchEndX === undefined) {
+      return;
+    }
+
+    const swipeDistance = touchStartX - touchEndX;
+
+    if (Math.abs(swipeDistance) > 40) {
+      if (swipeDistance > 0) {
+        showNextMedia();
+      } else {
+        showPreviousMedia();
+      }
+    }
+
+    setTouchStartX(null);
+  }
+
   return (
-    <>
+    <div
+      className="absolute inset-0"
+      onTouchStart={(event) => setTouchStartX(event.touches[0]?.clientX ?? null)}
+      onTouchEnd={handleTouchEnd}
+    >
       <Image
-        src={backdropSrc ?? src}
+        src={backdropSrc ?? activeBackdrop}
         alt=""
         aria-hidden="true"
         fill
@@ -341,15 +400,133 @@ function LookbookImage({
         priority={priority}
         className="z-0 scale-110 object-cover opacity-35 blur-xl saturate-[1.08]"
       />
+      <div
+        className="absolute inset-0 z-10 flex transition-transform duration-700 ease-[cubic-bezier(0.2,0.75,0.2,1)] motion-reduce:duration-0"
+        style={{ transform: `translateX(-${activeMediaIndex * 100}%)` }}
+      >
+        {mediaItems.map((item, index) => (
+          <div
+            key={`${item.src}-${index}`}
+            className="relative h-full w-full shrink-0 bg-white"
+          >
+            <MediaItem
+              media={item}
+              alt={alt}
+              sizes={sizes}
+              priority={priority}
+              isActive={index === activeMediaIndex}
+              liftOnHover={index === activeMediaIndex}
+            />
+          </div>
+        ))}
+      </div>
+
+      {mediaItems.length > 1 ? (
+        <>
+          <button
+            type="button"
+            onClick={showPreviousMedia}
+            className="absolute left-2 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center border-2 border-[#1b120c] bg-white/95 font-mono text-xl font-black text-[#253712] shadow-[3px_3px_0_#f26a21] transition hover:-translate-y-[calc(50%+2px)] sm:left-3"
+            aria-label="Previous media"
+          >
+            &larr;
+          </button>
+          <button
+            type="button"
+            onClick={showNextMedia}
+            className="absolute right-2 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center border-2 border-[#1b120c] bg-white/95 font-mono text-xl font-black text-[#253712] shadow-[3px_3px_0_#f26a21] transition hover:-translate-y-[calc(50%+2px)] sm:right-3"
+            aria-label="Next media"
+          >
+            &rarr;
+          </button>
+          <div className="absolute bottom-3 left-1/2 z-20 flex -translate-x-1/2 gap-1.5 border-2 border-[#1b120c] bg-white/95 px-2 py-1.5 shadow-[3px_3px_0_#f26a21]">
+            {mediaItems.map((item, index) => (
+              <button
+                key={`${item.src}-${index}`}
+                type="button"
+                onClick={() => showMedia(index)}
+                className={`h-2.5 w-2.5 rounded-full border border-[#1b120c] ${
+                  index === activeMediaIndex ? "bg-[#ed2b82]" : "bg-[#fff2df]"
+                }`}
+                aria-label={`Show ${item.type} ${index + 1}`}
+              />
+            ))}
+          </div>
+        </>
+      ) : null}
+    </div>
+  );
+}
+
+function MediaItem({
+  media,
+  alt,
+  sizes,
+  priority,
+  isActive,
+  liftOnHover = false,
+}: {
+  media: FlowerMedia;
+  alt: string;
+  sizes: string;
+  priority: boolean;
+  isActive: boolean;
+  liftOnHover?: boolean;
+}) {
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+
+  useEffect(() => {
+    if (media.type !== "video" || !videoRef.current) {
+      return;
+    }
+
+    const video = videoRef.current;
+
+    video.muted = true;
+    video.defaultMuted = true;
+
+    if (isActive) {
+      video.play().catch(() => {
+        // Some browsers wait until the slide is fully visible; the next user tap will retry.
+      });
+    } else {
+      video.pause();
+      video.currentTime = 0;
+    }
+  }, [isActive, media.type]);
+
+  if (media.type === "image") {
+    return (
       <Image
-        src={src}
-        alt={alt}
+        src={media.src}
+        alt={media.alt ?? alt}
         fill
         sizes={sizes}
         priority={priority}
-        className="relative z-10 object-contain transition duration-500 group-hover:scale-[1.04]"
+        className={`object-contain transition duration-500 ${
+          liftOnHover ? "group-hover:scale-[1.04]" : ""
+        }`}
       />
-    </>
+    );
+  }
+
+  return (
+    <video
+      ref={videoRef}
+      className="h-full w-full object-contain"
+      autoPlay
+      controls={false}
+      controlsList="nodownload noplaybackrate noremoteplayback"
+      disablePictureInPicture
+      loop
+      muted
+      playsInline
+      preload="auto"
+      poster={media.poster}
+      aria-label={media.alt ?? alt}
+    >
+      <source src={media.src} type="video/mp4" />
+    </video>
   );
 }
 
@@ -366,7 +543,7 @@ function SaveButton({
     <button
       type="button"
       onClick={onClick}
-      className={`absolute bottom-3 right-3 z-20 flex h-12 w-12 items-center justify-center border-2 border-[#1b120c] text-2xl font-black shadow-[3px_3px_0_#1b120c] transition hover:-translate-y-0.5 ${
+      className={`absolute bottom-3 right-3 z-30 flex h-12 w-12 items-center justify-center border-2 border-[#1b120c] text-2xl font-black shadow-[3px_3px_0_#1b120c] transition hover:-translate-y-0.5 ${
         isSaved
           ? "bg-[#ed2b82] text-[#fff2df]"
           : "bg-white text-[#ed2b82]"

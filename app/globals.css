@@ -66,3 +66,73 @@ html {
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
 }
+
+.lookbook-media-panel {
+  background: white;
+  will-change: opacity, transform;
+}
+
+.lookbook-media-enter-forward {
+  animation: lookbook-enter-forward 520ms cubic-bezier(0.2, 0.75, 0.2, 1) both;
+}
+
+.lookbook-media-enter-backward {
+  animation: lookbook-enter-backward 520ms cubic-bezier(0.2, 0.75, 0.2, 1) both;
+}
+
+.lookbook-media-exit-forward {
+  animation: lookbook-exit-forward 520ms cubic-bezier(0.2, 0.75, 0.2, 1) both;
+}
+
+.lookbook-media-exit-backward {
+  animation: lookbook-exit-backward 520ms cubic-bezier(0.2, 0.75, 0.2, 1) both;
+}
+
+@keyframes lookbook-enter-forward {
+  from {
+    transform: translateX(100%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes lookbook-enter-backward {
+  from {
+    transform: translateX(-100%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes lookbook-exit-forward {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes lookbook-exit-backward {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lookbook-media-enter-forward,
+  .lookbook-media-enter-backward,
+  .lookbook-media-exit-forward,
+  .lookbook-media-exit-backward {
+    animation-duration: 1ms;
+  }
+}

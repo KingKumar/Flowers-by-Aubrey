@@ -1,3 +1,7 @@
+export type FlowerMedia =
+  | { type: "image"; src: string; alt?: string }
+  | { type: "video"; src: string; poster?: string; alt?: string };
+
 export type FlowerOffering = {
   id: string;
   name: string;
@@ -5,9 +9,40 @@ export type FlowerOffering = {
   image: string;
   cardColor: string;
   backdropImage?: string;
+  media?: FlowerMedia[];
 };
 
 export const flowerOfferings: FlowerOffering[] = [
+  {
+    id: "pink-orchid-peony-garden",
+    name: "Pink Orchid Peony Garden",
+    description:
+      "White cymbidium orchids, hot pink Japanese peonies, blush lisianthus, green hydrangea, white scabiosa, airy astilbe, and trailing amaranthus.",
+    image: "/images/pink-orchid-dahlia-garden-cover.jpg",
+    cardColor: "#ed2b82",
+    media: [
+      {
+        type: "image",
+        src: "/images/pink-orchid-dahlia-garden-cover.jpg",
+        alt: "Pink Orchid Peony Garden",
+      },
+      {
+        type: "image",
+        src: "/images/pink-lily-yellow-rose-bouquet-1.jpg",
+        alt: "Pink Orchid Peony Garden detail",
+      },
+      {
+        type: "video",
+        src: "/images/pink-orchid-dahlia-garden-video-1-silent.mp4",
+        alt: "Pink Orchid Peony Garden video",
+      },
+      {
+        type: "video",
+        src: "/images/pink-orchid-dahlia-garden-video-2-silent.mp4",
+        alt: "Pink Orchid Peony Garden closeup video",
+      },
+    ],
+  },
   {
     id: "pink-tulip-yellow-rose-bouquet",
     name: "Pink Tulip Yellow Rose Bouquet",
