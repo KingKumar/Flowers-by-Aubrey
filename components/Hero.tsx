@@ -93,7 +93,7 @@ export function Hero() {
             sizes="(min-width: 1024px) 58vw, 100vw"
             className="relative z-10 object-contain saturate-[1.08]"
           />
-          <div className="absolute bottom-12 right-10 z-20 hidden h-28 w-28 items-center justify-center rounded-full border border-[#fff2df] p-4 text-center font-mono text-xs font-black uppercase leading-4 text-[#fff2df] lg:flex">
+          <div className="absolute bottom-12 right-10 z-20 hidden h-28 w-28 items-center justify-center rounded-full border border-[#ed2b82] p-4 text-center font-mono text-xs font-black uppercase leading-4 text-[#ed2b82] lg:flex">
             Handmade with love
           </div>
         </div>
