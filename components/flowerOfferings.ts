@@ -9,6 +9,14 @@ export type FlowerOffering = {
 
 export const flowerOfferings: FlowerOffering[] = [
   {
+    id: "pink-tulip-yellow-rose-bouquet",
+    name: "Pink Tulip Yellow Rose Bouquet",
+    description:
+      "Pink tulips, yellow roses, purple mums, soft pink sedum, and glossy green foliage.",
+    image: "/images/pink-tulip-yellow-rose-bouquet.png",
+    cardColor: "#ed2b82",
+  },
+  {
     id: "apricot-rose-amaranth-bouquet",
     name: "Apricot Rose Amaranth Bouquet",
     description:
