@@ -14,6 +14,26 @@ export type FlowerOffering = {
 
 export const flowerOfferings: FlowerOffering[] = [
   {
+    id: "grandmas-orchid-garden",
+    name: "Grandma's Orchid Garden",
+    description:
+      "Pink cymbidium orchids, purple tulips, lavender allium, pink hydrangea, hot pink spider gerbera daisies, peach lisianthus, white scabiosa, creamy astilbe, and trailing amaranthus.",
+    image: "/images/grandmas-orchid-garden.jpg",
+    cardColor: "#ed2b82",
+    media: [
+      {
+        type: "image",
+        src: "/images/grandmas-orchid-garden.jpg",
+        alt: "Grandma's Orchid Garden",
+      },
+      {
+        type: "video",
+        src: "/images/grandmas-orchid-garden-video-silent.mp4",
+        alt: "Grandma's Orchid Garden video",
+      },
+    ],
+  },
+  {
     id: "pink-orchid-peony-garden",
     name: "Pink Orchid Peony Garden",
     description:
