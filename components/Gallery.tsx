@@ -409,37 +409,37 @@ export function Gallery() {
 
         {lightboxLook ? (
           <div
-            className="fixed inset-0 z-[80] bg-[#1b120c]/80 p-3 backdrop-blur-sm sm:p-6"
+            className="fixed inset-0 z-[80] h-[100dvh] overflow-hidden bg-[#1b120c]/80 p-2 backdrop-blur-sm sm:p-6"
             role="dialog"
             aria-modal="true"
             aria-label={`${lightboxLook.name} gallery`}
             onClick={() => setLightboxIndex(null)}
           >
             <div
-              className="mx-auto flex h-full max-w-6xl flex-col border-2 border-[#1b120c] bg-[#fff2df] shadow-[8px_8px_0_#ed2b82]"
+              className="mx-auto flex h-full max-h-full max-w-6xl flex-col overflow-hidden border-2 border-[#1b120c] bg-[#fff2df] shadow-[5px_5px_0_#ed2b82] sm:shadow-[8px_8px_0_#ed2b82]"
               onClick={(event) => event.stopPropagation()}
             >
-              <div className="flex items-center justify-between gap-3 border-b-2 border-[#1b120c] p-3 sm:p-4">
+              <div className="flex shrink-0 items-center justify-between gap-3 border-b-2 border-[#1b120c] p-2 sm:p-4">
                 <div className="min-w-0">
                   <p className="font-mono text-[10px] font-black uppercase tracking-[0.16em] text-[#344f20] sm:text-xs">
                     Look {(lightboxIndex ?? 0) + 1} of {flowerOfferings.length}
                   </p>
-                  <h3 className="truncate text-2xl font-black uppercase leading-none text-[#1b120c] sm:text-4xl">
+                  <h3 className="truncate text-xl font-black uppercase leading-none text-[#1b120c] sm:text-4xl">
                     {lightboxLook.name}
                   </h3>
                 </div>
                 <button
                   type="button"
                   onClick={() => setLightboxIndex(null)}
-                  className="flex h-11 w-11 shrink-0 items-center justify-center border-2 border-[#1b120c] bg-white font-mono text-2xl font-black text-[#ed2b82] shadow-[3px_3px_0_#1b120c] transition hover:-translate-y-0.5"
+                  className="flex h-10 w-10 shrink-0 items-center justify-center border-2 border-[#1b120c] bg-white font-mono text-2xl font-black text-[#ed2b82] shadow-[3px_3px_0_#1b120c] transition hover:-translate-y-0.5 sm:h-11 sm:w-11"
                   aria-label="Close gallery"
                 >
                   x
                 </button>
               </div>
-              <div className="grid min-h-0 flex-1 gap-3 p-3 sm:p-4 lg:grid-cols-[minmax(0,1fr)_300px]">
+              <div className="flex min-h-0 flex-1 flex-col gap-2 overflow-hidden p-2 sm:gap-3 sm:p-4 lg:grid lg:grid-cols-[minmax(0,1fr)_300px]">
                 <div
-                  className="relative min-h-[55svh] overflow-hidden border-4 bg-white lg:min-h-0"
+                  className="relative min-h-0 flex-1 overflow-hidden border-4 bg-white lg:min-h-0"
                   style={{ borderColor: lightboxLook.cardColor }}
                 >
                   <LookbookImage
@@ -472,17 +472,17 @@ export function Gallery() {
                     onClick={() => toggleSavedLook(lightboxLook.id)}
                   />
                 </div>
-                <div className="border-2 border-[#1b120c] bg-white p-4 shadow-[4px_4px_0_#f26a21]">
+                <div className="max-h-[24dvh] shrink-0 overflow-y-auto border-2 border-[#1b120c] bg-white p-3 shadow-[3px_3px_0_#f26a21] sm:p-4 lg:max-h-none">
                   <p className="font-mono text-xs font-black uppercase tracking-[0.16em] text-[#ed2b82]">
                     Arrangement Notes
                   </p>
-                  <p className="mt-3 font-mono text-sm font-bold leading-6 text-[#344f20]">
+                  <p className="mt-2 font-mono text-xs font-bold leading-5 text-[#344f20] sm:mt-3 sm:text-sm sm:leading-6">
                     {lightboxLook.description}
                   </p>
                   <button
                     type="button"
                     onClick={() => toggleSavedLook(lightboxLook.id)}
-                    className="mt-5 inline-flex min-h-11 w-full items-center justify-center border-2 border-[#1b120c] bg-[#ed2b82] px-4 font-mono text-xs font-black uppercase tracking-[0.08em] text-[#fff2df] shadow-[3px_3px_0_#1b120c] transition hover:-translate-y-0.5"
+                    className="mt-3 inline-flex min-h-10 w-full items-center justify-center border-2 border-[#1b120c] bg-[#ed2b82] px-4 font-mono text-[11px] font-black uppercase tracking-[0.08em] text-[#fff2df] shadow-[3px_3px_0_#1b120c] transition hover:-translate-y-0.5 sm:mt-5 sm:min-h-11 sm:text-xs"
                   >
                     {savedLookIds.includes(lightboxLook.id)
                       ? "Remove from inquiry"
@@ -518,9 +518,6 @@ function LookbookImage({
   const mediaItems = media?.length ? media : [{ type: "image" as const, src, alt }];
   const [activeMediaIndex, setActiveMediaIndex] = useState(0);
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
-  const activeMedia = mediaItems[activeMediaIndex] ?? mediaItems[0];
-  const activeBackdrop =
-    activeMedia.type === "image" ? activeMedia.src : activeMedia.poster ?? src;
 
   function showPreviousMedia() {
     const nextIndex =
@@ -570,17 +567,8 @@ function LookbookImage({
       onTouchStart={(event) => setTouchStartX(event.touches[0]?.clientX ?? null)}
       onTouchEnd={handleTouchEnd}
     >
-      <Image
-        src={backdropSrc ?? activeBackdrop}
-        alt=""
-        aria-hidden="true"
-        fill
-        sizes={sizes}
-        priority={priority}
-        className="z-0 scale-110 object-cover opacity-35 blur-xl saturate-[1.08]"
-      />
       <div
-        className="absolute inset-0 z-10 flex transition-transform duration-700 ease-[cubic-bezier(0.2,0.75,0.2,1)] motion-reduce:duration-0"
+        className="absolute inset-0 z-10 flex bg-white transition-transform duration-700 ease-[cubic-bezier(0.2,0.75,0.2,1)] motion-reduce:duration-0"
         style={{ transform: `translateX(-${activeMediaIndex * 100}%)` }}
       >
         {mediaItems.map((item, index) => (
