@@ -1,8 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import type { MouseEvent } from "react";
-import { useEffect, useMemo, useState } from "react";
+import type { FormEvent } from "react";
+import { useEffect, useState } from "react";
 
 type SelectedBouquet = {
   id: string;
@@ -88,6 +88,13 @@ const DEFAULT_SELECTION: SelectionState = {
   vaseId: "wrapped",
 };
 
+const WEB3FORMS_ENDPOINT = "https://api.web3forms.com/submit";
+const WEB3FORMS_ACCESS_KEY = process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY;
+const SUCCESS_MESSAGE =
+  "Thank you — your arrangement request has been sent. Aubrey will follow up to confirm availability, delivery, and final pricing.";
+const PRICING_DISCLAIMER =
+  "This estimate is based on the selected arrangement size and vase. Final pricing may vary based on seasonal availability, vase availability, delivery requirements, and custom requests.";
+
 const currencyFormatter = new Intl.NumberFormat("en-US", {
   style: "currency",
   currency: "USD",
@@ -101,12 +108,23 @@ export function PriceEstimatePanel({
 }) {
   const [selections, setSelections] = useState<Record<string, SelectionState>>({});
   const [customerName, setCustomerName] = useState("");
+  const [customerEmail, setCustomerEmail] = useState("");
+  const [customerPhone, setCustomerPhone] = useState("");
   const [deliveryDate, setDeliveryDate] = useState("");
   const [deliveryTimeWindow, setDeliveryTimeWindow] = useState("");
   const [deliveryAddress, setDeliveryAddress] = useState("");
   const [deliveryNotes, setDeliveryNotes] = useState("");
+  const [occasion, setOccasion] = useState("");
+  const [preferredColors, setPreferredColors] = useState("");
+  const [flowerRequests, setFlowerRequests] = useState("");
+  const [cardMessage, setCardMessage] = useState("");
   const [showDeliveryWarning, setShowDeliveryWarning] = useState(false);
   const [showNameWarning, setShowNameWarning] = useState(false);
+  const [showEmailWarning, setShowEmailWarning] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<
+    "idle" | "submitting" | "success" | "error"
+  >("idle");
+  const [submitMessage, setSubmitMessage] = useState("");
   const [mobileStepIndex, setMobileStepIndex] = useState(0);
 
   const bouquetLines = selectedBouquets.map((bouquet) => {
@@ -156,56 +174,6 @@ export function PriceEstimatePanel({
   const vaseSummary = bouquetLines
     .map((line) => `${line.bouquet.name}: ${line.vase.label}`)
     .join("; ");
-  const mailtoLink = useMemo(() => {
-    const trimmedName = customerName.trim();
-    const subject = `Arrangement Request — ${bouquetName}`;
-    const bodyLines = [
-      "Hi Aubrey,",
-      "",
-      `I’d love to request an arrangement inspired by the ${bouquetName}.`,
-      "",
-      "Customer:",
-      `• Name: ${trimmedName}`,
-      "",
-      "Here are the details:",
-      `• Size: ${sizeSummary}`,
-      `• Vase: ${vaseSummary}`,
-      `• Estimated budget: around ${formatPrice(bouquetSubtotal)}`,
-      "",
-      "Delivery:",
-      `• Desired delivery date: ${deliveryDate}`,
-      `• Desired time window: ${deliveryTimeWindow}`,
-      `• Address: ${deliveryAddress.trim()}`,
-      `• Notes: ${deliveryNotes.trim()}`,
-      "",
-      "Additional details (optional):",
-      "• Occasion (e.g. Mother’s Day, birthday):",
-      "• Preferred colors or tones:",
-      "• Specific flowers to include/avoid:",
-      "• Card message:",
-      "• Requested delivery date/time:",
-      "",
-      "Please let me know if this is possible and if you recommend any adjustments.",
-      "",
-      "Thank you,",
-      trimmedName,
-    ];
-    const body = bodyLines.join("\r\n");
-
-    return `mailto:aubrey.glassberg@gmail.com?subject=${encodeURIComponent(
-      subject
-    )}&body=${encodeURIComponent(body)}`;
-  }, [
-    bouquetName,
-    bouquetSubtotal,
-    customerName,
-    deliveryAddress,
-    deliveryDate,
-    deliveryNotes,
-    deliveryTimeWindow,
-    sizeSummary,
-    vaseSummary,
-  ]);
 
   function updateSelection(
     bouquetId: string,
@@ -221,14 +189,144 @@ export function PriceEstimatePanel({
     }));
   }
 
-  function handleRequestClick(event: MouseEvent<HTMLAnchorElement>) {
-    if (!customerName.trim()) {
-      event.preventDefault();
+  async function handleRequestSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    if (submitStatus === "submitting") {
+      return;
+    }
+
+    const trimmedName = customerName.trim();
+    const trimmedEmail = customerEmail.trim();
+
+    if (!trimmedName) {
       setShowNameWarning(true);
       return;
     }
 
+    if (!trimmedEmail) {
+      setShowEmailWarning(true);
+      return;
+    }
+
     setShowDeliveryWarning(!deliveryAddress.trim());
+
+    if (!WEB3FORMS_ACCESS_KEY) {
+      setSubmitStatus("error");
+      setSubmitMessage(
+        "This form is missing its Web3Forms access key. Add NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY to the site environment."
+      );
+      return;
+    }
+
+    const arrangementDetails = bouquetLines
+      .map(
+        (line) =>
+          `${line.bouquet.name}\nSize: ${line.size.label} (${line.size.dimensions})\nVase: ${line.vase.label}\nItem estimate: ${formatPrice(line.itemPrice)}`
+      )
+      .join("\n\n");
+
+    const requestedDelivery =
+      [deliveryDate, deliveryTimeWindow].filter(Boolean).join(", ") || "";
+
+    const payload = {
+      access_key: WEB3FORMS_ACCESS_KEY,
+      subject: `New Arrangement Request — ${bouquetName}`,
+      from_name: trimmedName,
+      replyto: trimmedEmail,
+      name: trimmedName,
+      email: trimmedEmail,
+      phone: customerPhone.trim(),
+      "Customer Name": trimmedName,
+      "Customer Email": trimmedEmail,
+      "Customer Phone": customerPhone.trim(),
+      "Bouquet inspiration": bouquetName,
+      "Arrangement details": arrangementDetails,
+      "Selected size and dimensions": sizeSummary,
+      "Vase selection": vaseSummary,
+      "Estimated bouquet subtotal": formatPrice(bouquetSubtotal),
+      "Delivery address": deliveryAddress.trim(),
+      "Delivery notes": deliveryNotes.trim(),
+      Occasion: occasion.trim(),
+      "Preferred colors or tones": preferredColors.trim(),
+      "Flowers to include/avoid": flowerRequests.trim(),
+      "Card message": cardMessage.trim(),
+      "Requested delivery date/time": requestedDelivery,
+      Disclaimer: PRICING_DISCLAIMER,
+      message: [
+        "Customer:",
+        `Name: ${trimmedName}`,
+        `Email: ${trimmedEmail}`,
+        `Phone: ${customerPhone.trim() || "Not provided"}`,
+        "",
+        "Arrangement:",
+        `Bouquet inspiration: ${bouquetName}`,
+        arrangementDetails,
+        `Estimated bouquet subtotal: ${formatPrice(bouquetSubtotal)}`,
+        "",
+        "Delivery:",
+        `Address: ${deliveryAddress.trim()}`,
+        `Notes: ${deliveryNotes.trim()}`,
+        "",
+        "Additional details:",
+        `Occasion: ${occasion.trim()}`,
+        `Preferred colors or tones: ${preferredColors.trim()}`,
+        `Flowers to include/avoid: ${flowerRequests.trim()}`,
+        `Card message: ${cardMessage.trim()}`,
+        `Requested delivery date/time: ${requestedDelivery}`,
+        "",
+        PRICING_DISCLAIMER,
+      ].join("\n"),
+    };
+
+    setSubmitStatus("submitting");
+    setSubmitMessage("");
+
+    try {
+      const response = await fetch(WEB3FORMS_ENDPOINT, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+      const result = (await response.json()) as {
+        success?: boolean;
+        message?: string;
+      };
+
+      if (!response.ok || !result.success) {
+        throw new Error(result.message || "Submission failed.");
+      }
+
+      setSubmitStatus("success");
+      setSubmitMessage(SUCCESS_MESSAGE);
+      window.alert(SUCCESS_MESSAGE);
+      setSelections({});
+      setCustomerName("");
+      setCustomerEmail("");
+      setCustomerPhone("");
+      setDeliveryDate("");
+      setDeliveryTimeWindow("");
+      setDeliveryAddress("");
+      setDeliveryNotes("");
+      setOccasion("");
+      setPreferredColors("");
+      setFlowerRequests("");
+      setCardMessage("");
+      setShowDeliveryWarning(false);
+      setShowNameWarning(false);
+      setShowEmailWarning(false);
+      setMobileStepIndex(0);
+    } catch (error) {
+      setSubmitStatus("error");
+      setSubmitMessage(
+        error instanceof Error
+          ? error.message
+          : "Something went wrong sending your request. Please try again."
+      );
+    }
   }
 
   function showNextMobileStep() {
@@ -250,7 +348,10 @@ export function PriceEstimatePanel({
       id="price-estimate"
       className="mt-6 scroll-mt-24 sm:mt-20 sm:scroll-mt-28"
     >
-      <div className="border-2 border-[#1b120c] bg-[#fff8eb] shadow-[8px_8px_0_#ed2b82] sm:p-8 lg:p-10">
+      <form
+        onSubmit={handleRequestSubmit}
+        className="border-2 border-[#1b120c] bg-[#fff8eb] shadow-[8px_8px_0_#ed2b82] sm:p-8 lg:p-10"
+      >
         <div className="p-1 sm:hidden">
           {!selectedBouquets.length ? (
             <>
@@ -381,7 +482,7 @@ export function PriceEstimatePanel({
                 ) : null}
 
                 {activeMobileStep?.kind === "delivery" ? (
-                  <div className="border-2 border-[#1b120c] bg-white p-2">
+                  <div className="h-full overflow-y-auto border-2 border-[#1b120c] bg-white p-2">
                     <div className="grid gap-1.5">
                       <label>
                         <span className="font-mono text-[11px] font-black uppercase tracking-[0.12em] text-[#344f20]">
@@ -405,6 +506,45 @@ export function PriceEstimatePanel({
                       {showNameWarning ? (
                         <p className="font-mono text-[9px] font-bold leading-3 text-[#ed2b82]">
                           Please add your name before requesting.
+                        </p>
+                      ) : null}
+                      <div className="grid grid-cols-2 gap-2">
+                        <label className="min-w-0">
+                          <span className="font-mono text-[11px] font-black uppercase tracking-[0.12em] text-[#344f20]">
+                            Email
+                          </span>
+                          <input
+                            type="email"
+                            name="customerEmail"
+                            required
+                            value={customerEmail}
+                            onChange={(event) => {
+                              setCustomerEmail(event.target.value);
+                              if (event.target.value.trim()) {
+                                setShowEmailWarning(false);
+                              }
+                            }}
+                            placeholder="Email"
+                            className="mt-1 min-h-9 w-full border-2 border-[#1b120c] bg-[#fff8eb] px-2 font-mono text-base font-bold text-[#1b120c] outline-none focus:border-[#ed2b82]"
+                          />
+                        </label>
+                        <label className="min-w-0">
+                          <span className="font-mono text-[11px] font-black uppercase tracking-[0.12em] text-[#344f20]">
+                            Phone
+                          </span>
+                          <input
+                            type="tel"
+                            name="customerPhone"
+                            value={customerPhone}
+                            onChange={(event) => setCustomerPhone(event.target.value)}
+                            placeholder="Optional"
+                            className="mt-1 min-h-9 w-full border-2 border-[#1b120c] bg-[#fff8eb] px-2 font-mono text-base font-bold text-[#1b120c] outline-none focus:border-[#ed2b82]"
+                          />
+                        </label>
+                      </div>
+                      {showEmailWarning ? (
+                        <p className="font-mono text-[9px] font-bold leading-3 text-[#ed2b82]">
+                          Please add your email so Aubrey can reply.
                         </p>
                       ) : null}
                     </div>
@@ -481,6 +621,18 @@ export function PriceEstimatePanel({
                           className="mt-1 w-full resize-none border-2 border-[#1b120c] bg-[#fff8eb] px-2 py-1.5 font-mono text-base font-bold text-[#1b120c] outline-none focus:border-[#ed2b82]"
                         />
                       </label>
+                      <label>
+                        <span className="font-mono text-[11px] font-black uppercase tracking-[0.12em] text-[#344f20]">
+                          Extra details
+                        </span>
+                        <textarea
+                          value={occasion}
+                          onChange={(event) => setOccasion(event.target.value)}
+                          rows={2}
+                          placeholder="Occasion, colors, flowers, card message"
+                          className="mt-1 w-full resize-none border-2 border-[#1b120c] bg-[#fff8eb] px-2 py-1.5 font-mono text-base font-bold text-[#1b120c] outline-none focus:border-[#ed2b82]"
+                        />
+                      </label>
                     </div>
                   </div>
                 ) : null}
@@ -508,18 +660,19 @@ export function PriceEstimatePanel({
                     </p>
                   </div>
                   {isFinalMobileStep ? (
-                    <a
-                      href={customerName.trim() ? mailtoLink : "#price-estimate"}
-                      onClick={handleRequestClick}
-                      aria-disabled={!customerName.trim()}
+                    <button
+                      type="submit"
+                      disabled={submitStatus === "submitting"}
                       className={`inline-flex min-h-9 items-center justify-center border-2 border-[#1b120c] px-3 text-center font-mono text-[9px] font-black uppercase tracking-[0.08em] shadow-[3px_3px_0_#1b120c] ${
-                        customerName.trim()
+                        customerName.trim() && customerEmail.trim()
                           ? "bg-[#ed2b82] text-[#fff2df]"
                           : "bg-white text-[#344f20] opacity-70"
                       }`}
                     >
-                      Request This Arrangement
-                    </a>
+                      {submitStatus === "submitting"
+                        ? "Sending..."
+                        : "Request This Arrangement"}
+                    </button>
                   ) : (
                     <button
                       type="button"
@@ -530,6 +683,17 @@ export function PriceEstimatePanel({
                     </button>
                   )}
                 </div>
+                {submitMessage ? (
+                  <p
+                    className={`mt-2 font-mono text-[10px] font-bold leading-4 ${
+                      submitStatus === "success"
+                        ? "text-[#344f20]"
+                        : "text-[#ed2b82]"
+                    }`}
+                  >
+                    {submitMessage}
+                  </p>
+                ) : null}
               </div>
             </div>
           )}
@@ -710,6 +874,45 @@ export function PriceEstimatePanel({
                       </span>
                     ) : null}
                   </label>
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <label className="block">
+                      <span className="font-mono text-xs font-black uppercase tracking-[0.12em] text-[#344f20]">
+                        Email
+                      </span>
+                      <input
+                        type="email"
+                        name="customerEmail"
+                        required
+                        value={customerEmail}
+                        onChange={(event) => {
+                          setCustomerEmail(event.target.value);
+                          if (event.target.value.trim()) {
+                            setShowEmailWarning(false);
+                          }
+                        }}
+                        placeholder="you@example.com"
+                        className="mt-2 min-h-12 w-full border-2 border-[#1b120c] bg-[#fff8eb] px-3 font-mono text-base font-bold text-[#1b120c] outline-none focus:border-[#ed2b82]"
+                      />
+                      {showEmailWarning ? (
+                        <span className="mt-2 block font-mono text-xs font-bold leading-5 text-[#ed2b82]">
+                          Please add your email so Aubrey can reply.
+                        </span>
+                      ) : null}
+                    </label>
+                    <label className="block">
+                      <span className="font-mono text-xs font-black uppercase tracking-[0.12em] text-[#344f20]">
+                        Phone
+                      </span>
+                      <input
+                        type="tel"
+                        name="customerPhone"
+                        value={customerPhone}
+                        onChange={(event) => setCustomerPhone(event.target.value)}
+                        placeholder="Optional"
+                        className="mt-2 min-h-12 w-full border-2 border-[#1b120c] bg-[#fff8eb] px-3 font-mono text-base font-bold text-[#1b120c] outline-none focus:border-[#ed2b82]"
+                      />
+                    </label>
+                  </div>
                 </div>
                 <h3 className="mt-6 text-3xl font-black uppercase leading-none text-[#1b120c]">
                   Delivery
@@ -789,6 +992,56 @@ export function PriceEstimatePanel({
                       className="mt-2 w-full resize-y border-2 border-[#1b120c] bg-[#fff8eb] px-3 py-3 font-mono text-base font-bold text-[#1b120c] outline-none focus:border-[#ed2b82]"
                     />
                   </label>
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <label className="block">
+                      <span className="font-mono text-xs font-black uppercase tracking-[0.12em] text-[#344f20]">
+                        Occasion
+                      </span>
+                      <input
+                        type="text"
+                        value={occasion}
+                        onChange={(event) => setOccasion(event.target.value)}
+                        placeholder="Birthday, dinner, just because"
+                        className="mt-2 min-h-12 w-full border-2 border-[#1b120c] bg-[#fff8eb] px-3 font-mono text-base font-bold text-[#1b120c] outline-none focus:border-[#ed2b82]"
+                      />
+                    </label>
+                    <label className="block">
+                      <span className="font-mono text-xs font-black uppercase tracking-[0.12em] text-[#344f20]">
+                        Preferred colors
+                      </span>
+                      <input
+                        type="text"
+                        value={preferredColors}
+                        onChange={(event) => setPreferredColors(event.target.value)}
+                        placeholder="Soft pinks, citrus, moody"
+                        className="mt-2 min-h-12 w-full border-2 border-[#1b120c] bg-[#fff8eb] px-3 font-mono text-base font-bold text-[#1b120c] outline-none focus:border-[#ed2b82]"
+                      />
+                    </label>
+                  </div>
+                  <label className="block">
+                    <span className="font-mono text-xs font-black uppercase tracking-[0.12em] text-[#344f20]">
+                      Flowers to include/avoid
+                    </span>
+                    <input
+                      type="text"
+                      value={flowerRequests}
+                      onChange={(event) => setFlowerRequests(event.target.value)}
+                      placeholder="Favorites, allergies, no lilies, etc."
+                      className="mt-2 min-h-12 w-full border-2 border-[#1b120c] bg-[#fff8eb] px-3 font-mono text-base font-bold text-[#1b120c] outline-none focus:border-[#ed2b82]"
+                    />
+                  </label>
+                  <label className="block">
+                    <span className="font-mono text-xs font-black uppercase tracking-[0.12em] text-[#344f20]">
+                      Card message
+                    </span>
+                    <textarea
+                      value={cardMessage}
+                      onChange={(event) => setCardMessage(event.target.value)}
+                      rows={3}
+                      placeholder="Optional message for an enclosure card"
+                      className="mt-2 w-full resize-y border-2 border-[#1b120c] bg-[#fff8eb] px-3 py-3 font-mono text-base font-bold text-[#1b120c] outline-none focus:border-[#ed2b82]"
+                    />
+                  </label>
                 </div>
               </div>
 
@@ -809,28 +1062,40 @@ export function PriceEstimatePanel({
                 </div>
 
                 <p className="mt-6 font-mono text-xs font-bold leading-5 text-[#fff2df]/85">
-                  This is an estimate. Final pricing may vary based on seasonal
-                  availability, vase selection, and delivery requirements.
+                  {PRICING_DISCLAIMER}
                 </p>
 
-                <a
-                  href={customerName.trim() ? mailtoLink : "#price-estimate"}
-                  onClick={handleRequestClick}
-                  aria-disabled={!customerName.trim()}
+                {submitMessage ? (
+                  <p
+                    className={`mt-5 border border-[#fff2df]/40 p-3 font-mono text-xs font-bold leading-5 ${
+                      submitStatus === "success"
+                        ? "text-[#c7da38]"
+                        : "text-[#fff2df]"
+                    }`}
+                  >
+                    {submitMessage}
+                  </p>
+                ) : null}
+
+                <button
+                  type="submit"
+                  disabled={submitStatus === "submitting"}
                   className={`mt-7 inline-flex min-h-12 w-full items-center justify-center border-2 border-[#1b120c] px-5 text-center font-mono text-xs font-black uppercase tracking-[0.08em] shadow-[4px_4px_0_#1b120c] transition hover:-translate-y-0.5 ${
-                    customerName.trim()
+                    customerName.trim() && customerEmail.trim()
                       ? "bg-[#ed2b82] text-[#fff2df]"
                       : "bg-white text-[#344f20] opacity-70"
                   }`}
                 >
-                  Request This Arrangement
-                </a>
+                  {submitStatus === "submitting"
+                    ? "Sending..."
+                    : "Request This Arrangement"}
+                </button>
               </aside>
             </div>
           </>
         )}
         </div>
-      </div>
+      </form>
     </section>
   );
 }
