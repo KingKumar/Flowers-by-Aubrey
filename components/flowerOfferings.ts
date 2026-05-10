@@ -64,6 +64,14 @@ export const flowerOfferings: FlowerOffering[] = [
     ],
   },
   {
+    id: "fringed-tulip-gerbera-garden",
+    name: "Fringed Tulip Gerbera Garden",
+    description:
+      "Purple fringed tulips, hot pink spider gerbera daisies, pink hydrangea, Queen Anne's lace, green amaranthus, and fresh green texture.",
+    image: "/images/fringed-tulip-gerbera-garden.jpg",
+    cardColor: "#c7da38",
+  },
+  {
     id: "apricot-rose-amaranth-bouquet",
     name: "Apricot Rose Amaranth Bouquet",
     description:
