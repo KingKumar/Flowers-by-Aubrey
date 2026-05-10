@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import type { TouchEvent } from "react";
+import type { KeyboardEvent, MouseEvent, TouchEvent } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { FlowerMedia } from "./flowerOfferings";
 import { flowerOfferings } from "./flowerOfferings";
@@ -18,13 +18,58 @@ const modeLabels: Array<{ id: LookbookMode; label: string }> = [
 export function Gallery() {
   const [mode, setMode] = useState<LookbookMode>("big");
   const [activeIndex, setActiveIndex] = useState(0);
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const [savedLookIds, setSavedLookIds] = useState<string[]>([]);
 
   const activeLook = flowerOfferings[activeIndex];
+  const lightboxLook =
+    lightboxIndex === null ? null : flowerOfferings[lightboxIndex] ?? null;
   const savedLooks = useMemo(
     () => flowerOfferings.filter((look) => savedLookIds.includes(look.id)),
     [savedLookIds]
   );
+
+  useEffect(() => {
+    if (lightboxIndex === null) {
+      return;
+    }
+
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    function handleKeyDown(event: globalThis.KeyboardEvent) {
+      if (event.key === "Escape") {
+        setLightboxIndex(null);
+      }
+
+      if (event.key === "ArrowLeft") {
+        setLightboxIndex((currentIndex) =>
+          currentIndex === null
+            ? currentIndex
+            : currentIndex === 0
+              ? flowerOfferings.length - 1
+              : currentIndex - 1
+        );
+      }
+
+      if (event.key === "ArrowRight") {
+        setLightboxIndex((currentIndex) =>
+          currentIndex === null
+            ? currentIndex
+            : currentIndex === flowerOfferings.length - 1
+              ? 0
+              : currentIndex + 1
+        );
+      }
+    }
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = originalOverflow;
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [lightboxIndex]);
 
   function toggleSavedLook(lookId: string) {
     setSavedLookIds((currentIds) =>
@@ -44,6 +89,37 @@ export function Gallery() {
     setActiveIndex((currentIndex) =>
       currentIndex === flowerOfferings.length - 1 ? 0 : currentIndex + 1
     );
+  }
+
+  function showPreviousLightboxLook() {
+    setLightboxIndex((currentIndex) =>
+      currentIndex === null
+        ? currentIndex
+        : currentIndex === 0
+          ? flowerOfferings.length - 1
+          : currentIndex - 1
+    );
+  }
+
+  function showNextLightboxLook() {
+    setLightboxIndex((currentIndex) =>
+      currentIndex === null
+        ? currentIndex
+        : currentIndex === flowerOfferings.length - 1
+          ? 0
+          : currentIndex + 1
+    );
+  }
+
+  function openLightbox(index: number) {
+    setLightboxIndex(index);
+  }
+
+  function handleOpenKeyDown(event: KeyboardEvent<HTMLDivElement>, index: number) {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      openLightbox(index);
+    }
   }
 
   function showPriceEstimate() {
@@ -114,7 +190,7 @@ export function Gallery() {
           </div>
         </div>
 
-        <div className="sticky top-0 z-30 mt-8 border-y-2 border-[#1b120c] bg-[#fff2df]/95 py-2 shadow-[0_8px_24px_rgba(27,18,12,0.08)] backdrop-blur sm:py-4">
+        <div className="sticky top-0 z-50 mt-8 border-y-2 border-[#1b120c] bg-[#fff2df]/95 py-2 shadow-[0_8px_24px_rgba(27,18,12,0.08)] backdrop-blur sm:py-4">
           <div className="flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between">
             <div className="min-w-0">
               <p className="font-mono text-[11px] font-black uppercase tracking-[0.08em] text-[#253712] sm:text-sm">
@@ -166,8 +242,13 @@ export function Gallery() {
               </button>
               <article className="grid gap-6 lg:grid-cols-[minmax(0,1.15fr)_minmax(280px,0.85fr)] lg:items-start">
                 <div
-                  className="relative h-[calc(100svh-15rem)] min-h-[360px] overflow-hidden border-4 bg-white sm:min-h-[560px] lg:h-[620px] lg:max-h-none xl:h-[720px]"
+                  className="relative h-[calc(100svh-15rem)] min-h-[360px] cursor-zoom-in overflow-hidden border-4 bg-white sm:min-h-[560px] lg:h-[620px] lg:max-h-none xl:h-[720px]"
                   style={{ borderColor: activeLook.cardColor }}
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => openLightbox(activeIndex)}
+                  onKeyDown={(event) => handleOpenKeyDown(event, activeIndex)}
+                  aria-label={`Open ${activeLook.name} larger`}
                 >
                   <LookbookImage
                     src={activeLook.image}
@@ -184,7 +265,10 @@ export function Gallery() {
                   />
                   <button
                     type="button"
-                    onClick={showPreviousLook}
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      showPreviousLook();
+                    }}
                     className="absolute left-3 top-1/2 z-20 flex h-12 w-12 -translate-y-1/2 items-center justify-center border-2 border-[#1b120c] bg-white/95 font-mono text-2xl font-black text-[#253712] shadow-[3px_3px_0_#f26a21] transition hover:-translate-y-[calc(50%+2px)] xl:hidden"
                     aria-label="Previous look"
                   >
@@ -192,7 +276,10 @@ export function Gallery() {
                   </button>
                   <button
                     type="button"
-                    onClick={showNextLook}
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      showNextLook();
+                    }}
                     className="absolute right-3 top-1/2 z-20 flex h-12 w-12 -translate-y-1/2 items-center justify-center border-2 border-[#1b120c] bg-white/95 font-mono text-2xl font-black text-[#253712] shadow-[3px_3px_0_#f26a21] transition hover:-translate-y-[calc(50%+2px)] xl:hidden"
                     aria-label="Next look"
                   >
@@ -275,11 +362,16 @@ export function Gallery() {
           </div>
         ) : (
           <div className={`mt-12 ${gridClass}`}>
-            {flowerOfferings.map((offering) => (
+            {flowerOfferings.map((offering, index) => (
               <article key={offering.id} className="group">
                 <div
-                  className="relative aspect-[4/5] overflow-hidden border-4 bg-white"
+                  className="relative aspect-[4/5] cursor-zoom-in overflow-hidden border-4 bg-white"
                   style={{ borderColor: offering.cardColor }}
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => openLightbox(index)}
+                  onKeyDown={(event) => handleOpenKeyDown(event, index)}
+                  aria-label={`Open ${offering.name} larger`}
                 >
                   <div
                     className="pointer-events-none absolute inset-x-0 top-0 h-2"
@@ -314,6 +406,93 @@ export function Gallery() {
             ))}
           </div>
         )}
+
+        {lightboxLook ? (
+          <div
+            className="fixed inset-0 z-[80] bg-[#1b120c]/80 p-3 backdrop-blur-sm sm:p-6"
+            role="dialog"
+            aria-modal="true"
+            aria-label={`${lightboxLook.name} gallery`}
+            onClick={() => setLightboxIndex(null)}
+          >
+            <div
+              className="mx-auto flex h-full max-w-6xl flex-col border-2 border-[#1b120c] bg-[#fff2df] shadow-[8px_8px_0_#ed2b82]"
+              onClick={(event) => event.stopPropagation()}
+            >
+              <div className="flex items-center justify-between gap-3 border-b-2 border-[#1b120c] p-3 sm:p-4">
+                <div className="min-w-0">
+                  <p className="font-mono text-[10px] font-black uppercase tracking-[0.16em] text-[#344f20] sm:text-xs">
+                    Look {(lightboxIndex ?? 0) + 1} of {flowerOfferings.length}
+                  </p>
+                  <h3 className="truncate text-2xl font-black uppercase leading-none text-[#1b120c] sm:text-4xl">
+                    {lightboxLook.name}
+                  </h3>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setLightboxIndex(null)}
+                  className="flex h-11 w-11 shrink-0 items-center justify-center border-2 border-[#1b120c] bg-white font-mono text-2xl font-black text-[#ed2b82] shadow-[3px_3px_0_#1b120c] transition hover:-translate-y-0.5"
+                  aria-label="Close gallery"
+                >
+                  x
+                </button>
+              </div>
+              <div className="grid min-h-0 flex-1 gap-3 p-3 sm:p-4 lg:grid-cols-[minmax(0,1fr)_300px]">
+                <div
+                  className="relative min-h-[55svh] overflow-hidden border-4 bg-white lg:min-h-0"
+                  style={{ borderColor: lightboxLook.cardColor }}
+                >
+                  <LookbookImage
+                    src={lightboxLook.image}
+                    backdropSrc={lightboxLook.backdropImage}
+                    media={lightboxLook.media}
+                    alt={lightboxLook.name}
+                    sizes="(min-width: 1024px) 70vw, 100vw"
+                    priority
+                  />
+                  <button
+                    type="button"
+                    onClick={showPreviousLightboxLook}
+                    className="absolute left-3 top-1/2 z-30 flex h-12 w-12 -translate-y-1/2 items-center justify-center border-2 border-[#1b120c] bg-white/95 font-mono text-2xl font-black text-[#253712] shadow-[3px_3px_0_#f26a21] transition hover:-translate-y-[calc(50%+2px)]"
+                    aria-label="Previous look"
+                  >
+                    &larr;
+                  </button>
+                  <button
+                    type="button"
+                    onClick={showNextLightboxLook}
+                    className="absolute right-3 top-1/2 z-30 flex h-12 w-12 -translate-y-1/2 items-center justify-center border-2 border-[#1b120c] bg-white/95 font-mono text-2xl font-black text-[#253712] shadow-[3px_3px_0_#f26a21] transition hover:-translate-y-[calc(50%+2px)]"
+                    aria-label="Next look"
+                  >
+                    &rarr;
+                  </button>
+                  <SaveButton
+                    isSaved={savedLookIds.includes(lightboxLook.id)}
+                    label={lightboxLook.name}
+                    onClick={() => toggleSavedLook(lightboxLook.id)}
+                  />
+                </div>
+                <div className="border-2 border-[#1b120c] bg-white p-4 shadow-[4px_4px_0_#f26a21]">
+                  <p className="font-mono text-xs font-black uppercase tracking-[0.16em] text-[#ed2b82]">
+                    Arrangement Notes
+                  </p>
+                  <p className="mt-3 font-mono text-sm font-bold leading-6 text-[#344f20]">
+                    {lightboxLook.description}
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => toggleSavedLook(lightboxLook.id)}
+                    className="mt-5 inline-flex min-h-11 w-full items-center justify-center border-2 border-[#1b120c] bg-[#ed2b82] px-4 font-mono text-xs font-black uppercase tracking-[0.08em] text-[#fff2df] shadow-[3px_3px_0_#1b120c] transition hover:-translate-y-0.5"
+                  >
+                    {savedLookIds.includes(lightboxLook.id)
+                      ? "Remove from inquiry"
+                      : "Add this look"}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        ) : null}
 
         <PriceEstimatePanel selectedBouquets={savedLooks} />
       </div>
@@ -425,7 +604,10 @@ function LookbookImage({
         <>
           <button
             type="button"
-            onClick={showPreviousMedia}
+            onClick={(event) => {
+              event.stopPropagation();
+              showPreviousMedia();
+            }}
             className="absolute left-2 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center border-2 border-[#1b120c] bg-white/95 font-mono text-xl font-black text-[#253712] shadow-[3px_3px_0_#f26a21] transition hover:-translate-y-[calc(50%+2px)] sm:left-3"
             aria-label="Previous media"
           >
@@ -433,18 +615,29 @@ function LookbookImage({
           </button>
           <button
             type="button"
-            onClick={showNextMedia}
+            onClick={(event) => {
+              event.stopPropagation();
+              showNextMedia();
+            }}
             className="absolute right-2 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center border-2 border-[#1b120c] bg-white/95 font-mono text-xl font-black text-[#253712] shadow-[3px_3px_0_#f26a21] transition hover:-translate-y-[calc(50%+2px)] sm:right-3"
             aria-label="Next media"
           >
             &rarr;
           </button>
-          <div className="absolute bottom-3 left-1/2 z-20 flex -translate-x-1/2 gap-1.5 border-2 border-[#1b120c] bg-white/95 px-2 py-1.5 shadow-[3px_3px_0_#f26a21]">
+          <div
+            className="absolute bottom-3 left-1/2 z-20 flex -translate-x-1/2 cursor-default gap-1.5 border-2 border-[#1b120c] bg-white/95 px-2 py-1.5 shadow-[3px_3px_0_#f26a21]"
+            onPointerDown={(event) => event.stopPropagation()}
+            onMouseDown={(event) => event.stopPropagation()}
+            onClick={(event) => event.stopPropagation()}
+          >
             {mediaItems.map((item, index) => (
               <button
                 key={`${item.src}-${index}`}
                 type="button"
-                onClick={() => showMedia(index)}
+                onClick={(event) => {
+                  event.stopPropagation();
+                  showMedia(index);
+                }}
                 className={`h-2.5 w-2.5 rounded-full border border-[#1b120c] ${
                   index === activeMediaIndex ? "bg-[#ed2b82]" : "bg-[#fff2df]"
                 }`}
@@ -542,7 +735,10 @@ function SaveButton({
   return (
     <button
       type="button"
-      onClick={onClick}
+      onClick={(event: MouseEvent<HTMLButtonElement>) => {
+        event.stopPropagation();
+        onClick();
+      }}
       className={`absolute bottom-3 right-3 z-30 flex h-12 w-12 items-center justify-center border-2 border-[#1b120c] text-2xl font-black shadow-[3px_3px_0_#1b120c] transition hover:-translate-y-0.5 ${
         isSaved
           ? "bg-[#ed2b82] text-[#fff2df]"

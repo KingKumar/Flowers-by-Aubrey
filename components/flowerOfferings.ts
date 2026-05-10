@@ -64,14 +64,6 @@ export const flowerOfferings: FlowerOffering[] = [
     ],
   },
   {
-    id: "pink-tulip-yellow-rose-bouquet",
-    name: "Pink Tulip Yellow Rose Bouquet",
-    description:
-      "Pink tulips, yellow roses, purple mums, soft pink sedum, and glossy green foliage.",
-    image: "/images/pink-tulip-yellow-rose-bouquet.png",
-    cardColor: "#ed2b82",
-  },
-  {
     id: "apricot-rose-amaranth-bouquet",
     name: "Apricot Rose Amaranth Bouquet",
     description:
@@ -86,6 +78,18 @@ export const flowerOfferings: FlowerOffering[] = [
       "Green hydrangea, lily buds, purple garden blooms, hanging amaranthus, curly willow, and variegated foliage.",
     image: "/images/green-amaranth-lily-garden.png",
     cardColor: "#344f20",
+    media: [
+      {
+        type: "image",
+        src: "/images/green-amaranth-lily-garden.png",
+        alt: "Green Amaranth Lily Garden",
+      },
+      {
+        type: "image",
+        src: "/images/green-amaranth-lily-garden-detail-crop.jpg",
+        alt: "Green Amaranth Lily Garden detail",
+      },
+    ],
   },
   {
     id: "orange-rose-hydrangea-bouquet",
@@ -94,6 +98,30 @@ export const flowerOfferings: FlowerOffering[] = [
       "Orange roses, white hydrangea, ornithogalum, bupleurum, and green textural stems.",
     image: "/images/sage-ribbon-vase.png",
     cardColor: "#c7da38",
+  },
+  {
+    id: "pink-lily-agrostemma-garden",
+    name: "Pink Lily Agrostemma Garden",
+    description:
+      "Pink lilies, white lisianthus, green hydrangea, purple agrostemma, scabiosa pods, lily buds, and fresh green stems.",
+    image: "/images/pink-lily-agrostemma-garden.jpg",
+    cardColor: "#c7da38",
+  },
+  {
+    id: "pink-tulip-yellow-rose-bouquet",
+    name: "Pink Tulip Yellow Rose Bouquet",
+    description:
+      "Pink tulips, yellow roses, purple mums, soft pink sedum, and glossy green foliage.",
+    image: "/images/pink-tulip-yellow-rose-bouquet.png",
+    cardColor: "#ed2b82",
+  },
+  {
+    id: "blush-lily-lisianthus-garden",
+    name: "Blush Lily Lisianthus Garden",
+    description:
+      "Pink lilies, white lisianthus, peach roses, green hydrangea, creamy astilbe, lily buds, and soft garden greenery.",
+    image: "/images/pink-lily-lisianthus-garden.jpg",
+    cardColor: "#ed2b82",
   },
   {
     id: "pink-star-lily-bouquet",
