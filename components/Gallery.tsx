@@ -112,7 +112,35 @@ export function Gallery() {
   }
 
   function openLightbox(index: number) {
+    preloadLookImages(index);
+    preloadLookImages(index === 0 ? flowerOfferings.length - 1 : index - 1);
+    preloadLookImages(index === flowerOfferings.length - 1 ? 0 : index + 1);
     setLightboxIndex(index);
+  }
+
+  function preloadLookImages(index: number) {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const look = flowerOfferings[index];
+
+    if (!look) {
+      return;
+    }
+
+    const imageSources = (look.media?.length
+      ? look.media.flatMap((item) =>
+          item.type === "image" ? [item.src] : item.poster ? [item.poster] : []
+        )
+      : [look.image]
+    ).filter(Boolean);
+
+    imageSources.forEach((imageSource) => {
+      const image = new globalThis.Image();
+      image.decoding = "async";
+      image.src = imageSource;
+    });
   }
 
   function handleOpenKeyDown(event: KeyboardEvent<HTMLDivElement>, index: number) {
@@ -248,6 +276,8 @@ export function Gallery() {
                   tabIndex={0}
                   onClick={() => openLightbox(activeIndex)}
                   onKeyDown={(event) => handleOpenKeyDown(event, activeIndex)}
+                  onPointerEnter={() => preloadLookImages(activeIndex)}
+                  onFocus={() => preloadLookImages(activeIndex)}
                   aria-label={`Open ${activeLook.name} larger`}
                 >
                   <LookbookImage
@@ -371,6 +401,8 @@ export function Gallery() {
                   tabIndex={0}
                   onClick={() => openLightbox(index)}
                   onKeyDown={(event) => handleOpenKeyDown(event, index)}
+                  onPointerEnter={() => preloadLookImages(index)}
+                  onFocus={() => preloadLookImages(index)}
                   aria-label={`Open ${offering.name} larger`}
                 >
                   <div
@@ -449,6 +481,7 @@ export function Gallery() {
                     alt={lightboxLook.name}
                     sizes="(min-width: 1024px) 70vw, 100vw"
                     priority
+                    unoptimized
                   />
                   <button
                     type="button"
@@ -507,6 +540,7 @@ function LookbookImage({
   alt,
   sizes,
   priority = false,
+  unoptimized = false,
 }: {
   src: string;
   backdropSrc?: string;
@@ -514,6 +548,7 @@ function LookbookImage({
   alt: string;
   sizes: string;
   priority?: boolean;
+  unoptimized?: boolean;
 }) {
   const mediaItems = media?.length ? media : [{ type: "image" as const, src, alt }];
   const [activeMediaIndex, setActiveMediaIndex] = useState(0);
@@ -583,6 +618,7 @@ function LookbookImage({
               priority={priority}
               isActive={index === activeMediaIndex}
               liftOnHover={index === activeMediaIndex}
+              unoptimized={unoptimized}
             />
           </div>
         ))}
@@ -646,6 +682,7 @@ function MediaItem({
   priority,
   isActive,
   liftOnHover = false,
+  unoptimized = false,
 }: {
   media: FlowerMedia;
   alt: string;
@@ -653,6 +690,7 @@ function MediaItem({
   priority: boolean;
   isActive: boolean;
   liftOnHover?: boolean;
+  unoptimized?: boolean;
 }) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
@@ -684,6 +722,7 @@ function MediaItem({
         fill
         sizes={sizes}
         priority={priority}
+        unoptimized={unoptimized}
         className={`object-contain transition duration-500 ${
           liftOnHover ? "group-hover:scale-[1.04]" : ""
         }`}
