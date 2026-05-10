@@ -73,7 +73,7 @@ export const flowerOfferings: FlowerOffering[] = [
   },
   {
     id: "green-amaranth-lily-garden",
-    name: "Green Amaranth Lily Garden",
+    name: "Mimi's Enchanted Lily Garden",
     description:
       "Green hydrangea, lily buds, purple garden blooms, hanging amaranthus, curly willow, and variegated foliage.",
     image: "/images/green-amaranth-lily-garden.png",
@@ -82,12 +82,12 @@ export const flowerOfferings: FlowerOffering[] = [
       {
         type: "image",
         src: "/images/green-amaranth-lily-garden.png",
-        alt: "Green Amaranth Lily Garden",
+        alt: "Mimi's Enchanted Lily Garden",
       },
       {
         type: "image",
         src: "/images/green-amaranth-lily-garden-detail-crop.jpg",
-        alt: "Green Amaranth Lily Garden detail",
+        alt: "Mimi's Enchanted Lily Garden detail",
       },
     ],
   },
