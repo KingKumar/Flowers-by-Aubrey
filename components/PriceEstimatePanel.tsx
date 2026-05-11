@@ -90,7 +90,8 @@ const DEFAULT_SELECTION: SelectionState = {
 };
 
 const WEB3FORMS_ENDPOINT = "https://api.web3forms.com/submit";
-const WEB3FORMS_ACCESS_KEY = process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY;
+const WEB3FORMS_ACCESS_KEY =
+  process.env.NEXT_PUBLIC_WEB3FORMS_ARRANGEMENT_ACCESS_KEY;
 const PRICING_DISCLAIMER =
   "This estimate is based on the selected arrangement size and vase. Final pricing may vary based on seasonal availability, vase availability, delivery requirements, and custom requests.";
 
@@ -214,7 +215,7 @@ export function PriceEstimatePanel({
     if (!WEB3FORMS_ACCESS_KEY) {
       setSubmitStatus("error");
       setSubmitMessage(
-        "This form is missing its Web3Forms access key. Add NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY to the site environment."
+        "This form is missing its Web3Forms access key. Add NEXT_PUBLIC_WEB3FORMS_ARRANGEMENT_ACCESS_KEY to the site environment."
       );
       return;
     }

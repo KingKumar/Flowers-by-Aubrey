@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export function Inquiry() {
   return (
     <section
@@ -14,12 +16,12 @@ export function Inquiry() {
           or a floral idea that needs a little care and imagination.
         </p>
         <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
-          <a
-            href="#price-estimate"
+          <Link
+            href="/contact"
             className="inline-flex min-h-12 items-center justify-center border-2 border-[#1b120c] bg-[#ed2b82] px-8 py-3 font-mono text-sm font-black uppercase tracking-[0.08em] text-[#fff2df] shadow-[4px_4px_0_#1b120c] transition hover:-translate-y-0.5"
           >
             Contact Aubrey
-          </a>
+          </Link>
         </div>
       </div>
     </section>

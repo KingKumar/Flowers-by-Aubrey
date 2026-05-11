@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 
 function scrollToSection(sectionId: string) {
   document.getElementById(sectionId)?.scrollIntoView({ behavior: "smooth" });
@@ -37,13 +38,12 @@ export function Hero() {
           >
             About
           </button>
-          <button
-            type="button"
-            onClick={() => scrollToSection("inquiry")}
+          <Link
+            href="/contact"
             className="transition hover:text-[#f24b12]"
           >
             Contact
-          </button>
+          </Link>
         </nav>
       </div>
 
@@ -64,13 +64,12 @@ export function Hero() {
             >
               View lookbook &rarr;
             </button>
-            <button
-              type="button"
-              onClick={() => scrollToSection("inquiry")}
+            <Link
+              href="/contact"
               className="inline-flex min-h-12 items-center justify-center border-b-2 border-[#253712] px-2 py-3 font-mono text-sm font-black uppercase tracking-[0.08em] text-[#253712] transition hover:text-[#f24b12]"
             >
               Contact Aubrey &rarr;
-            </button>
+            </Link>
           </div>
         </div>
 

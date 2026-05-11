@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 function scrollToSection(sectionId: string) {
   document.getElementById(sectionId)?.scrollIntoView({ behavior: "smooth" });
 }
@@ -20,12 +22,12 @@ export function Footer() {
           <a href="https://instagram.com" className="transition hover:text-[#c7da38]">
             Instagram
           </a>
-          <a
-            href="#price-estimate"
+          <Link
+            href="/contact"
             className="transition hover:text-[#c7da38]"
           >
             Contact
-          </a>
+          </Link>
           <button
             type="button"
             onClick={() => scrollToSection("gallery")}
