@@ -19,7 +19,10 @@ export function Footer() {
           </p>
         </div>
         <div className="flex flex-wrap gap-x-6 gap-y-3 font-mono text-sm font-black uppercase tracking-[0.08em] text-[#fff2df]">
-          <a href="https://instagram.com" className="transition hover:text-[#c7da38]">
+          <a
+            href="https://www.instagram.com/aubreyflorals"
+            className="transition hover:text-[#c7da38]"
+          >
             Instagram
           </a>
           <Link
