@@ -14,6 +14,12 @@ type PlaceSuggestion = {
   placeId: string;
 };
 
+const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+const LOS_ANGELES_SANTA_MONICA = {
+  latitude: 34.0195,
+  longitude: -118.4912,
+};
+
 export function GooglePlacesAddressInput({
   value,
   onChange,
@@ -53,7 +59,7 @@ export function GooglePlacesAddressInput({
   useEffect(() => {
     const trimmedValue = value.trim();
 
-    if (trimmedValue.length < 3) {
+    if (!GOOGLE_MAPS_API_KEY || trimmedValue.length < 3) {
       setSuggestions([]);
       setIsOpen(false);
       setIsLoading(false);
@@ -66,8 +72,27 @@ export function GooglePlacesAddressInput({
 
       try {
         const response = await fetch(
-          `/api/places/autocomplete?input=${encodeURIComponent(trimmedValue)}`,
-          { signal: abortController.signal }
+          "https://places.googleapis.com/v1/places:autocomplete",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "X-Goog-Api-Key": GOOGLE_MAPS_API_KEY ?? "",
+              "X-Goog-FieldMask":
+                "suggestions.placePrediction.placeId,suggestions.placePrediction.text",
+            },
+            body: JSON.stringify({
+              input: trimmedValue,
+              includedRegionCodes: ["us"],
+              locationBias: {
+                circle: {
+                  center: LOS_ANGELES_SANTA_MONICA,
+                  radius: 35000,
+                },
+              },
+            }),
+            signal: abortController.signal,
+          }
         );
 
         if (!response.ok) {
@@ -75,11 +100,28 @@ export function GooglePlacesAddressInput({
         }
 
         const result = (await response.json()) as {
-          suggestions?: PlaceSuggestion[];
+          suggestions?: Array<{
+            placePrediction?: {
+              placeId?: string;
+              text?: {
+                text?: string;
+              };
+            };
+          }>;
         };
 
-        setSuggestions(result.suggestions ?? []);
-        setIsOpen(Boolean(result.suggestions?.length));
+        const nextSuggestions =
+          result.suggestions
+            ?.map((suggestion) => ({
+              description: suggestion.placePrediction?.text?.text ?? "",
+              placeId: suggestion.placePrediction?.placeId ?? "",
+            }))
+            .filter(
+              (suggestion) => suggestion.description && suggestion.placeId
+            ) ?? [];
+
+        setSuggestions(nextSuggestions);
+        setIsOpen(Boolean(nextSuggestions.length));
         setActiveIndex(-1);
       } catch (error) {
         if (!abortController.signal.aborted) {
@@ -106,7 +148,11 @@ export function GooglePlacesAddressInput({
 
     try {
       const response = await fetch(
-        `/api/places/details?placeId=${encodeURIComponent(suggestion.placeId)}`
+        `https://places.googleapis.com/v1/places/${encodeURIComponent(
+          suggestion.placeId
+        )}?fields=formattedAddress,id,location&key=${encodeURIComponent(
+          GOOGLE_MAPS_API_KEY ?? ""
+        )}`
       );
 
       if (!response.ok) {
@@ -115,14 +161,20 @@ export function GooglePlacesAddressInput({
 
       const result = (await response.json()) as {
         place?: SelectedPlaceDetails;
+        formattedAddress?: string;
+        id?: string;
+        location?: {
+          latitude?: number;
+          longitude?: number;
+        };
       };
 
       onPlaceSelect(
         result.place ?? {
-          formattedAddress: suggestion.description,
-          placeId: suggestion.placeId,
-          latitude: null,
-          longitude: null,
+          formattedAddress: result.formattedAddress ?? suggestion.description,
+          placeId: result.id ?? suggestion.placeId,
+          latitude: result.location?.latitude ?? null,
+          longitude: result.location?.longitude ?? null,
         }
       );
     } catch {
