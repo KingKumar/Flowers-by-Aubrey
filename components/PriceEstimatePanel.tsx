@@ -4,6 +4,10 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import type { FormEvent } from "react";
 import { useEffect, useState } from "react";
+import {
+  GooglePlacesAddressInput,
+  type SelectedPlaceDetails,
+} from "./GooglePlacesAddressInput";
 
 type SelectedBouquet = {
   id: string;
@@ -114,6 +118,8 @@ export function PriceEstimatePanel({
   const [deliveryDate, setDeliveryDate] = useState("");
   const [deliveryTimeWindow, setDeliveryTimeWindow] = useState("");
   const [deliveryAddress, setDeliveryAddress] = useState("");
+  const [deliveryPlace, setDeliveryPlace] =
+    useState<SelectedPlaceDetails | null>(null);
   const [deliveryNotes, setDeliveryNotes] = useState("");
   const [occasion, setOccasion] = useState("");
   const [preferredColors, setPreferredColors] = useState("");
@@ -247,6 +253,11 @@ export function PriceEstimatePanel({
       "Vase selection": vaseSummary,
       "Estimated bouquet subtotal": formatPrice(bouquetSubtotal),
       "Delivery address": deliveryAddress.trim(),
+      "Delivery formatted address":
+        deliveryPlace?.formattedAddress || deliveryAddress.trim(),
+      "Delivery place ID": deliveryPlace?.placeId || "",
+      "Delivery latitude": deliveryPlace?.latitude ?? "",
+      "Delivery longitude": deliveryPlace?.longitude ?? "",
       "Delivery notes": deliveryNotes.trim(),
       Occasion: occasion.trim(),
       "Preferred colors or tones": preferredColors.trim(),
@@ -267,6 +278,12 @@ export function PriceEstimatePanel({
         "",
         "Delivery:",
         `Address: ${deliveryAddress.trim()}`,
+        `Formatted address: ${
+          deliveryPlace?.formattedAddress || deliveryAddress.trim()
+        }`,
+        `Place ID: ${deliveryPlace?.placeId || "Not selected"}`,
+        `Latitude: ${deliveryPlace?.latitude ?? "Not selected"}`,
+        `Longitude: ${deliveryPlace?.longitude ?? "Not selected"}`,
         `Notes: ${deliveryNotes.trim()}`,
         "",
         "Additional details:",
@@ -574,15 +591,15 @@ export function PriceEstimatePanel({
                         <span className="font-mono text-[11px] font-black uppercase tracking-[0.12em] text-[#344f20]">
                           Delivery address
                         </span>
-                        <input
-                          type="text"
+                        <GooglePlacesAddressInput
                           value={deliveryAddress}
-                          onChange={(event) => {
-                            setDeliveryAddress(event.target.value);
-                            if (event.target.value.trim()) {
+                          onChange={(value) => {
+                            setDeliveryAddress(value);
+                            if (value.trim()) {
                               setShowDeliveryWarning(false);
                             }
                           }}
+                          onPlaceSelect={setDeliveryPlace}
                           placeholder="Street address, city"
                           className="mt-1 min-h-9 w-full border-2 border-[#1b120c] bg-[#fff8eb] px-2 font-mono text-base font-bold text-[#1b120c] outline-none focus:border-[#ed2b82]"
                         />
@@ -944,15 +961,15 @@ export function PriceEstimatePanel({
                     <span className="font-mono text-xs font-black uppercase tracking-[0.12em] text-[#344f20]">
                       Delivery address
                     </span>
-                    <input
-                      type="text"
+                    <GooglePlacesAddressInput
                       value={deliveryAddress}
-                      onChange={(event) => {
-                        setDeliveryAddress(event.target.value);
-                        if (event.target.value.trim()) {
+                      onChange={(value) => {
+                        setDeliveryAddress(value);
+                        if (value.trim()) {
                           setShowDeliveryWarning(false);
                         }
                       }}
+                      onPlaceSelect={setDeliveryPlace}
                       placeholder="Street address, city"
                       className="mt-2 min-h-12 w-full border-2 border-[#1b120c] bg-[#fff8eb] px-3 font-mono text-base font-bold text-[#1b120c] outline-none focus:border-[#ed2b82]"
                     />
