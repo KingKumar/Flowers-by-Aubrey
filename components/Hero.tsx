@@ -23,7 +23,7 @@ export function Hero() {
           Aubrey
           <span className="block">Florals</span>
         </button>
-        <nav className="hidden items-center gap-10 font-mono text-sm font-black uppercase tracking-[0.08em] text-[#253712] md:flex">
+        <nav className="hidden items-center gap-10 font-mono text-sm font-black tracking-normal text-[#253712] md:flex">
           <button
             type="button"
             onClick={() => scrollToSection("gallery")}
