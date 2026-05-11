@@ -9,73 +9,10 @@ export type SelectedPlaceDetails = {
   longitude: number | null;
 };
 
-type GoogleAutocomplete = {
-  addListener: (eventName: "place_changed", handler: () => void) => void;
-  getPlace: () => {
-    formatted_address?: string;
-    place_id?: string;
-    geometry?: {
-      location?: {
-        lat: () => number;
-        lng: () => number;
-      };
-    };
-  };
+type PlaceSuggestion = {
+  description: string;
+  placeId: string;
 };
-
-type GoogleMapsWindow = Window &
-  typeof globalThis & {
-    google?: {
-      maps?: {
-        LatLngBounds: new (
-          southwest: { lat: number; lng: number },
-          northeast: { lat: number; lng: number }
-        ) => unknown;
-        places?: {
-          Autocomplete: new (
-            input: HTMLInputElement,
-            options: Record<string, unknown>
-          ) => GoogleAutocomplete;
-        };
-      };
-    };
-  };
-
-const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
-const GOOGLE_SCRIPT_ID = "google-maps-places-script";
-const GOOGLE_SCRIPT_READY_EVENT = "google-maps-places-ready";
-
-function loadGooglePlacesScript() {
-  if (!GOOGLE_MAPS_API_KEY || typeof window === "undefined") {
-    return;
-  }
-
-  const typedWindow = window as GoogleMapsWindow;
-
-  if (typedWindow.google?.maps?.places?.Autocomplete) {
-    window.dispatchEvent(new Event(GOOGLE_SCRIPT_READY_EVENT));
-    return;
-  }
-
-  const existingScript = document.getElementById(GOOGLE_SCRIPT_ID);
-
-  if (existingScript) {
-    return;
-  }
-
-  const script = document.createElement("script");
-  script.id = GOOGLE_SCRIPT_ID;
-  script.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(
-    GOOGLE_MAPS_API_KEY
-  )}&libraries=places`;
-  script.async = true;
-  script.defer = true;
-  script.addEventListener("load", () => {
-    window.dispatchEvent(new Event(GOOGLE_SCRIPT_READY_EVENT));
-  });
-
-  document.head.appendChild(script);
-}
 
 export function GooglePlacesAddressInput({
   value,
@@ -90,90 +27,182 @@ export function GooglePlacesAddressInput({
   placeholder: string;
   className: string;
 }) {
-  const inputRef = useRef<HTMLInputElement | null>(null);
-  const autocompleteRef = useRef<GoogleAutocomplete | null>(null);
-  const onChangeRef = useRef(onChange);
-  const onPlaceSelectRef = useRef(onPlaceSelect);
-  const [hasAutocomplete, setHasAutocomplete] = useState(false);
+  const wrapperRef = useRef<HTMLDivElement | null>(null);
+  const [suggestions, setSuggestions] = useState<PlaceSuggestion[]>([]);
+  const [isOpen, setIsOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(-1);
 
   useEffect(() => {
-    onChangeRef.current = onChange;
-    onPlaceSelectRef.current = onPlaceSelect;
-  }, [onChange, onPlaceSelect]);
-
-  useEffect(() => {
-    if (!GOOGLE_MAPS_API_KEY) {
-      return;
-    }
-
-    loadGooglePlacesScript();
-
-    function setupAutocomplete() {
-      const typedWindow = window as GoogleMapsWindow;
-
+    function closeOnOutsideClick(event: MouseEvent) {
       if (
-        autocompleteRef.current ||
-        !inputRef.current ||
-        !typedWindow.google?.maps?.places?.Autocomplete
+        wrapperRef.current &&
+        !wrapperRef.current.contains(event.target as Node)
       ) {
-        return;
+        setIsOpen(false);
       }
-
-      const losAngelesSantaMonicaBounds =
-        new typedWindow.google.maps.LatLngBounds(
-          { lat: 33.92, lng: -118.55 },
-          { lat: 34.18, lng: -118.18 }
-        );
-
-      const autocomplete = new typedWindow.google.maps.places.Autocomplete(
-        inputRef.current,
-        {
-          bounds: losAngelesSantaMonicaBounds,
-          componentRestrictions: { country: "us" },
-          fields: ["formatted_address", "geometry", "place_id"],
-          strictBounds: false,
-          types: ["address"],
-        }
-      );
-
-      autocomplete.addListener("place_changed", () => {
-        const place = autocomplete.getPlace();
-        const formattedAddress = place.formatted_address ?? inputRef.current?.value ?? "";
-        const selectedPlace = {
-          formattedAddress,
-          placeId: place.place_id ?? "",
-          latitude: place.geometry?.location?.lat() ?? null,
-          longitude: place.geometry?.location?.lng() ?? null,
-        };
-
-        onChangeRef.current(formattedAddress);
-        onPlaceSelectRef.current(selectedPlace.placeId ? selectedPlace : null);
-      });
-
-      autocompleteRef.current = autocomplete;
-      setHasAutocomplete(true);
     }
 
-    setupAutocomplete();
-    window.addEventListener(GOOGLE_SCRIPT_READY_EVENT, setupAutocomplete);
+    document.addEventListener("mousedown", closeOnOutsideClick);
 
     return () => {
-      window.removeEventListener(GOOGLE_SCRIPT_READY_EVENT, setupAutocomplete);
+      document.removeEventListener("mousedown", closeOnOutsideClick);
     };
   }, []);
 
+  useEffect(() => {
+    const trimmedValue = value.trim();
+
+    if (trimmedValue.length < 3) {
+      setSuggestions([]);
+      setIsOpen(false);
+      setIsLoading(false);
+      return;
+    }
+
+    const abortController = new AbortController();
+    const timeout = window.setTimeout(async () => {
+      setIsLoading(true);
+
+      try {
+        const response = await fetch(
+          `/api/places/autocomplete?input=${encodeURIComponent(trimmedValue)}`,
+          { signal: abortController.signal }
+        );
+
+        if (!response.ok) {
+          throw new Error("Autocomplete unavailable.");
+        }
+
+        const result = (await response.json()) as {
+          suggestions?: PlaceSuggestion[];
+        };
+
+        setSuggestions(result.suggestions ?? []);
+        setIsOpen(Boolean(result.suggestions?.length));
+        setActiveIndex(-1);
+      } catch (error) {
+        if (!abortController.signal.aborted) {
+          setSuggestions([]);
+          setIsOpen(false);
+        }
+      } finally {
+        if (!abortController.signal.aborted) {
+          setIsLoading(false);
+        }
+      }
+    }, 220);
+
+    return () => {
+      window.clearTimeout(timeout);
+      abortController.abort();
+    };
+  }, [value]);
+
+  async function selectSuggestion(suggestion: PlaceSuggestion) {
+    onChange(suggestion.description);
+    setIsOpen(false);
+    setSuggestions([]);
+
+    try {
+      const response = await fetch(
+        `/api/places/details?placeId=${encodeURIComponent(suggestion.placeId)}`
+      );
+
+      if (!response.ok) {
+        throw new Error("Place details unavailable.");
+      }
+
+      const result = (await response.json()) as {
+        place?: SelectedPlaceDetails;
+      };
+
+      onPlaceSelect(
+        result.place ?? {
+          formattedAddress: suggestion.description,
+          placeId: suggestion.placeId,
+          latitude: null,
+          longitude: null,
+        }
+      );
+    } catch {
+      onPlaceSelect({
+        formattedAddress: suggestion.description,
+        placeId: suggestion.placeId,
+        latitude: null,
+        longitude: null,
+      });
+    }
+  }
+
   return (
-    <input
-      ref={inputRef}
-      type="text"
-      value={value}
-      onChange={(event) => {
-        onChange(event.target.value);
-        onPlaceSelect(null);
-      }}
-      placeholder={placeholder}
-      autoComplete={hasAutocomplete ? "off" : "street-address"}
-      className={className}
-    />
+    <div ref={wrapperRef} className="relative">
+      <input
+        type="text"
+        value={value}
+        onChange={(event) => {
+          onChange(event.target.value);
+          onPlaceSelect(null);
+        }}
+        onFocus={() => {
+          if (suggestions.length) {
+            setIsOpen(true);
+          }
+        }}
+        onKeyDown={(event) => {
+          if (!isOpen || !suggestions.length) {
+            return;
+          }
+
+          if (event.key === "ArrowDown") {
+            event.preventDefault();
+            setActiveIndex((current) =>
+              Math.min(current + 1, suggestions.length - 1)
+            );
+          }
+
+          if (event.key === "ArrowUp") {
+            event.preventDefault();
+            setActiveIndex((current) => Math.max(current - 1, 0));
+          }
+
+          if (event.key === "Enter" && activeIndex >= 0) {
+            event.preventDefault();
+            void selectSuggestion(suggestions[activeIndex]);
+          }
+
+          if (event.key === "Escape") {
+            setIsOpen(false);
+          }
+        }}
+        placeholder={placeholder}
+        autoComplete="street-address"
+        className={className}
+      />
+
+      {isOpen ? (
+        <div className="absolute left-0 right-0 top-full z-[90] mt-1 max-h-56 overflow-y-auto border-2 border-[#1b120c] bg-white shadow-[4px_4px_0_#ed2b82]">
+          {suggestions.map((suggestion, index) => (
+            <button
+              key={suggestion.placeId}
+              type="button"
+              onMouseDown={(event) => event.preventDefault()}
+              onClick={() => void selectSuggestion(suggestion)}
+              className={`block w-full border-b border-[#1b120c]/20 px-3 py-2 text-left font-mono text-xs font-bold leading-5 text-[#344f20] transition last:border-b-0 ${
+                activeIndex === index ? "bg-[#fff2df]" : "bg-white"
+              }`}
+            >
+              {suggestion.description}
+            </button>
+          ))}
+        </div>
+      ) : null}
+
+      {isLoading ? (
+        <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 font-mono text-[10px] font-black uppercase tracking-[0.08em] text-[#344f20]">
+          ...
+        </span>
+      ) : null}
+    </div>
   );
 }
