@@ -140,22 +140,6 @@ export const flowerOfferings: FlowerOffering[] = [
     cardColor: "#ed2b82",
   },
   {
-    id: "peach-rose-hydrangea-bouquet",
-    name: "Peach Rose Hydrangea Bouquet",
-    description:
-      "Peach roses, white hydrangea, and white chamomile.",
-    image: "/images/IMG_8049.JPG",
-    cardColor: "#f26a21",
-  },
-  {
-    id: "citrus-rose-mum-bouquet",
-    name: "Citrus Dahlia Bouquet",
-    description:
-      "Yellow dahlias and orange dahlias with fresh green filler.",
-    image: "/images/IMG_9150.JPG",
-    cardColor: "#f26a21",
-  },
-  {
     id: "autumn-safflower-garden",
     name: "Autumn Safflower Garden",
     description:
@@ -188,44 +172,12 @@ export const flowerOfferings: FlowerOffering[] = [
     cardColor: "#ed2b82",
   },
   {
-    id: "orange-gerbera-hydrangea-mix",
-    name: "Orange Gerbera Hydrangea Mix",
-    description:
-      "Orange gerbera daisies, green hydrangea, hot-pink mums, and button mums.",
-    image: "/images/IMG_8057.JPG",
-    cardColor: "#ed2b82",
-  },
-  {
-    id: "blush-rose-chamomile-bouquet",
-    name: "Blush Rose Chamomile Bouquet",
-    description:
-      "Pink roses, white chamomile, green hydrangea, and soft garden filler.",
-    image: "/images/IMG_8048.JPG",
-    cardColor: "#f26a21",
-  },
-  {
     id: "purple-mum-hydrangea-dome",
     name: "Purple Mum Hydrangea Dome",
     description:
       "Purple cushion mums, lavender mums, green hydrangea, and a clean rounded shape.",
     image: "/images/IMG_7949.JPG",
     cardColor: "#ed2b82",
-  },
-  {
-    id: "pink-rose-garden-dome",
-    name: "Pink Rose Garden Dome",
-    description:
-      "Pink roses and green hydrangea gathered into a compact rounded bouquet.",
-    image: "/images/IMG_7251.JPG",
-    cardColor: "#c7da38",
-  },
-  {
-    id: "blue-iris-lily-bouquet",
-    name: "Blue Iris Lily Bouquet",
-    description:
-      "Blue iris, white tulips, white stock, white mums, and crisp green stems.",
-    image: "/images/IMG_7183.JPG",
-    cardColor: "#344f20",
   },
   {
     id: "candlelight-rose-centerpiece",
