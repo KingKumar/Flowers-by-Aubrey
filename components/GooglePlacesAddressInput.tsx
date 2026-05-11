@@ -239,8 +239,9 @@ export function GooglePlacesAddressInput({
               key={suggestion.placeId}
               type="button"
               onMouseDown={(event) => event.preventDefault()}
+              onMouseEnter={() => setActiveIndex(index)}
               onClick={() => void selectSuggestion(suggestion)}
-              className={`block w-full border-b border-[#1b120c]/20 px-3 py-2 text-left font-mono text-xs font-bold leading-5 text-[#344f20] transition last:border-b-0 ${
+              className={`block w-full border-b border-[#1b120c]/20 px-3 py-2 text-left font-mono text-xs font-bold leading-5 text-[#344f20] transition last:border-b-0 hover:bg-[#fff2df] hover:text-[#1b120c] ${
                 activeIndex === index ? "bg-[#fff2df]" : "bg-white"
               }`}
             >

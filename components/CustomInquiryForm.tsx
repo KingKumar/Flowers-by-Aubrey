@@ -3,6 +3,10 @@
 import { useRouter } from "next/navigation";
 import type { FormEvent } from "react";
 import { useState } from "react";
+import {
+  GooglePlacesAddressInput,
+  type SelectedPlaceDetails,
+} from "./GooglePlacesAddressInput";
 
 const WEB3FORMS_ENDPOINT = "https://api.web3forms.com/submit";
 const WEB3FORMS_ACCESS_KEY = process.env.NEXT_PUBLIC_WEB3FORMS_EVENTS_ACCESS_KEY;
@@ -37,6 +41,8 @@ export function CustomInquiryForm() {
     location: "",
     details: "",
   });
+  const [selectedLocation, setSelectedLocation] =
+    useState<SelectedPlaceDetails | null>(null);
   const [submitStatus, setSubmitStatus] = useState<
     "idle" | "submitting" | "error"
   >("idle");
@@ -88,6 +94,11 @@ export function CustomInquiryForm() {
       "Desired date": formData.date,
       "Budget range": formData.budget,
       "Location or delivery area": formData.location.trim(),
+      "Location formatted address":
+        selectedLocation?.formattedAddress || formData.location.trim(),
+      "Location place ID": selectedLocation?.placeId || "",
+      "Location latitude": selectedLocation?.latitude ?? "",
+      "Location longitude": selectedLocation?.longitude ?? "",
       "Project details": formData.details.trim(),
       message: [
         "Customer:",
@@ -102,6 +113,14 @@ export function CustomInquiryForm() {
         `Location or delivery area: ${
           formData.location.trim() || "Not provided"
         }`,
+        `Formatted address: ${
+          selectedLocation?.formattedAddress ||
+          formData.location.trim() ||
+          "Not selected"
+        }`,
+        `Place ID: ${selectedLocation?.placeId || "Not selected"}`,
+        `Latitude: ${selectedLocation?.latitude ?? "Not selected"}`,
+        `Longitude: ${selectedLocation?.longitude ?? "Not selected"}`,
         "",
         "Project details:",
         formData.details.trim() || "Not provided",
@@ -244,11 +263,10 @@ export function CustomInquiryForm() {
         <span className="font-mono text-xs font-black uppercase tracking-[0.12em] text-[#344f20]">
           Location or Delivery Area
         </span>
-        <input
-          type="text"
-          name="location"
+        <GooglePlacesAddressInput
           value={formData.location}
-          onChange={(event) => updateField("location", event.target.value)}
+          onChange={(value) => updateField("location", value)}
+          onPlaceSelect={setSelectedLocation}
           placeholder="Venue, neighborhood, or delivery area"
           className="mt-2 min-h-12 w-full border-2 border-[#1b120c] bg-white px-3 font-mono text-base font-bold text-[#1b120c] outline-none focus:border-[#ed2b82]"
         />
