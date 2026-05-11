@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import type { FormEvent } from "react";
 import { useEffect, useState } from "react";
 
@@ -90,8 +91,6 @@ const DEFAULT_SELECTION: SelectionState = {
 
 const WEB3FORMS_ENDPOINT = "https://api.web3forms.com/submit";
 const WEB3FORMS_ACCESS_KEY = process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY;
-const SUCCESS_MESSAGE =
-  "Thank you — your arrangement request has been sent. Aubrey will follow up to confirm availability, delivery, and final pricing.";
 const PRICING_DISCLAIMER =
   "This estimate is based on the selected arrangement size and vase. Final pricing may vary based on seasonal availability, vase availability, delivery requirements, and custom requests.";
 
@@ -106,6 +105,7 @@ export function PriceEstimatePanel({
 }: {
   selectedBouquets: SelectedBouquet[];
 }) {
+  const router = useRouter();
   const [selections, setSelections] = useState<Record<string, SelectionState>>({});
   const [customerName, setCustomerName] = useState("");
   const [customerEmail, setCustomerEmail] = useState("");
@@ -301,24 +301,7 @@ export function PriceEstimatePanel({
       }
 
       setSubmitStatus("success");
-      setSubmitMessage(SUCCESS_MESSAGE);
-      window.alert(SUCCESS_MESSAGE);
-      setSelections({});
-      setCustomerName("");
-      setCustomerEmail("");
-      setCustomerPhone("");
-      setDeliveryDate("");
-      setDeliveryTimeWindow("");
-      setDeliveryAddress("");
-      setDeliveryNotes("");
-      setOccasion("");
-      setPreferredColors("");
-      setFlowerRequests("");
-      setCardMessage("");
-      setShowDeliveryWarning(false);
-      setShowNameWarning(false);
-      setShowEmailWarning(false);
-      setMobileStepIndex(0);
+      router.push("/thank-you");
     } catch (error) {
       setSubmitStatus("error");
       setSubmitMessage(
