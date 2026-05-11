@@ -30,6 +30,11 @@ type MobileStep =
       kind: "delivery";
     };
 
+type Coordinates = {
+  lat: number;
+  lng: number;
+};
+
 const SIZE_OPTIONS = {
   petite: {
     label: "Petite",
@@ -93,11 +98,35 @@ const DEFAULT_SELECTION: SelectionState = {
   vaseId: "wrapped",
 };
 
+const DELIVERY_ORIGIN = {
+  label: "Aubrey Florals Studio",
+  lat: 34.04872,
+  lng: -118.45906,
+};
+
+const DELIVERY_TIERS = [
+  {
+    minMiles: 0,
+    maxMiles: 3,
+    fee: 15,
+  },
+  {
+    minMiles: 3,
+    maxMiles: 8,
+    fee: 25,
+  },
+  {
+    minMiles: 8,
+    maxMiles: 15,
+    fee: 40,
+  },
+];
+
 const WEB3FORMS_ENDPOINT = "https://api.web3forms.com/submit";
 const WEB3FORMS_ACCESS_KEY =
   process.env.NEXT_PUBLIC_WEB3FORMS_ARRANGEMENT_ACCESS_KEY;
 const PRICING_DISCLAIMER =
-  "This estimate is based on the selected arrangement size and vase. Final pricing may vary based on seasonal availability, vase availability, delivery requirements, and custom requests.";
+  "This is an estimate. Final pricing may vary based on seasonal flower availability, vase availability, delivery requirements, and custom requests.";
 
 const currencyFormatter = new Intl.NumberFormat("en-US", {
   style: "currency",
@@ -153,6 +182,11 @@ export function PriceEstimatePanel({
     (total, line) => total + line.itemPrice,
     0
   );
+  const deliveryEstimate = getDeliveryEstimate(deliveryPlace);
+  const estimatedTotal =
+    deliveryEstimate.status === "estimated"
+      ? bouquetSubtotal + deliveryEstimate.fee
+      : null;
   const mobileSteps: MobileStep[] = [
     ...bouquetLines.flatMap((_, lineIndex): MobileStep[] => [
       { kind: "size", lineIndex },
@@ -252,18 +286,39 @@ export function PriceEstimatePanel({
       "Selected size and dimensions": sizeSummary,
       "Vase selection": vaseSummary,
       "Estimated bouquet subtotal": formatPrice(bouquetSubtotal),
+      "Arrangement Subtotal": formatPrice(bouquetSubtotal),
       "Delivery address": deliveryAddress.trim(),
+      "Delivery Address": deliveryAddress.trim(),
       "Delivery formatted address":
         deliveryPlace?.formattedAddress || deliveryAddress.trim(),
       "Delivery place ID": deliveryPlace?.placeId || "",
+      "Google Place ID": deliveryPlace?.placeId || "",
       "Delivery latitude": deliveryPlace?.latitude ?? "",
+      "Delivery Latitude": deliveryPlace?.latitude ?? "",
       "Delivery longitude": deliveryPlace?.longitude ?? "",
+      "Delivery Longitude": deliveryPlace?.longitude ?? "",
+      "Estimated Delivery Distance":
+        deliveryEstimate.distanceMiles !== null
+          ? `${deliveryEstimate.distanceMiles.toFixed(1)} miles`
+          : "Unavailable",
+      "Estimated Delivery Fee":
+        deliveryEstimate.status === "estimated"
+          ? formatPrice(deliveryEstimate.fee)
+          : deliveryEstimate.status === "custom"
+            ? "Custom quote required"
+            : "To be confirmed after address review",
+      "Delivery Pricing Status": deliveryEstimate.label,
+      "Estimated Total":
+        estimatedTotal !== null
+          ? formatPrice(estimatedTotal)
+          : `Estimated total before delivery: ${formatPrice(bouquetSubtotal)}`,
       "Delivery notes": deliveryNotes.trim(),
       Occasion: occasion.trim(),
       "Preferred colors or tones": preferredColors.trim(),
       "Flowers to include/avoid": flowerRequests.trim(),
       "Card message": cardMessage.trim(),
       "Requested delivery date/time": requestedDelivery,
+      "Pricing Disclaimer": PRICING_DISCLAIMER,
       Disclaimer: PRICING_DISCLAIMER,
       message: [
         "Customer:",
@@ -284,7 +339,28 @@ export function PriceEstimatePanel({
         `Place ID: ${deliveryPlace?.placeId || "Not selected"}`,
         `Latitude: ${deliveryPlace?.latitude ?? "Not selected"}`,
         `Longitude: ${deliveryPlace?.longitude ?? "Not selected"}`,
+        `Estimated delivery distance: ${
+          deliveryEstimate.distanceMiles !== null
+            ? `${deliveryEstimate.distanceMiles.toFixed(1)} miles`
+            : "Unavailable"
+        }`,
+        `Estimated delivery fee: ${
+          deliveryEstimate.status === "estimated"
+            ? formatPrice(deliveryEstimate.fee)
+            : deliveryEstimate.status === "custom"
+              ? "Custom quote required"
+              : "To be confirmed after address review"
+        }`,
+        `Delivery pricing status: ${deliveryEstimate.label}`,
         `Notes: ${deliveryNotes.trim()}`,
+        "",
+        "Pricing:",
+        `Arrangement subtotal: ${formatPrice(bouquetSubtotal)}`,
+        `Estimated total: ${
+          estimatedTotal !== null
+            ? formatPrice(estimatedTotal)
+            : `Estimated total before delivery: ${formatPrice(bouquetSubtotal)}`
+        }`,
         "",
         "Additional details:",
         `Occasion: ${occasion.trim()}`,
@@ -610,6 +686,10 @@ export function PriceEstimatePanel({
                           address. Aubrey will confirm delivery details.
                         </p>
                       ) : null}
+                      <DeliveryEstimateCard
+                        deliveryEstimate={deliveryEstimate}
+                        compact
+                      />
                       <label>
                         <span className="font-mono text-[11px] font-black uppercase tracking-[0.12em] text-[#344f20]">
                           Delivery notes
@@ -654,11 +734,16 @@ export function PriceEstimatePanel({
                   </button>
                   <div className="text-right">
                     <p className="font-mono text-[9px] font-black uppercase tracking-[0.08em] text-[#344f20]">
-                      Subtotal
+                      {estimatedTotal !== null ? "Estimated total" : "Before delivery"}
                     </p>
                     <p className="text-xl font-black text-[#ed2b82]">
-                      {formatPrice(bouquetSubtotal)}
+                      {formatPrice(estimatedTotal ?? bouquetSubtotal)}
                     </p>
+                    {deliveryEstimate.status === "estimated" ? (
+                      <p className="font-mono text-[8px] font-black uppercase tracking-[0.06em] text-[#344f20]">
+                        Delivery {formatPrice(deliveryEstimate.fee)}
+                      </p>
+                    ) : null}
                   </div>
                   {isFinalMobileStep ? (
                     <button
@@ -980,6 +1065,7 @@ export function PriceEstimatePanel({
                       Aubrey will confirm delivery details.
                     </p>
                   ) : null}
+                  <DeliveryEstimateCard deliveryEstimate={deliveryEstimate} />
 
                   <label className="block">
                     <span className="font-mono text-xs font-black uppercase tracking-[0.12em] text-[#344f20]">
@@ -1052,12 +1138,44 @@ export function PriceEstimatePanel({
                 </h3>
                 <div className="mt-6 space-y-4 font-mono text-sm font-black uppercase tracking-[0.06em]">
                   <div className="flex items-center justify-between gap-4">
-                    <span>Estimated bouquet subtotal</span>
+                    <span>Arrangement subtotal</span>
                     <span>{formatPrice(bouquetSubtotal)}</span>
                   </div>
+                  <p className="font-mono text-[11px] font-bold normal-case leading-5 tracking-normal text-[#fff2df]/80">
+                    Vase add-ons are included in the arrangement subtotal.
+                  </p>
+                  <div className="flex items-center justify-between gap-4 border-t border-[#fff2df]/50 pt-4">
+                    <span>Estimated delivery</span>
+                    <span>
+                      {deliveryEstimate.status === "estimated"
+                        ? formatPrice(deliveryEstimate.fee)
+                        : deliveryEstimate.status === "custom"
+                          ? "Custom"
+                          : "Review"}
+                    </span>
+                  </div>
                   <div className="border-t border-[#fff2df]/50 pt-4">
-                    <p className="leading-6 text-[#c7da38]">
-                      Final pricing will be confirmed after Aubrey reviews.
+                    {estimatedTotal !== null ? (
+                      <div className="flex items-center justify-between gap-4 text-[#c7da38]">
+                        <span>Estimated total</span>
+                        <span>{formatPrice(estimatedTotal)}</span>
+                      </div>
+                    ) : (
+                      <div className="space-y-2 text-[#c7da38]">
+                        <div className="flex items-center justify-between gap-4">
+                          <span>Before delivery</span>
+                          <span>{formatPrice(bouquetSubtotal)}</span>
+                        </div>
+                        <p className="normal-case leading-6 tracking-normal">
+                          Delivery pricing will be confirmed after address
+                          review.
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                  <div className="border-t border-[#fff2df]/50 pt-4">
+                    <p className="leading-6 text-[#fff2df]/90">
+                      Final pricing confirmed after review.
                     </p>
                   </div>
                 </div>
@@ -1162,6 +1280,159 @@ function MobileBouquetStep({
       <div className="mt-2 min-h-0 flex-1">{children}</div>
     </div>
   );
+}
+
+type DeliveryEstimate =
+  | {
+      status: "estimated";
+      label: string;
+      distanceMiles: number;
+      fee: number;
+    }
+  | {
+      status: "custom";
+      label: string;
+      distanceMiles: number;
+      fee: null;
+    }
+  | {
+      status: "unavailable";
+      label: string;
+      distanceMiles: null;
+      fee: null;
+    };
+
+function DeliveryEstimateCard({
+  deliveryEstimate,
+  compact = false,
+}: {
+  deliveryEstimate: DeliveryEstimate;
+  compact?: boolean;
+}) {
+  const textSize = compact ? "text-[9px] leading-3" : "text-xs leading-5";
+  const padding = compact ? "p-2" : "p-3";
+
+  if (deliveryEstimate.status === "estimated") {
+    return (
+      <div
+        className={`border-2 border-[#1b120c] bg-[#fff2df] ${padding} font-mono font-bold text-[#344f20]`}
+      >
+        <p
+          className={`font-black uppercase tracking-[0.08em] text-[#1b120c] ${textSize}`}
+        >
+          Delivery estimate
+        </p>
+        <div className={`mt-1 grid gap-1 ${textSize}`}>
+          <p>
+            Estimated distance: {deliveryEstimate.distanceMiles.toFixed(1)} miles
+          </p>
+          <p>Estimated delivery: {formatPrice(deliveryEstimate.fee)}</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (deliveryEstimate.status === "custom") {
+    return (
+      <div
+        className={`border-2 border-[#1b120c] bg-[#fff2df] ${padding} font-mono font-bold text-[#344f20]`}
+      >
+        <p
+          className={`font-black uppercase tracking-[0.08em] text-[#1b120c] ${textSize}`}
+        >
+          Delivery estimate
+        </p>
+        <p className={`mt-1 ${textSize}`}>Custom delivery quote required.</p>
+      </div>
+    );
+  }
+
+  return (
+    <div
+      className={`border-2 border-[#1b120c] bg-[#fff2df] ${padding} font-mono font-bold text-[#344f20]`}
+    >
+      <p
+        className={`font-black uppercase tracking-[0.08em] text-[#1b120c] ${textSize}`}
+      >
+        Delivery estimate
+      </p>
+      <p className={`mt-1 ${textSize}`}>
+        Delivery pricing will be confirmed after Aubrey reviews the address.
+      </p>
+    </div>
+  );
+}
+
+function getDeliveryEstimate(
+  deliveryPlace: SelectedPlaceDetails | null
+): DeliveryEstimate {
+  if (
+    deliveryPlace?.latitude === null ||
+    deliveryPlace?.longitude === null ||
+    deliveryPlace?.latitude === undefined ||
+    deliveryPlace?.longitude === undefined
+  ) {
+    return {
+      status: "unavailable",
+      label: "Delivery pricing will be confirmed after address review.",
+      distanceMiles: null,
+      fee: null,
+    };
+  }
+
+  const distanceMiles = calculateDistanceMiles(
+    {
+      lat: DELIVERY_ORIGIN.lat,
+      lng: DELIVERY_ORIGIN.lng,
+    },
+    {
+      lat: deliveryPlace.latitude,
+      lng: deliveryPlace.longitude,
+    }
+  );
+  const tier = DELIVERY_TIERS.find(
+    (deliveryTier) =>
+      distanceMiles >= deliveryTier.minMiles &&
+      distanceMiles <= deliveryTier.maxMiles
+  );
+
+  if (!tier) {
+    return {
+      status: "custom",
+      label: "Custom delivery quote required.",
+      distanceMiles,
+      fee: null,
+    };
+  }
+
+  return {
+    status: "estimated",
+    label: `Estimated delivery from ${DELIVERY_ORIGIN.label}.`,
+    distanceMiles,
+    fee: tier.fee,
+  };
+}
+
+function calculateDistanceMiles(origin: Coordinates, destination: Coordinates) {
+  const earthRadiusMiles = 3958.8;
+  const latDistance = toRadians(destination.lat - origin.lat);
+  const lngDistance = toRadians(destination.lng - origin.lng);
+  const originLat = toRadians(origin.lat);
+  const destinationLat = toRadians(destination.lat);
+  const haversine =
+    Math.sin(latDistance / 2) * Math.sin(latDistance / 2) +
+    Math.cos(originLat) *
+      Math.cos(destinationLat) *
+      Math.sin(lngDistance / 2) *
+      Math.sin(lngDistance / 2);
+  const angularDistance =
+    2 * Math.atan2(Math.sqrt(haversine), Math.sqrt(1 - haversine));
+
+  return Math.round(earthRadiusMiles * angularDistance * 10) / 10;
+}
+
+function toRadians(degrees: number) {
+  return degrees * (Math.PI / 180);
 }
 
 function formatPrice(price: number) {
