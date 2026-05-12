@@ -27,6 +27,11 @@ export const flowerOfferings: FlowerOffering[] = [
         alt: "Grandma's Orchid Garden",
       },
       {
+        type: "image",
+        src: "/images/aubrey-grandmas-orchid-garden-scale.jpg",
+        alt: "Aubrey holding Grandma's Orchid Garden for scale",
+      },
+      {
         type: "video",
         src: "/images/grandmas-orchid-garden-video-silent.mp4",
         alt: "Grandma's Orchid Garden video",

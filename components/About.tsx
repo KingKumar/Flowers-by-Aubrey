@@ -7,8 +7,8 @@ export function About() {
       <div className="mx-auto grid max-w-7xl items-center gap-10 lg:grid-cols-[0.95fr_1.05fr]">
         <div className="relative aspect-[4/5] overflow-hidden border-2 border-[#1b120c] bg-[#f26a21] shadow-[8px_8px_0_#ed2b82]">
           <Image
-            src="/images/green-amaranth-lily-garden.png"
-            alt="Green hydrangea and lily arrangement with hanging amaranthus"
+            src="/images/aubrey-grandmas-orchid-garden-scale.jpg"
+            alt="Aubrey holding Grandma's Orchid Garden"
             fill
             sizes="(min-width: 1024px) 42vw, 100vw"
             className="object-cover saturate-[1.08]"
