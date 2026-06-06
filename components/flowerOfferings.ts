@@ -14,6 +14,32 @@ export type FlowerOffering = {
 
 export const flowerOfferings: FlowerOffering[] = [
   {
+    id: "lunar-velvet",
+    name: "Lunar Velvet",
+    description:
+      "Lavender spider mums, green hydrangea, deep purple lisianthus, scabiosa, burgundy dahlias, campanula, delphinium, and airy seasonal stems.",
+    image: "/images/IMG_0555.JPG",
+    cardColor: "#344f20",
+    media: [
+      {
+        type: "image",
+        src: "/images/IMG_0555.JPG",
+        alt: "Lunar Velvet",
+      },
+      {
+        type: "video",
+        src: "/images/IMG_0561.MP4",
+        poster: "/images/IMG_0555.JPG",
+        alt: "Lunar Velvet video",
+      },
+      {
+        type: "image",
+        src: "/images/IMG_0564.JPG",
+        alt: "Lunar Velvet detail",
+      },
+    ],
+  },
+  {
     id: "grandmas-orchid-garden",
     name: "Grandma's Orchid Garden",
     description:
