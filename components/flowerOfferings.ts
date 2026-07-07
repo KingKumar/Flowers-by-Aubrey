@@ -40,6 +40,85 @@ export const flowerOfferings: FlowerOffering[] = [
     ],
   },
   {
+    id: "the-crimson-car",
+    name: "The Crimson Car",
+    description:
+      "Red and gold anthuriums, dark red roses, red dahlias, pink hydrangea, orange and red gerbera daisies, and burgundy amaranthus.",
+    image: "/images/redcar 1.jpg",
+    cardColor: "#f24b12",
+    media: [
+      {
+        type: "image",
+        src: "/images/redcar 1.jpg",
+        alt: "The Crimson Car",
+      },
+      {
+        type: "image",
+        src: "/images/redcar 2.jpg",
+        alt: "The Crimson Car detail",
+      },
+      {
+        type: "video",
+        src: "/images/redcar video.mp4",
+        poster: "/images/redcar 1.jpg",
+        alt: "The Crimson Car video",
+      },
+    ],
+  },
+  {
+    id: "gallery-after-dark",
+    name: "Gallery After Dark",
+    description:
+      "Campanula, deep purple lisianthus, burgundy and purple scabiosa, delphinium, green hydrangea, burgundy amaranthus, and airy seasonal stems.",
+    image: "/images/purple and red 1.jpg",
+    cardColor: "#344f20",
+    media: [
+      {
+        type: "image",
+        src: "/images/purple and red 1.jpg",
+        alt: "Gallery After Dark",
+      },
+      {
+        type: "image",
+        src: "/images/purple and red 2.jpg",
+        alt: "Gallery After Dark detail",
+      },
+    ],
+  },
+  {
+    id: "the-blushing-wave",
+    name: "The Blushing Wave",
+    description:
+      "Premium roses, dahlias, green hydrangea, light pink lisianthus, sweet peas, and seasonal foliage.",
+    image: "/images/lisa 1 .jpg",
+    cardColor: "#ed2b82",
+  },
+  {
+    id: "cupids-arrow",
+    name: "Cupid's Arrow",
+    description:
+      "Purple calla lilies, roses, pink hydrangea, burgundy chrysanthemums, astrantia, and hellebores.",
+    image: "/images/deannas 1.jpg",
+    cardColor: "#ed2b82",
+    media: [
+      {
+        type: "image",
+        src: "/images/deannas 1.jpg",
+        alt: "Cupid's Arrow",
+      },
+      {
+        type: "image",
+        src: "/images/deannas 2.jpg",
+        alt: "Cupid's Arrow detail",
+      },
+      {
+        type: "image",
+        src: "/images/deannas 3.jpg",
+        alt: "Cupid's Arrow alternate view",
+      },
+    ],
+  },
+  {
     id: "grandmas-orchid-garden",
     name: "Grandma's Orchid Garden",
     description:
@@ -66,7 +145,7 @@ export const flowerOfferings: FlowerOffering[] = [
   },
   {
     id: "pink-orchid-peony-garden",
-    name: "Pink Orchid Peony Garden",
+    name: "Blush Ascension",
     description:
       "White cymbidium orchids, hot pink Japanese peonies, blush lisianthus, green hydrangea, white scabiosa, airy astilbe, and trailing amaranthus.",
     image: "/images/pink-orchid-dahlia-garden-cover.jpg",
@@ -96,7 +175,7 @@ export const flowerOfferings: FlowerOffering[] = [
   },
   {
     id: "fringed-tulip-gerbera-garden",
-    name: "Fringed Tulip Gerbera Garden",
+    name: "Aubrey jar of love",
     description:
       "Purple fringed tulips, hot pink spider gerbera daisies, pink hydrangea, Queen Anne's lace, green amaranthus, and fresh green texture.",
     image: "/images/fringed-tulip-gerbera-garden.jpg",
@@ -104,7 +183,7 @@ export const flowerOfferings: FlowerOffering[] = [
   },
   {
     id: "apricot-rose-amaranth-bouquet",
-    name: "Apricot Rose Amaranth Bouquet",
+    name: "Apricot Rose",
     description:
       "Apricot roses, white hydrangea, magenta spray roses, trailing amaranthus, and variegated greenery.",
     image: "/images/apricot-rose-amaranth-bouquet.png",
@@ -112,7 +191,7 @@ export const flowerOfferings: FlowerOffering[] = [
   },
   {
     id: "green-amaranth-lily-garden",
-    name: "Mimi's Enchanted Lily Garden",
+    name: "Mimi's Enchanted Lilys",
     description:
       "Green hydrangea, lily buds, purple garden blooms, hanging amaranthus, curly willow, and variegated foliage.",
     image: "/images/green-amaranth-lily-garden.png",
@@ -132,23 +211,15 @@ export const flowerOfferings: FlowerOffering[] = [
   },
   {
     id: "orange-rose-hydrangea-bouquet",
-    name: "Orange Rose Hydrangea Bouquet",
+    name: "Orange Rose",
     description:
       "Orange roses, white hydrangea, ornithogalum, bupleurum, and green textural stems.",
     image: "/images/sage-ribbon-vase.png",
     cardColor: "#c7da38",
   },
   {
-    id: "pink-lily-agrostemma-garden",
-    name: "Pink Lily Agrostemma Garden",
-    description:
-      "Pink lilies, white lisianthus, green hydrangea, purple agrostemma, scabiosa pods, lily buds, and fresh green stems.",
-    image: "/images/pink-lily-agrostemma-garden.jpg",
-    cardColor: "#c7da38",
-  },
-  {
     id: "pink-tulip-yellow-rose-bouquet",
-    name: "Pink Tulip Yellow Rose Bouquet",
+    name: "Tropical Punch",
     description:
       "Pink tulips, yellow roses, purple mums, soft pink sedum, and glossy green foliage.",
     image: "/images/pink-tulip-yellow-rose-bouquet.png",
@@ -156,9 +227,9 @@ export const flowerOfferings: FlowerOffering[] = [
   },
   {
     id: "blush-lily-lisianthus-garden",
-    name: "Blush Lily Lisianthus Garden",
+    name: "Lily & Lace",
     description:
-      "Pink lilies, white lisianthus, peach roses, green hydrangea, creamy astilbe, lily buds, and soft garden greenery.",
+      "Pink and white lilies, peach lisianthus, green hydrangea, creamy astilbe, and soft garden greenery.",
     image: "/images/pink-lily-lisianthus-garden.jpg",
     cardColor: "#ed2b82",
   },
@@ -171,16 +242,8 @@ export const flowerOfferings: FlowerOffering[] = [
     cardColor: "#ed2b82",
   },
   {
-    id: "autumn-safflower-garden",
-    name: "Autumn Safflower Garden",
-    description:
-      "Orange safflower, rust mums, eucalyptus, seeded greenery, and a small accent posy.",
-    image: "/images/IMG_8877.JPG",
-    cardColor: "#c7da38",
-  },
-  {
     id: "autumn-mum-centerpiece",
-    name: "Autumn Mum Centerpiece",
+    name: "Autumn mosses",
     description:
       "Bronze football mums, green button mums, yellow button mums, and warm fall texture.",
     image: "/images/IMG_8825.JPG",
@@ -188,7 +251,7 @@ export const flowerOfferings: FlowerOffering[] = [
   },
   {
     id: "pink-gladiolus-garden",
-    name: "Pink Gladiolus Garden",
+    name: "ArtWalk in Bloom",
     description:
       "Pink gladiolus, peach roses, yellow ranunculus, green hydrangea, and eucalyptus.",
     image: "/images/IMG_8581.JPG",
@@ -196,15 +259,15 @@ export const flowerOfferings: FlowerOffering[] = [
   },
   {
     id: "orange-lily-amaranth-bouquet",
-    name: "Orange Lily Amaranth Bouquet",
+    name: "Vibrant Sunday Morning",
     description:
-      "Orange lilies, burgundy hanging amaranthus, strawflowers, and bronzy foliage.",
+      "Orange lilies, burgundy hanging amaranthus, and strawflowers.",
     image: "/images/IMG_8278.JPG",
     cardColor: "#ed2b82",
   },
   {
     id: "purple-mum-hydrangea-dome",
-    name: "Purple Mum Hydrangea Dome",
+    name: "Star of MUMs",
     description:
       "Purple cushion mums, lavender mums, green hydrangea, and a clean rounded shape.",
     image: "/images/IMG_7949.JPG",
@@ -212,7 +275,7 @@ export const flowerOfferings: FlowerOffering[] = [
   },
   {
     id: "candlelight-rose-centerpiece",
-    name: "Candlelight Rose Centerpiece",
+    name: "Evening at the Opera",
     description:
       "Peach roses, burgundy mums, gerbera daisies, statice, and moody seasonal foliage.",
     image: "/images/IMG_6258.JPG",
@@ -228,31 +291,23 @@ export const flowerOfferings: FlowerOffering[] = [
   },
   {
     id: "burgundy-dahlia-mum-mix",
-    name: "Burgundy Dahlia Mum Mix",
+    name: "Lettuce give you some Dahlias",
     description:
-      "Burgundy dahlias, magenta mums, green hydrangea, and fresh rose buds.",
+      "Burgundy and magenta dahlias, green hydrangea, lettuce stem, and green foliage.",
     image: "/images/IMG_5485.JPG",
     cardColor: "#c7da38",
   },
   {
     id: "pink-rose-hydrangea-dome",
-    name: "Pink Rose Hydrangea Dome",
+    name: "PINK bubble of Love",
     description:
       "Pink roses, green hydrangea, and a rounded garden silhouette.",
     image: "/images/IMG_5415.JPG",
     cardColor: "#ed2b82",
   },
   {
-    id: "magenta-lily-bouquet",
-    name: "Magenta Lily Bouquet",
-    description:
-      "Pink lilies, magenta stock, purple button mums, and deep burgundy mums.",
-    image: "/images/IMG_3376.JPG",
-    cardColor: "#ed2b82",
-  },
-  {
     id: "marigold-mum-bouquet",
-    name: "Marigold Mum Bouquet",
+    name: "Pot of Gold",
     description:
       "Yellow mums, yellow button mums, green hypericum berries, and airy bupleurum.",
     image: "/images/IMG_3200.JPG",
@@ -260,7 +315,7 @@ export const flowerOfferings: FlowerOffering[] = [
   },
   {
     id: "ruby-lily-bouquet",
-    name: "Ruby Lily Bouquet",
+    name: "Stargazer",
     description:
       "Stargazer lilies, orange roses, red roses, lily buds, and airy dried texture.",
     image: "/images/IMG_2745.JPG",
@@ -273,13 +328,5 @@ export const flowerOfferings: FlowerOffering[] = [
       "Pink carnations, white tulips, green button mums, and sculptural curly willow.",
     image: "/images/IMG_2413.JPG",
     cardColor: "#c7da38",
-  },
-  {
-    id: "tangerine-gerbera-bouquet",
-    name: "Tangerine Gerbera Bouquet",
-    description:
-      "Orange gerbera daisies with pink berries, purple veronica, and leafy greens.",
-    image: "/images/IMG_2338.JPG",
-    cardColor: "#ed2b82",
   },
 ];
