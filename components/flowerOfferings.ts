@@ -14,6 +14,14 @@ export type FlowerOffering = {
 
 export const flowerOfferings: FlowerOffering[] = [
   {
+    id: "raspberry-rose-garden",
+    name: "Raspberry Rose Garden",
+    description:
+      "Red roses, red gerbera daisies, magenta mums, purple dahlias, waxflower, and rosemary stems.",
+    image: "/images/IMG_7454.jpg",
+    cardColor: "#ed2b82",
+  },
+  {
     id: "lunar-velvet",
     name: "Lunar Velvet",
     description:
@@ -280,14 +288,6 @@ export const flowerOfferings: FlowerOffering[] = [
       "Peach roses, burgundy mums, gerbera daisies, statice, and moody seasonal foliage.",
     image: "/images/IMG_6258.JPG",
     cardColor: "#f26a21",
-  },
-  {
-    id: "raspberry-rose-garden",
-    name: "Raspberry Rose Garden",
-    description:
-      "Red roses, red gerbera daisies, magenta mums, waxflower, and rosemary stems.",
-    image: "/images/IMG_5946.JPG",
-    cardColor: "#ed2b82",
   },
   {
     id: "burgundy-dahlia-mum-mix",
