@@ -1,13 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import { SiteHeader } from "./SiteHeader";
-
 export function Hero() {
   return (
     <section className="paper-grain relative overflow-hidden bg-[#fff2df]">
-      <SiteHeader />
-
       <div className="relative mx-auto grid min-h-[78vh] max-w-7xl items-center gap-8 px-5 pb-12 sm:px-8 lg:grid-cols-[0.82fr_1.18fr] lg:px-12 2xl:pl-28">
         <div className="z-10">
           <h1 className="max-w-3xl text-6xl font-black uppercase leading-[0.86] text-[#253712] sm:text-8xl lg:text-[clamp(5.5rem,8vw,8rem)] xl:text-9xl">
@@ -19,6 +15,7 @@ export function Hero() {
           </p>
           <div className="mt-9 flex flex-col gap-4 sm:flex-row sm:items-center">
             <Link
+              id="hero-lookbook-link"
               href="/lookbook"
               className="inline-flex min-h-12 items-center justify-center bg-[#f24b12] px-7 py-3 font-mono text-sm font-black uppercase tracking-[0.08em] text-[#fff2df] transition hover:bg-[#ed2b82]"
             >

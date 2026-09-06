@@ -333,7 +333,7 @@ export function Gallery() {
               <article
                 id={offering.id}
                 key={offering.id}
-                className="group scroll-mt-6"
+                className="group scroll-mt-6 lg:scroll-mt-44"
               >
                 <div
                   className="relative aspect-[4/5] cursor-zoom-in overflow-hidden border-4 bg-white"

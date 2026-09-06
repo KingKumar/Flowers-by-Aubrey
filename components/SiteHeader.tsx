@@ -39,7 +39,7 @@ export function SiteHeader() {
   }, [menuOpen]);
 
   return (
-    <header className="relative z-40 bg-[#fff2df]">
+    <header className="relative z-40 bg-[#fff2df] lg:sticky lg:top-0 lg:shadow-[0_2px_0_rgba(27,18,12,0.12)]">
       <div className="bg-[#f24b12] px-5 py-2 text-center font-mono text-xs font-black uppercase tracking-[0.12em] text-[#1b120c]">
         Los Angeles floral design studio &rarr;
       </div>
@@ -54,9 +54,12 @@ export function SiteHeader() {
             aria-expanded={menuOpen}
             aria-controls="mobile-navigation"
             onClick={() => setMenuOpen((open) => !open)}
-            className="flex h-12 w-12 items-center justify-center border-2 border-[#1b120c] bg-white text-4xl text-[#ed2b82] shadow-[3px_3px_0_#f26a21] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#ed2b82]"
+            className="flex h-12 items-center justify-center gap-2 border-2 border-[#1b120c] bg-white px-2.5 text-3xl text-[#ed2b82] shadow-[3px_3px_0_#f26a21] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#ed2b82]"
           >
             <span aria-hidden="true">✿</span>
+            <span className="font-mono text-xs font-black uppercase text-[#253712]">
+              Menu
+            </span>
           </button>
           {menuOpen && (
             <nav

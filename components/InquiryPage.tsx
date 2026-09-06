@@ -31,7 +31,7 @@ export function InquiryPage({ kind }: { kind: InquiryKind }) {
       <SiteHeader />
       <section className="paper-grain px-5 pb-20 pt-8 sm:px-8 lg:px-12">
         <div className="mx-auto grid max-w-7xl items-start gap-10 lg:grid-cols-[0.75fr_1.25fr]">
-          <div className="lg:sticky lg:top-10">
+          <div className="lg:sticky lg:top-48">
             <p className="inline-block bg-[#ed2b82] px-3 py-1 font-mono text-xs font-black uppercase tracking-[0.08em] text-[#fff2df]">
               {content.label}
             </p>

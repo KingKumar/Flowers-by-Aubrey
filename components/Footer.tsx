@@ -1,8 +1,14 @@
 import Link from "next/link";
 
-export function Footer() {
+export function Footer({
+  reserveMobileActionSpace = false,
+}: {
+  reserveMobileActionSpace?: boolean;
+}) {
   return (
-    <footer className="border-t-2 border-[#1b120c] bg-[#ed2b82] px-5 py-10 sm:px-8 lg:px-12">
+    <footer
+      className={`border-t-2 border-[#1b120c] bg-[#ed2b82] px-5 pt-10 sm:px-8 lg:px-12 ${reserveMobileActionSpace ? "pb-[calc(6rem+env(safe-area-inset-bottom))] lg:pb-10" : "pb-10"}`}
+    >
       <div className="mx-auto flex max-w-7xl flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <p className="text-4xl font-black uppercase leading-none tracking-normal text-[#c7da38]">
