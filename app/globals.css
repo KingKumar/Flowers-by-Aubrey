@@ -67,6 +67,57 @@ html {
   -webkit-box-decoration-break: clone;
 }
 
+.hero-reel {
+  --hero-frame-width: min(100vw, 28rem);
+  --hero-frame-height: calc(var(--hero-frame-width) * 4 / 3);
+}
+
+.hero-reel-viewport,
+.hero-reel-track,
+.hero-reel-slide {
+  height: var(--hero-frame-height);
+}
+
+.hero-reel-slide {
+  width: var(--hero-frame-width);
+}
+
+.hero-reel-track {
+  animation: hero-reel-scroll linear infinite;
+}
+
+@keyframes hero-reel-scroll {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (min-width: 1024px) {
+  .hero-reel {
+    --hero-frame-width: min(32vw, 28rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-reel-viewport {
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+  }
+
+  .hero-reel-track {
+    animation: none;
+    transform: none;
+  }
+
+  .hero-reel-slide {
+    scroll-snap-align: start;
+  }
+
+  .hero-reel-copy {
+    display: none;
+  }
+}
+
 .lookbook-media-panel {
   background: white;
   will-change: opacity, transform;

@@ -186,7 +186,7 @@ export function Gallery() {
               Flowers with a point of view
             </h1>
             <p className="mt-4 max-w-2xl font-mono text-sm font-bold leading-6 text-[#344f20]">
-              Explore {flowerOfferings.length} Aubrey Florals arrangements. Open
+              Explore {flowerOfferings.length} of my floral arrangements. Open
               a look for a closer view, and scroll through its photos and
               videos.
             </p>

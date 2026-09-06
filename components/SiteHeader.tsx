@@ -10,7 +10,7 @@ const navigation = [
   { href: "/custom-order", label: "Custom Order" },
   { href: "/event-inquiry", label: "Event Inquiry" },
   { href: "/floral-program", label: "Floral Program" },
-  { href: "/contact", label: "Contact" },
+  { href: "/contact", label: "Contact Me" },
 ];
 
 export function SiteHeader() {
@@ -44,7 +44,11 @@ export function SiteHeader() {
         Los Angeles floral design studio &rarr;
       </div>
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-5 py-7 sm:px-8 lg:px-12">
-        <div ref={menuRef} className="relative lg:hidden">
+        <div aria-hidden="true" className="h-12 w-[88px] shrink-0 lg:hidden" />
+        <div
+          ref={menuRef}
+          className="fixed left-5 top-[calc(4rem+env(safe-area-inset-top,0px))] z-50 sm:left-8 lg:hidden"
+        >
           <button
             ref={buttonRef}
             type="button"
@@ -65,7 +69,7 @@ export function SiteHeader() {
             <nav
               id="mobile-navigation"
               aria-label="Main navigation"
-              className="absolute left-0 top-full z-50 mt-3 w-64 max-w-[calc(100vw-2.5rem)] border-2 border-[#1b120c] bg-[#fff2df] p-2 shadow-[5px_5px_0_#ed2b82]"
+              className="absolute left-0 top-full z-50 mt-3 max-h-[calc(100dvh-9rem-env(safe-area-inset-top,0px))] w-64 max-w-[calc(100vw-2.5rem)] overflow-y-auto border-2 border-[#1b120c] bg-[#fff2df] p-2 shadow-[5px_5px_0_#ed2b82]"
             >
               {navigation.map(({ href, label }) => (
                 <Link

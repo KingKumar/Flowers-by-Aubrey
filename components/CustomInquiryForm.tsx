@@ -30,7 +30,11 @@ const sizes = [
   "Signature — $150–$250",
   "Deluxe — $250+",
 ];
-const vases = ["Clear glass vase", "Ceramic vase", "Fun artistic vase"];
+const vases = [
+  "Clear glass vase (+$25)",
+  "Ceramic vase (+$45)",
+  "Fun artistic vase (+$90)",
+];
 const frequencies = ["Weekly", "Biweekly (every two weeks)", "Monthly"];
 const inquiryNames = {
   custom: "Custom Order",
@@ -89,7 +93,7 @@ export function CustomInquiryForm({ kind = "custom" }: { kind?: InquiryKind }) {
     if (!accessKey) {
       setStatus("error");
       setErrorMessage(
-        "We couldn't send your request right now. Please try again or email Aubrey below.",
+        "Your request couldn't be sent right now. Please try again or email me below.",
       );
       return;
     }
@@ -161,7 +165,7 @@ export function CustomInquiryForm({ kind = "custom" }: { kind?: InquiryKind }) {
       isSubmitting.current = false;
       setStatus("error");
       setErrorMessage(
-        "Your request couldn't be sent. Your answers are still here—please try again, or email Aubrey below.",
+        "Your request couldn't be sent. Your answers are still here—please try again, or email me below.",
       );
     }
   }
@@ -243,7 +247,7 @@ export function CustomInquiryForm({ kind = "custom" }: { kind?: InquiryKind }) {
             ))}
           </div>
         </fieldset>
-        <div className="mt-6 grid gap-5 sm:grid-cols-2">
+        <div className="mt-6 grid gap-5 md:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
           <Field label="Arrangement size">
             <select
               name="size"
@@ -406,11 +410,11 @@ export function CustomInquiryForm({ kind = "custom" }: { kind?: InquiryKind }) {
             className={`${inputClass} resize-y py-3`}
           />
         </Field>
-        <Field label="Tell Aubrey what you are dreaming up (optional)">
+        <Field label="Tell me what you are dreaming up (optional)">
           <textarea
             name="details"
             rows={4}
-            placeholder="Your inspiration, a lookbook arrangement you love, or anything else you'd like Aubrey to know."
+            placeholder="Your inspiration, a lookbook arrangement you love, or anything else you'd like me to know."
             className={`${inputClass} resize-y py-3`}
           />
         </Field>
@@ -419,8 +423,8 @@ export function CustomInquiryForm({ kind = "custom" }: { kind?: InquiryKind }) {
       <div>
         <p className="font-mono text-sm font-bold leading-6 text-[#344f20]">
           {isProgram
-            ? "Aubrey will follow up to confirm your recurring deliveries, budget, and start date."
-            : "Aubrey will follow up to confirm availability, flower choices, and the details."}
+            ? "I'll follow up to confirm your recurring deliveries, budget, and start date."
+            : "I'll follow up to confirm availability, flower choices, and the details."}
         </p>
         {errorMessage && (
           <p
@@ -429,7 +433,7 @@ export function CustomInquiryForm({ kind = "custom" }: { kind?: InquiryKind }) {
           >
             {errorMessage}{" "}
             <a href={`mailto:${contactDetails.email}`} className="underline">
-              Email Aubrey
+              Email Me
             </a>
           </p>
         )}

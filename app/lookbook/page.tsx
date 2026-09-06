@@ -6,7 +6,7 @@ import { SiteHeader } from "@/components/SiteHeader";
 export const metadata: Metadata = {
   title: "Lookbook | Aubrey Florals",
   description:
-    "Explore Aubrey's custom floral arrangements, from vivid roses to sculptural seasonal blooms.",
+    "Explore my custom floral arrangements, from vivid roses to sculptural seasonal blooms.",
 };
 
 export default function LookbookPage() {

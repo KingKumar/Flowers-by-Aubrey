@@ -1,5 +1,12 @@
-import Image from "next/image";
 import Link from "next/link";
+import { HeroArrangementCarousel } from "./HeroArrangementCarousel";
+import { homepageOfferings } from "./flowerOfferings";
+
+const heroArrangements = homepageOfferings.map(({ id, name, image }) => ({
+  id,
+  name,
+  image,
+}));
 
 export function Hero() {
   return (
@@ -25,30 +32,14 @@ export function Hero() {
               href="/contact"
               className="inline-flex min-h-12 items-center justify-center border-b-2 border-[#253712] px-2 py-3 font-mono text-sm font-black uppercase tracking-[0.08em] text-[#253712] transition hover:text-[#f24b12]"
             >
-              Contact Aubrey &rarr;
+              Contact Me &rarr;
             </Link>
           </div>
         </div>
 
-        <div className="relative min-h-[440px] lg:min-h-[680px]">
+        <div className="relative -mx-5 min-w-0 py-6 sm:-mx-8 lg:mx-0 lg:flex lg:min-h-[680px] lg:flex-col lg:justify-center lg:py-10">
           <div className="absolute -right-16 top-6 h-[86%] w-[70%] bg-[#f24b12]" />
-          <Image
-            src="/images/sage-ribbon-vase.png"
-            alt=""
-            aria-hidden="true"
-            fill
-            priority
-            sizes="(min-width: 1024px) 58vw, 100vw"
-            className="z-0 scale-110 object-cover opacity-35 blur-xl saturate-[1.08]"
-          />
-          <Image
-            src="/images/sage-ribbon-vase.png"
-            alt="Orange Rose Hydrangea Bouquet"
-            fill
-            priority
-            sizes="(min-width: 1024px) 58vw, 100vw"
-            className="relative z-10 object-contain saturate-[1.08]"
-          />
+          <HeroArrangementCarousel arrangements={heroArrangements} />
           <div className="absolute bottom-12 right-10 z-20 hidden h-28 w-28 items-center justify-center rounded-full border border-[#253712] p-4 text-center font-mono text-xs font-black uppercase leading-4 text-[#253712] lg:flex">
             Handmade with love
           </div>

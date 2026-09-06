@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Request Sent | Aubrey Florals",
-  description: "Your Aubrey Florals request has been received.",
+  description: "I've received your request and will be in touch soon.",
 };
 
 export default function ThankYouPage() {
@@ -20,15 +20,15 @@ export default function ThankYouPage() {
           </h1>
 
           <p className="mx-auto mt-5 max-w-2xl font-mono text-base font-bold leading-7 text-[#344f20] sm:text-lg">
-            Thank you for reaching out to Aubrey Florals.
+            Thank you for reaching out to me.
           </p>
 
           <div className="mx-auto mt-8 max-w-2xl border-2 border-[#1b120c] bg-white p-5 text-left shadow-[5px_5px_0_#c7da38] sm:p-7">
             <p className="font-mono text-sm font-black uppercase tracking-[0.08em] text-[#344f20] sm:text-base">
-              Your request has been received.
+              I&apos;ve received your request.
             </p>
             <p className="mt-4 font-mono text-sm font-bold leading-6 text-[#344f20] sm:text-base">
-              Aubrey will follow up shortly to confirm availability, timing,
+              I&apos;ll follow up shortly to confirm availability, timing,
               and next steps.
             </p>
           </div>

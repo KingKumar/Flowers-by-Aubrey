@@ -26,7 +26,7 @@ export function Footer({
             Instagram
           </a>
           <Link href="/contact" className="transition hover:text-[#c7da38]">
-            Contact
+            Contact Me
           </Link>
           <Link href="/lookbook" className="transition hover:text-[#c7da38]">
             Lookbook

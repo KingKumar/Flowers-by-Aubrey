@@ -8,19 +8,19 @@ const copy = {
     label: "Custom Order",
     title: "Flowers, your way.",
     description:
-      "A palette you love. An occasion worth celebrating. Tell Aubrey what you have in mind, and she'll create something personal.",
+      "A palette you love. An occasion worth celebrating. Tell me what you have in mind, and I'll create something personal.",
   },
   event: {
     label: "Event Inquiry",
     title: "Set the scene.",
     description:
-      "From intimate dinners to a room full of celebration, let's bring your event to life with flowers. Share your vision and how many arrangements you'll need.",
+      "From intimate dinners to a room full of celebration, I'd love to bring your event to life with flowers. Tell me your vision and how many arrangements you'll need.",
   },
   program: {
     label: "Floral Program",
     title: "Something fresh to look forward to.",
     description:
-      "Bring flowers into your everyday. Choose weekly, biweekly, or monthly arrangements, a size you love, and your budget for each delivery.",
+      "Let me bring flowers into your everyday. Choose weekly, biweekly, or monthly arrangements, a size you love, and your budget for each delivery.",
   },
 };
 

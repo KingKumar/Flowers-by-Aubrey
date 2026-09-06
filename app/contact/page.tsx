@@ -5,9 +5,9 @@ import { Footer } from "@/components/Footer";
 import { SiteHeader } from "@/components/SiteHeader";
 
 export const metadata: Metadata = {
-  title: "Contact Aubrey | Aubrey Florals",
+  title: "Contact Me | Aubrey Florals",
   description:
-    "Get in touch with Aubrey Florals by email or phone for custom flowers in Los Angeles.",
+    "Get in touch with me by email or phone for custom flowers in Los Angeles. I would love to hear from you.",
 };
 
 export default function ContactPage() {
@@ -20,11 +20,11 @@ export default function ContactPage() {
             Let&apos;s talk flowers
           </p>
           <h1 className="mt-5 max-w-3xl text-6xl font-black uppercase leading-[0.9] text-[#253712] sm:text-8xl">
-            Contact Aubrey.
+            Contact Me.
           </h1>
           <p className="mt-6 max-w-xl font-mono text-base font-bold leading-8 text-[#344f20]">
             A question, a celebration, or the start of something beautiful.
-            Aubrey would love to hear from you.
+            I would love to hear from you.
           </p>
           <div className="mt-10 grid gap-5 sm:grid-cols-2">
             <a
@@ -32,7 +32,7 @@ export default function ContactPage() {
               className="min-w-0 border-2 border-[#1b120c] bg-white p-6 shadow-[6px_6px_0_#ed2b82] hover:bg-[#fff8eb] sm:p-8"
             >
               <span className="block font-mono text-xs font-black uppercase tracking-[0.12em] text-[#344f20]">
-                Email Aubrey &rarr;
+                Email Me &rarr;
               </span>
               <span className="mt-4 block break-words font-mono text-lg font-bold text-[#1b120c]">
                 {contactDetails.email}
@@ -43,7 +43,7 @@ export default function ContactPage() {
               className="border-2 border-[#1b120c] bg-white p-6 shadow-[6px_6px_0_#f26a21] hover:bg-[#fff8eb] sm:p-8"
             >
               <span className="block font-mono text-xs font-black uppercase tracking-[0.12em] text-[#344f20]">
-                Call Aubrey &rarr;
+                Call Me &rarr;
               </span>
               <span className="mt-4 block font-mono text-xl font-bold text-[#1b120c]">
                 {contactDetails.phone}
@@ -60,7 +60,7 @@ export default function ContactPage() {
               href="/event-inquiry"
               className="underline underline-offset-4"
             >
-              tell Aubrey about your event
+              tell me about your event
             </Link>
             .
           </p>

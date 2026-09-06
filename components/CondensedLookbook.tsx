@@ -1,15 +1,15 @@
 import Image from "next/image";
 import Link from "next/link";
-import { flowerOfferings } from "./flowerOfferings";
+import { homepageOfferings } from "./flowerOfferings";
 
 export function CondensedLookbook() {
   return (
     <section
-      aria-label="Aubrey Florals lookbook preview"
+      aria-label="My floral lookbook preview"
       className="bg-[#fff2df] px-5 py-16 sm:px-8 lg:px-12"
     >
       <div className="mx-auto grid max-w-7xl grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-6">
-        {flowerOfferings.map((look) => (
+        {homepageOfferings.map((look) => (
           <Link
             key={look.id}
             href={`/lookbook#${look.id}`}

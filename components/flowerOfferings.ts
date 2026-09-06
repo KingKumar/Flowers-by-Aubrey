@@ -173,7 +173,7 @@ export const flowerOfferings: FlowerOffering[] = [
       {
         type: "image",
         src: "/images/aubrey-grandmas-orchid-garden-scale.jpg",
-        alt: "Aubrey holding Grandma's Orchid Garden for scale",
+        alt: "Me holding Grandma's Orchid Garden for scale",
       },
       {
         type: "video",
@@ -345,3 +345,10 @@ export const flowerOfferings: FlowerOffering[] = [
     cardColor: "#c7da38",
   },
 ];
+
+export const homepageOfferings = flowerOfferings.slice(
+  0,
+  flowerOfferings.findIndex(
+    (offering) => offering.id === "pink-tulip-yellow-rose-bouquet",
+  ) + 1,
+);
