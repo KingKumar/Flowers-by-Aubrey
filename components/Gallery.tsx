@@ -1,11 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import type { KeyboardEvent, MouseEvent, TouchEvent } from "react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import type { KeyboardEvent, TouchEvent } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { FlowerMedia } from "./flowerOfferings";
 import { flowerOfferings } from "./flowerOfferings";
-import { PriceEstimatePanel } from "./PriceEstimatePanel";
 
 type LookbookMode = "big" | "dense" | "gallery";
 
@@ -19,25 +18,40 @@ export function Gallery() {
   const [mode, setMode] = useState<LookbookMode>("big");
   const [activeIndex, setActiveIndex] = useState(0);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
-  const [savedLookIds, setSavedLookIds] = useState<string[]>([]);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const lightboxOpen = lightboxIndex !== null;
 
   const activeLook = flowerOfferings[activeIndex];
   const lightboxLook =
-    lightboxIndex === null ? null : flowerOfferings[lightboxIndex] ?? null;
-  const savedLooks = useMemo(
-    () => flowerOfferings.filter((look) => savedLookIds.includes(look.id)),
-    [savedLookIds]
-  );
+    lightboxIndex === null ? null : (flowerOfferings[lightboxIndex] ?? null);
 
   useEffect(() => {
-    if (lightboxIndex === null) {
+    if (!lightboxOpen) {
       return;
     }
 
     const originalOverflow = document.body.style.overflow;
+    const previousFocus = document.activeElement as HTMLElement | null;
     document.body.style.overflow = "hidden";
+    dialogRef.current
+      ?.querySelector<HTMLButtonElement>('button[aria-label="Close gallery"]')
+      ?.focus();
 
     function handleKeyDown(event: globalThis.KeyboardEvent) {
+      if (event.key === "Tab") {
+        const controls = dialogRef.current?.querySelectorAll<HTMLElement>(
+          'button:not([disabled]), a[href], [tabindex="0"]',
+        );
+        const first = controls?.[0];
+        const last = controls?.[controls.length - 1];
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last?.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first?.focus();
+        }
+      }
       if (event.key === "Escape") {
         setLightboxIndex(null);
       }
@@ -48,7 +62,7 @@ export function Gallery() {
             ? currentIndex
             : currentIndex === 0
               ? flowerOfferings.length - 1
-              : currentIndex - 1
+              : currentIndex - 1,
         );
       }
 
@@ -58,7 +72,7 @@ export function Gallery() {
             ? currentIndex
             : currentIndex === flowerOfferings.length - 1
               ? 0
-              : currentIndex + 1
+              : currentIndex + 1,
         );
       }
     }
@@ -68,26 +82,19 @@ export function Gallery() {
     return () => {
       document.body.style.overflow = originalOverflow;
       window.removeEventListener("keydown", handleKeyDown);
+      previousFocus?.focus();
     };
-  }, [lightboxIndex]);
-
-  function toggleSavedLook(lookId: string) {
-    setSavedLookIds((currentIds) =>
-      currentIds.includes(lookId)
-        ? currentIds.filter((id) => id !== lookId)
-        : [...currentIds, lookId]
-    );
-  }
+  }, [lightboxOpen]);
 
   function showPreviousLook() {
     setActiveIndex((currentIndex) =>
-      currentIndex === 0 ? flowerOfferings.length - 1 : currentIndex - 1
+      currentIndex === 0 ? flowerOfferings.length - 1 : currentIndex - 1,
     );
   }
 
   function showNextLook() {
     setActiveIndex((currentIndex) =>
-      currentIndex === flowerOfferings.length - 1 ? 0 : currentIndex + 1
+      currentIndex === flowerOfferings.length - 1 ? 0 : currentIndex + 1,
     );
   }
 
@@ -97,7 +104,7 @@ export function Gallery() {
         ? currentIndex
         : currentIndex === 0
           ? flowerOfferings.length - 1
-          : currentIndex - 1
+          : currentIndex - 1,
     );
   }
 
@@ -107,7 +114,7 @@ export function Gallery() {
         ? currentIndex
         : currentIndex === flowerOfferings.length - 1
           ? 0
-          : currentIndex + 1
+          : currentIndex + 1,
     );
   }
 
@@ -129,11 +136,16 @@ export function Gallery() {
       return;
     }
 
-    const imageSources = (look.media?.length
-      ? look.media.flatMap((item) =>
-          item.type === "image" ? [item.src] : item.poster ? [item.poster] : []
-        )
-      : [look.image]
+    const imageSources = (
+      look.media?.length
+        ? look.media.flatMap((item) =>
+            item.type === "image"
+              ? [item.src]
+              : item.poster
+                ? [item.poster]
+                : [],
+          )
+        : [look.image]
     ).filter(Boolean);
 
     imageSources.forEach((imageSource) => {
@@ -143,36 +155,21 @@ export function Gallery() {
     });
   }
 
-  function handleOpenKeyDown(event: KeyboardEvent<HTMLDivElement>, index: number) {
+  function handleOpenKeyDown(
+    event: KeyboardEvent<HTMLDivElement>,
+    index: number,
+  ) {
+    if (event.target !== event.currentTarget) return;
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
       openLightbox(index);
     }
   }
 
-  function showPriceEstimate() {
-    const estimateSection = document.getElementById("price-estimate");
-
-    if (!estimateSection) {
-      return;
-    }
-
-    const stickyOffset = window.matchMedia("(max-width: 639px)").matches
-      ? 112
-      : 110;
-    const estimateTop =
-      estimateSection.getBoundingClientRect().top + window.scrollY - stickyOffset;
-
-    window.scrollTo({ top: estimateTop, behavior: "smooth" });
-  }
-
   const gridClass =
     mode === "dense"
       ? "grid gap-4 sm:grid-cols-3 lg:grid-cols-5"
       : "grid gap-6 sm:grid-cols-2 lg:grid-cols-3";
-  const savedCountLabel = `${savedLookIds.length} ${
-    savedLookIds.length === 1 ? "flower look" : "flower looks"
-  } added`;
 
   return (
     <section
@@ -185,13 +182,13 @@ export function Gallery() {
             <p className="inline-block rotate-[-1deg] bg-[#1b120c] px-3 py-1 font-mono text-sm font-black uppercase tracking-[0.08em] text-[#fff2df]">
               Los Angeles Lookbook
             </p>
-            <h2 className="mt-4 max-w-3xl text-5xl font-black uppercase leading-[0.9] text-[#344f20] sm:text-7xl">
-              Save the stems that feel like you
-            </h2>
+            <h1 className="mt-4 max-w-3xl text-5xl font-black uppercase leading-[0.9] text-[#344f20] sm:text-7xl">
+              Flowers with a point of view
+            </h1>
             <p className="mt-4 max-w-2xl font-mono text-sm font-bold leading-6 text-[#344f20]">
-              Browse {flowerOfferings.length} unique Aubrey Florals looks, mark your favorites, then
-              contact Aubrey about a custom arrangement with a similar palette, shape,
-              and flower mood.
+              Explore {flowerOfferings.length} Aubrey Florals arrangements. Open
+              a look for a closer view, and scroll through its photos and
+              videos.
             </p>
           </div>
 
@@ -205,6 +202,7 @@ export function Gallery() {
                   key={option.id}
                   type="button"
                   onClick={() => setMode(option.id)}
+                  aria-pressed={mode === option.id}
                   className={`min-h-11 border-r-2 border-[#1b120c] px-3 font-mono text-xs font-black uppercase tracking-[0.08em] last:border-r-0 lg:px-4 ${
                     mode === option.id
                       ? "bg-[#ed2b82] text-[#fff2df]"
@@ -215,45 +213,6 @@ export function Gallery() {
                 </button>
               ))}
             </div>
-          </div>
-        </div>
-
-        <div className="sticky top-0 z-50 mt-8 border-y-2 border-[#1b120c] bg-[#fff2df]/95 py-2 shadow-[0_8px_24px_rgba(27,18,12,0.08)] backdrop-blur sm:py-4">
-          <div className="flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between">
-            <div className="min-w-0">
-              <p className="font-mono text-[11px] font-black uppercase tracking-[0.08em] text-[#253712] sm:text-sm">
-                {savedCountLabel}
-              </p>
-              {savedLooks.length ? (
-                <div className="mt-1 flex gap-1 overflow-x-auto pb-1 sm:mt-3 sm:flex-wrap sm:gap-2 sm:overflow-visible sm:pb-0">
-                  {savedLooks.map((look) => (
-                    <button
-                      key={look.id}
-                      type="button"
-                      onClick={() => toggleSavedLook(look.id)}
-                      className="inline-flex min-h-7 max-w-40 shrink-0 items-center gap-1 border-2 border-[#1b120c] bg-white px-2 font-mono text-[10px] font-black uppercase leading-none text-[#344f20] shadow-[2px_2px_0_#f26a21] transition hover:-translate-y-0.5 sm:min-h-9 sm:max-w-none sm:gap-2 sm:px-3 sm:text-xs"
-                      aria-label={`Remove ${look.name}`}
-                    >
-                      <span className="truncate">{look.name}</span>
-                      <span className="text-[#ed2b82]" aria-hidden="true">
-                        x
-                      </span>
-                    </button>
-                  ))}
-                </div>
-              ) : (
-                <p className="mt-1 font-mono text-[10px] font-bold leading-4 text-[#344f20] sm:mt-2 sm:text-xs sm:leading-5">
-                  Tap the flower on any look to save it for your inquiry.
-                </p>
-              )}
-            </div>
-            <button
-              type="button"
-              onClick={showPriceEstimate}
-              className="inline-flex min-h-9 shrink-0 items-center justify-center border-2 border-[#1b120c] bg-[#f24b12] px-4 font-mono text-[10px] font-black uppercase tracking-[0.08em] text-[#fff2df] shadow-[3px_3px_0_#1b120c] transition hover:-translate-y-0.5 sm:min-h-11 sm:px-5 sm:text-xs"
-            >
-              Estimate selected looks
-            </button>
           </div>
         </div>
 
@@ -282,16 +241,11 @@ export function Gallery() {
                 >
                   <LookbookImage
                     src={activeLook.image}
-                    backdropSrc={activeLook.backdropImage}
+                    key={activeLook.id}
                     media={activeLook.media}
                     alt={activeLook.name}
                     sizes="(min-width: 1024px) 58vw, 100vw"
                     priority
-                  />
-                  <SaveButton
-                    isSaved={savedLookIds.includes(activeLook.id)}
-                    label={activeLook.name}
-                    onClick={() => toggleSavedLook(activeLook.id)}
                   />
                   <button
                     type="button"
@@ -299,7 +253,7 @@ export function Gallery() {
                       event.stopPropagation();
                       showPreviousLook();
                     }}
-                    className="absolute left-3 top-1/2 z-20 flex h-12 w-12 -translate-y-1/2 items-center justify-center border-2 border-[#1b120c] bg-white/95 font-mono text-2xl font-black text-[#253712] shadow-[3px_3px_0_#f26a21] transition hover:-translate-y-[calc(50%+2px)] xl:hidden"
+                    className="absolute bottom-3 left-3 z-20 flex h-12 w-12 items-center justify-center border-2 border-[#1b120c] bg-white/95 font-mono text-2xl font-black text-[#253712] shadow-[3px_3px_0_#f26a21] transition hover:brightness-95 xl:hidden"
                     aria-label="Previous look"
                   >
                     &larr;
@@ -310,12 +264,12 @@ export function Gallery() {
                       event.stopPropagation();
                       showNextLook();
                     }}
-                    className="absolute right-3 top-1/2 z-20 flex h-12 w-12 -translate-y-1/2 items-center justify-center border-2 border-[#1b120c] bg-white/95 font-mono text-2xl font-black text-[#253712] shadow-[3px_3px_0_#f26a21] transition hover:-translate-y-[calc(50%+2px)] xl:hidden"
+                    className="absolute bottom-3 right-3 z-20 flex h-12 w-12 items-center justify-center border-2 border-[#1b120c] bg-white/95 font-mono text-2xl font-black text-[#253712] shadow-[3px_3px_0_#f26a21] transition hover:brightness-95 xl:hidden"
                     aria-label="Next look"
                   >
                     &rarr;
                   </button>
-                  <div className="absolute bottom-3 left-3 z-20 border-2 border-[#1b120c] bg-white/95 px-3 py-2 font-mono text-xs font-black uppercase tracking-[0.08em] text-[#253712] shadow-[3px_3px_0_#f26a21] lg:hidden">
+                  <div className="absolute left-3 top-3 z-20 border-2 border-[#1b120c] bg-white/95 px-3 py-2 font-mono text-xs font-black uppercase tracking-[0.08em] text-[#253712] shadow-[3px_3px_0_#f26a21] lg:hidden">
                     {activeIndex + 1} / {flowerOfferings.length}
                   </div>
                 </div>
@@ -326,15 +280,6 @@ export function Gallery() {
                   <p className="mt-3 line-clamp-2 font-mono text-xs font-bold leading-5 text-[#344f20]">
                     {activeLook.description}
                   </p>
-                  <button
-                    type="button"
-                    onClick={() => toggleSavedLook(activeLook.id)}
-                    className="mt-4 inline-flex min-h-10 w-full items-center justify-center border-2 border-[#1b120c] bg-[#ed2b82] px-4 font-mono text-xs font-black uppercase tracking-[0.08em] text-[#fff2df] shadow-[3px_3px_0_#1b120c]"
-                  >
-                    {savedLookIds.includes(activeLook.id)
-                      ? "Remove from inquiry"
-                      : "Add this look"}
-                  </button>
                 </div>
                 <div className="hidden border-2 border-[#1b120c] bg-white p-6 shadow-[7px_7px_0_#ed2b82] lg:block">
                   <p className="font-mono text-xs font-black uppercase tracking-[0.18em] text-[#344f20]">
@@ -346,15 +291,6 @@ export function Gallery() {
                   <p className="mt-5 font-mono text-sm font-bold leading-7 text-[#344f20]">
                     {activeLook.description}
                   </p>
-                  <button
-                    type="button"
-                    onClick={() => toggleSavedLook(activeLook.id)}
-                    className="mt-7 inline-flex min-h-12 w-full items-center justify-center border-2 border-[#1b120c] bg-[#ed2b82] px-6 font-mono text-sm font-black uppercase tracking-[0.08em] text-[#fff2df] shadow-[4px_4px_0_#1b120c] transition hover:-translate-y-0.5"
-                  >
-                    {savedLookIds.includes(activeLook.id)
-                      ? "Remove from inquiry"
-                      : "Add this look"}
-                  </button>
                 </div>
               </article>
               <button
@@ -372,6 +308,7 @@ export function Gallery() {
                   key={look.id}
                   type="button"
                   onClick={() => setActiveIndex(index)}
+                  aria-pressed={activeIndex === index}
                   className={`relative h-24 w-20 shrink-0 overflow-hidden border-2 ${
                     index === activeIndex
                       ? "border-[#ed2b82]"
@@ -393,7 +330,11 @@ export function Gallery() {
         ) : (
           <div className={`mt-12 ${gridClass}`}>
             {flowerOfferings.map((offering, index) => (
-              <article key={offering.id} className="group">
+              <article
+                id={offering.id}
+                key={offering.id}
+                className="group scroll-mt-6"
+              >
                 <div
                   className="relative aspect-[4/5] cursor-zoom-in overflow-hidden border-4 bg-white"
                   style={{ borderColor: offering.cardColor }}
@@ -411,7 +352,6 @@ export function Gallery() {
                   />
                   <LookbookImage
                     src={offering.image}
-                    backdropSrc={offering.backdropImage}
                     media={offering.media}
                     alt={offering.name}
                     sizes={
@@ -419,11 +359,6 @@ export function Gallery() {
                         ? "(min-width: 1024px) 18vw, (min-width: 640px) 30vw, 100vw"
                         : "(min-width: 1024px) 31vw, (min-width: 640px) 46vw, 100vw"
                     }
-                  />
-                  <SaveButton
-                    isSaved={savedLookIds.includes(offering.id)}
-                    label={offering.name}
-                    onClick={() => toggleSavedLook(offering.id)}
                   />
                 </div>
                 <div className="pt-4">
@@ -441,6 +376,7 @@ export function Gallery() {
 
         {lightboxLook ? (
           <div
+            ref={dialogRef}
             className="fixed inset-0 z-[80] h-[100dvh] overflow-hidden bg-[#1b120c]/80 p-2 backdrop-blur-sm sm:p-6"
             role="dialog"
             aria-modal="true"
@@ -476,7 +412,7 @@ export function Gallery() {
                 >
                   <LookbookImage
                     src={lightboxLook.image}
-                    backdropSrc={lightboxLook.backdropImage}
+                    key={lightboxLook.id}
                     media={lightboxLook.media}
                     alt={lightboxLook.name}
                     sizes="(min-width: 1024px) 70vw, 100vw"
@@ -486,7 +422,7 @@ export function Gallery() {
                   <button
                     type="button"
                     onClick={showPreviousLightboxLook}
-                    className="absolute left-3 top-1/2 z-30 flex h-12 w-12 -translate-y-1/2 items-center justify-center border-2 border-[#1b120c] bg-white/95 font-mono text-2xl font-black text-[#253712] shadow-[3px_3px_0_#f26a21] transition hover:-translate-y-[calc(50%+2px)]"
+                    className="absolute left-3 top-3 z-30 flex h-12 w-12 items-center justify-center border-2 border-[#1b120c] bg-white/95 font-mono text-2xl font-black text-[#253712] shadow-[3px_3px_0_#f26a21] transition hover:brightness-95"
                     aria-label="Previous look"
                   >
                     &larr;
@@ -494,16 +430,11 @@ export function Gallery() {
                   <button
                     type="button"
                     onClick={showNextLightboxLook}
-                    className="absolute right-3 top-1/2 z-30 flex h-12 w-12 -translate-y-1/2 items-center justify-center border-2 border-[#1b120c] bg-white/95 font-mono text-2xl font-black text-[#253712] shadow-[3px_3px_0_#f26a21] transition hover:-translate-y-[calc(50%+2px)]"
+                    className="absolute right-3 top-3 z-30 flex h-12 w-12 items-center justify-center border-2 border-[#1b120c] bg-white/95 font-mono text-2xl font-black text-[#253712] shadow-[3px_3px_0_#f26a21] transition hover:brightness-95"
                     aria-label="Next look"
                   >
                     &rarr;
                   </button>
-                  <SaveButton
-                    isSaved={savedLookIds.includes(lightboxLook.id)}
-                    label={lightboxLook.name}
-                    onClick={() => toggleSavedLook(lightboxLook.id)}
-                  />
                 </div>
                 <div className="max-h-[24dvh] shrink-0 overflow-y-auto border-2 border-[#1b120c] bg-white p-3 shadow-[3px_3px_0_#f26a21] sm:p-4 lg:max-h-none">
                   <p className="font-mono text-xs font-black uppercase tracking-[0.16em] text-[#ed2b82]">
@@ -512,22 +443,11 @@ export function Gallery() {
                   <p className="mt-2 font-mono text-xs font-bold leading-5 text-[#344f20] sm:mt-3 sm:text-sm sm:leading-6">
                     {lightboxLook.description}
                   </p>
-                  <button
-                    type="button"
-                    onClick={() => toggleSavedLook(lightboxLook.id)}
-                    className="mt-3 inline-flex min-h-10 w-full items-center justify-center border-2 border-[#1b120c] bg-[#ed2b82] px-4 font-mono text-[11px] font-black uppercase tracking-[0.08em] text-[#fff2df] shadow-[3px_3px_0_#1b120c] transition hover:-translate-y-0.5 sm:mt-5 sm:min-h-11 sm:text-xs"
-                  >
-                    {savedLookIds.includes(lightboxLook.id)
-                      ? "Remove from inquiry"
-                      : "Add this look"}
-                  </button>
                 </div>
               </div>
             </div>
           </div>
         ) : null}
-
-        <PriceEstimatePanel selectedBouquets={savedLooks} />
       </div>
     </section>
   );
@@ -535,7 +455,6 @@ export function Gallery() {
 
 function LookbookImage({
   src,
-  backdropSrc,
   media,
   alt,
   sizes,
@@ -543,14 +462,15 @@ function LookbookImage({
   unoptimized = false,
 }: {
   src: string;
-  backdropSrc?: string;
   media?: FlowerMedia[];
   alt: string;
   sizes: string;
   priority?: boolean;
   unoptimized?: boolean;
 }) {
-  const mediaItems = media?.length ? media : [{ type: "image" as const, src, alt }];
+  const mediaItems = media?.length
+    ? media
+    : [{ type: "image" as const, src, alt }];
   const [activeMediaIndex, setActiveMediaIndex] = useState(0);
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
 
@@ -599,7 +519,9 @@ function LookbookImage({
   return (
     <div
       className="absolute inset-0"
-      onTouchStart={(event) => setTouchStartX(event.touches[0]?.clientX ?? null)}
+      onTouchStart={(event) =>
+        setTouchStartX(event.touches[0]?.clientX ?? null)
+      }
       onTouchEnd={handleTouchEnd}
     >
       <div
@@ -632,7 +554,7 @@ function LookbookImage({
               event.stopPropagation();
               showPreviousMedia();
             }}
-            className="absolute left-2 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center border-2 border-[#1b120c] bg-white/95 font-mono text-xl font-black text-[#253712] shadow-[3px_3px_0_#f26a21] transition hover:-translate-y-[calc(50%+2px)] sm:left-3"
+            className="absolute left-2 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center border-2 border-[#1b120c] bg-white/95 font-mono text-xl font-black text-[#253712] shadow-[3px_3px_0_#f26a21] transition hover:brightness-95 sm:left-3"
             aria-label="Previous media"
           >
             &larr;
@@ -643,7 +565,7 @@ function LookbookImage({
               event.stopPropagation();
               showNextMedia();
             }}
-            className="absolute right-2 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center border-2 border-[#1b120c] bg-white/95 font-mono text-xl font-black text-[#253712] shadow-[3px_3px_0_#f26a21] transition hover:-translate-y-[calc(50%+2px)] sm:right-3"
+            className="absolute right-2 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center border-2 border-[#1b120c] bg-white/95 font-mono text-xl font-black text-[#253712] shadow-[3px_3px_0_#f26a21] transition hover:brightness-95 sm:right-3"
             aria-label="Next media"
           >
             &rarr;
@@ -666,6 +588,7 @@ function LookbookImage({
                   index === activeMediaIndex ? "bg-[#ed2b82]" : "bg-[#fff2df]"
                 }`}
                 aria-label={`Show ${item.type} ${index + 1}`}
+                aria-pressed={activeMediaIndex === index}
               />
             ))}
           </div>
@@ -712,7 +635,19 @@ function MediaItem({
       video.pause();
       video.currentTime = 0;
     }
-  }, [isActive, media.type]);
+  }, [isActive, media.type, media.src]);
+
+  if (media.type === "video" && !isActive) {
+    return media.poster ? (
+      <Image
+        src={media.poster}
+        alt={media.alt ?? alt}
+        fill
+        sizes={sizes}
+        className="object-contain"
+      />
+    ) : null;
+  }
 
   if (media.type === "image") {
     return (
@@ -741,40 +676,11 @@ function MediaItem({
       loop
       muted
       playsInline
-      preload="auto"
+      preload="metadata"
       poster={media.poster}
       aria-label={media.alt ?? alt}
     >
       <source src={media.src} type="video/mp4" />
     </video>
-  );
-}
-
-function SaveButton({
-  isSaved,
-  label,
-  onClick,
-}: {
-  isSaved: boolean;
-  label: string;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={(event: MouseEvent<HTMLButtonElement>) => {
-        event.stopPropagation();
-        onClick();
-      }}
-      className={`absolute bottom-3 right-3 z-30 flex h-12 w-12 items-center justify-center border-2 border-[#1b120c] text-2xl font-black shadow-[3px_3px_0_#1b120c] transition hover:-translate-y-0.5 ${
-        isSaved
-          ? "bg-[#ed2b82] text-[#fff2df]"
-          : "bg-white text-[#ed2b82]"
-      }`}
-      aria-label={`${isSaved ? "Remove" : "Save"} ${label}`}
-      aria-pressed={isSaved}
-    >
-      ✿
-    </button>
   );
 }

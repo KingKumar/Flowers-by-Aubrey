@@ -1,51 +1,12 @@
-"use client";
-
 import Image from "next/image";
 import Link from "next/link";
 
-function scrollToSection(sectionId: string) {
-  document.getElementById(sectionId)?.scrollIntoView({ behavior: "smooth" });
-}
+import { SiteHeader } from "./SiteHeader";
 
 export function Hero() {
   return (
     <section className="paper-grain relative overflow-hidden bg-[#fff2df]">
-      <div className="bg-[#f24b12] px-5 py-2 text-center font-mono text-xs font-black uppercase tracking-[0.12em] text-[#1b120c]">
-        Los Angeles floral design studio &rarr;
-      </div>
-
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-7 sm:px-8 lg:px-12 xl:px-12">
-        <button
-          type="button"
-          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          className="text-3xl font-black uppercase leading-none tracking-[0.08em] text-[#f24b12]"
-        >
-          Aubrey
-          <span className="block">Florals</span>
-        </button>
-        <nav className="hidden items-center gap-10 font-mono text-sm font-black tracking-normal text-[#253712] md:flex">
-          <button
-            type="button"
-            onClick={() => scrollToSection("gallery")}
-            className="transition hover:text-[#f24b12]"
-          >
-            Lookbook
-          </button>
-          <button
-            type="button"
-            onClick={() => scrollToSection("about")}
-            className="transition hover:text-[#f24b12]"
-          >
-            About
-          </button>
-          <Link
-            href="/contact"
-            className="transition hover:text-[#f24b12]"
-          >
-            Contact
-          </Link>
-        </nav>
-      </div>
+      <SiteHeader />
 
       <div className="relative mx-auto grid min-h-[78vh] max-w-7xl items-center gap-8 px-5 pb-12 sm:px-8 lg:grid-cols-[0.82fr_1.18fr] lg:px-12 2xl:pl-28">
         <div className="z-10">
@@ -57,13 +18,12 @@ export function Hero() {
             Bold custom florals in Los Angeles.
           </p>
           <div className="mt-9 flex flex-col gap-4 sm:flex-row sm:items-center">
-            <button
-              type="button"
-              onClick={() => scrollToSection("gallery")}
+            <Link
+              href="/lookbook"
               className="inline-flex min-h-12 items-center justify-center bg-[#f24b12] px-7 py-3 font-mono text-sm font-black uppercase tracking-[0.08em] text-[#fff2df] transition hover:bg-[#ed2b82]"
             >
               View lookbook &rarr;
-            </button>
+            </Link>
             <Link
               href="/contact"
               className="inline-flex min-h-12 items-center justify-center border-b-2 border-[#253712] px-2 py-3 font-mono text-sm font-black uppercase tracking-[0.08em] text-[#253712] transition hover:text-[#f24b12]"

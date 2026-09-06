@@ -1,137 +1,152 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import type { FormEvent } from "react";
-import { useState } from "react";
+import type { FormEvent, ReactNode } from "react";
+import { useRef, useState } from "react";
+import { contactDetails } from "./contactDetails";
 import {
   GooglePlacesAddressInput,
   type SelectedPlaceDetails,
 } from "./GooglePlacesAddressInput";
 
-const WEB3FORMS_ENDPOINT = "https://api.web3forms.com/submit";
-const WEB3FORMS_ACCESS_KEY = process.env.NEXT_PUBLIC_WEB3FORMS_EVENTS_ACCESS_KEY;
+export type InquiryKind = "custom" | "event" | "program";
 
-const projectTypes = [
-  "Custom arrangement",
-  "Event florals",
-  "Floral installation",
-  "Gift or delivery",
-  "Brand or editorial",
-  "Something else",
+const colors = [
+  "Red",
+  "Orange",
+  "Yellow",
+  "Green",
+  "Blue",
+  "Purple",
+  "Pink",
+  "White",
+  "Brown",
+  "Dark",
+  "Pastels",
 ];
-
-const budgetRanges = [
-  "Under $150",
-  "$150-$300",
-  "$300-$750",
-  "$750-$1,500",
-  "$1,500+",
-  "Not sure yet",
+const sizes = [
+  "Petit — $50–$80",
+  "Classic — $80–$150",
+  "Signature — $150–$250",
+  "Deluxe — $250+",
 ];
+const vases = ["Clear glass vase", "Ceramic vase", "Fun artistic vase"];
+const frequencies = ["Weekly", "Biweekly (every two weeks)", "Monthly"];
+const inquiryNames = {
+  custom: "Custom Order",
+  event: "Event Inquiry",
+  program: "Floral Program",
+};
+const inputClass =
+  "mt-2 min-h-12 w-full rounded-none border-2 border-[#1b120c] bg-white px-3 font-mono text-base font-bold text-[#1b120c] outline-none focus:border-[#ed2b82]";
+const legendClass =
+  "mb-5 text-2xl font-black uppercase leading-none text-[#253712]";
 
-export function CustomInquiryForm() {
+function Field({ label, children }: { label: string; children: ReactNode }) {
+  return (
+    <label className="block">
+      <span className="font-mono text-xs font-black uppercase tracking-[0.08em] text-[#344f20]">
+        {label}
+      </span>
+      {children}
+    </label>
+  );
+}
+
+export function CustomInquiryForm({ kind = "custom" }: { kind?: InquiryKind }) {
   const router = useRouter();
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    projectType: projectTypes[0],
-    date: "",
-    budget: "Not sure yet",
-    location: "",
-    details: "",
-  });
+  const [location, setLocation] = useState("");
   const [selectedLocation, setSelectedLocation] =
     useState<SelectedPlaceDetails | null>(null);
-  const [submitStatus, setSubmitStatus] = useState<
-    "idle" | "submitting" | "error"
-  >("idle");
-  const [submitMessage, setSubmitMessage] = useState("");
-
-  function updateField(field: keyof typeof formData, value: string) {
-    setFormData((current) => ({
-      ...current,
-      [field]: value,
-    }));
-  }
+  const [fulfillment, setFulfillment] = useState("Delivery");
+  const [status, setStatus] = useState<"idle" | "submitting" | "error">("idle");
+  const [errorMessage, setErrorMessage] = useState("");
+  const isSubmitting = useRef(false);
+  const isProgram = kind === "program";
+  const isEvent = kind === "event";
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-
-    if (submitStatus === "submitting") {
+    if (isSubmitting.current) return;
+    const form = event.currentTarget;
+    const data = new FormData(form);
+    if (data.get("botcheck")) return;
+    const value = (name: string) => String(data.get(name) ?? "").trim();
+    const chosenColors = data.getAll("colors").map(String);
+    if (!value("name") || !value("email") || !chosenColors.length) {
+      setStatus("error");
+      setErrorMessage(
+        "Please add your name, email, and at least one color choice.",
+      );
+      if (!chosenColors.length)
+        form.querySelector<HTMLInputElement>('[name="colors"]')?.focus();
       return;
     }
 
-    if (!WEB3FORMS_ACCESS_KEY) {
-      setSubmitStatus("error");
-      setSubmitMessage(
-        "This form is missing its Web3Forms access key. Add NEXT_PUBLIC_WEB3FORMS_EVENTS_ACCESS_KEY to the site environment."
+    const accessKey = isEvent
+      ? process.env.NEXT_PUBLIC_WEB3FORMS_EVENTS_ACCESS_KEY
+      : process.env.NEXT_PUBLIC_WEB3FORMS_ARRANGEMENT_ACCESS_KEY;
+    if (!accessKey) {
+      setStatus("error");
+      setErrorMessage(
+        "We couldn't send your request right now. Please try again or email Aubrey below.",
       );
       return;
     }
 
-    const trimmedName = formData.name.trim();
-    const trimmedEmail = formData.email.trim();
-
-    if (!trimmedName || !trimmedEmail) {
-      setSubmitStatus("error");
-      setSubmitMessage("Please add your name and email before sending.");
-      return;
-    }
-
-    const payload = {
-      access_key: WEB3FORMS_ACCESS_KEY,
-      subject: `New Custom Inquiry — ${formData.projectType}`,
-      from_name: trimmedName,
-      replyto: trimmedEmail,
-      name: trimmedName,
-      email: trimmedEmail,
-      phone: formData.phone.trim(),
-      "Customer Name": trimmedName,
-      "Customer Email": trimmedEmail,
-      "Customer Phone": formData.phone.trim(),
-      "Inquiry type": formData.projectType,
-      "Desired date": formData.date,
-      "Budget range": formData.budget,
-      "Location or delivery area": formData.location.trim(),
+    const details: Record<string, string | number> = {
+      "Inquiry type": inquiryNames[kind],
+      "Color choices": chosenColors.join(", "),
+      "Arrangement size": value("size"),
+      "Vase preference": value("vase"),
+      ...(isEvent ? { "Number of arrangements": value("quantity") } : {}),
+      ...(isProgram
+        ? {
+            "Delivery frequency": value("frequency"),
+            "Budget per delivery (USD)": value("deliveryBudget"),
+          }
+        : {}),
+      "Requested date": value("date"),
+      "Delivery or pickup": isProgram ? "Delivery" : fulfillment,
+      "Preferred time window": value("timeWindow"),
+      "Location or delivery area": location.trim(),
       "Location formatted address":
-        selectedLocation?.formattedAddress || formData.location.trim(),
+        selectedLocation?.formattedAddress || location.trim(),
       "Location place ID": selectedLocation?.placeId || "",
       "Location latitude": selectedLocation?.latitude ?? "",
       "Location longitude": selectedLocation?.longitude ?? "",
-      "Project details": formData.details.trim(),
+      "Delivery notes": value("deliveryNotes"),
+      Occasion: value("occasion"),
+      "Flowers to include or avoid": value("flowerRequests"),
+      "Card message": value("cardMessage"),
+      "Additional details": value("details"),
+    };
+    const payload = {
+      access_key: accessKey,
+      subject: `New ${inquiryNames[kind]} Request`,
+      from_name: "Aubrey Florals Website",
+      replyto: value("email"),
+      name: value("name"),
+      email: value("email"),
+      phone: value("phone"),
+      ...details,
       message: [
-        "Customer:",
-        `Name: ${trimmedName}`,
-        `Email: ${trimmedEmail}`,
-        `Phone: ${formData.phone.trim() || "Not provided"}`,
+        `Name: ${value("name")}`,
+        `Email: ${value("email")}`,
+        `Phone: ${value("phone") || "Not provided"}`,
         "",
-        "Custom inquiry:",
-        `Type: ${formData.projectType}`,
-        `Desired date: ${formData.date || "Not provided"}`,
-        `Budget range: ${formData.budget}`,
-        `Location or delivery area: ${
-          formData.location.trim() || "Not provided"
-        }`,
-        `Formatted address: ${
-          selectedLocation?.formattedAddress ||
-          formData.location.trim() ||
-          "Not selected"
-        }`,
-        `Place ID: ${selectedLocation?.placeId || "Not selected"}`,
-        `Latitude: ${selectedLocation?.latitude ?? "Not selected"}`,
-        `Longitude: ${selectedLocation?.longitude ?? "Not selected"}`,
-        "",
-        "Project details:",
-        formData.details.trim() || "Not provided",
+        ...Object.entries(details).map(
+          ([label, answer]) =>
+            `${label}: ${answer === "" ? "Not provided" : answer}`,
+        ),
       ].join("\n"),
     };
 
-    setSubmitStatus("submitting");
-    setSubmitMessage("");
-
+    isSubmitting.current = true;
+    setStatus("submitting");
+    setErrorMessage("");
     try {
-      const response = await fetch(WEB3FORMS_ENDPOINT, {
+      const response = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -139,22 +154,14 @@ export function CustomInquiryForm() {
         },
         body: JSON.stringify(payload),
       });
-      const result = (await response.json()) as {
-        success?: boolean;
-        message?: string;
-      };
-
-      if (!response.ok || !result.success) {
-        throw new Error(result.message || "Submission failed.");
-      }
-
+      const result = (await response.json()) as { success?: boolean };
+      if (!response.ok || !result.success) throw new Error("Submission failed");
       router.push("/thank-you");
-    } catch (error) {
-      setSubmitStatus("error");
-      setSubmitMessage(
-        error instanceof Error
-          ? error.message
-          : "Something went wrong sending your inquiry. Please try again."
+    } catch {
+      isSubmitting.current = false;
+      setStatus("error");
+      setErrorMessage(
+        "Your request couldn't be sent. Your answers are still here—please try again, or email Aubrey below.",
       );
     }
   }
@@ -162,144 +169,284 @@ export function CustomInquiryForm() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="border-2 border-[#1b120c] bg-[#fff8eb] p-5 shadow-[8px_8px_0_#ed2b82] sm:p-8 lg:p-10"
+      className="min-w-0 space-y-9 border-2 border-[#1b120c] bg-[#fff8eb] p-5 shadow-[8px_8px_0_#ed2b82] sm:p-8 lg:p-10"
     >
-      <div className="grid gap-5 sm:grid-cols-2">
-        <label className="block">
-          <span className="font-mono text-xs font-black uppercase tracking-[0.12em] text-[#344f20]">
-            Your Name
-          </span>
-          <input
-            type="text"
-            name="name"
-            required
-            value={formData.name}
-            onChange={(event) => updateField("name", event.target.value)}
-            placeholder="Your name"
-            className="mt-2 min-h-12 w-full border-2 border-[#1b120c] bg-white px-3 font-mono text-base font-bold text-[#1b120c] outline-none focus:border-[#ed2b82]"
-          />
-        </label>
+      <input
+        type="checkbox"
+        name="botcheck"
+        className="hidden"
+        tabIndex={-1}
+        aria-hidden="true"
+      />
+      <fieldset>
+        <legend className={legendClass}>01 / A little about you</legend>
+        <div className="grid gap-5 sm:grid-cols-2">
+          <Field label="Your name">
+            <input
+              name="name"
+              autoComplete="name"
+              required
+              className={inputClass}
+            />
+          </Field>
+          <Field label="Email">
+            <input
+              name="email"
+              type="email"
+              autoComplete="email"
+              required
+              className={inputClass}
+            />
+          </Field>
+          <Field label="Phone (optional)">
+            <input
+              name="phone"
+              type="tel"
+              autoComplete="tel"
+              className={inputClass}
+            />
+          </Field>
+          <Field label="Occasion (optional)">
+            <input
+              name="occasion"
+              placeholder={
+                isEvent
+                  ? "Wedding, dinner, celebration"
+                  : "Birthday, a gift, just because"
+              }
+              className={inputClass}
+            />
+          </Field>
+        </div>
+      </fieldset>
 
-        <label className="block">
-          <span className="font-mono text-xs font-black uppercase tracking-[0.12em] text-[#344f20]">
-            Email
-          </span>
-          <input
-            type="email"
-            name="email"
-            required
-            value={formData.email}
-            onChange={(event) => updateField("email", event.target.value)}
-            placeholder="you@example.com"
-            className="mt-2 min-h-12 w-full border-2 border-[#1b120c] bg-white px-3 font-mono text-base font-bold text-[#1b120c] outline-none focus:border-[#ed2b82]"
-          />
-        </label>
-
-        <label className="block">
-          <span className="font-mono text-xs font-black uppercase tracking-[0.12em] text-[#344f20]">
-            Phone
-          </span>
-          <input
-            type="tel"
-            name="phone"
-            value={formData.phone}
-            onChange={(event) => updateField("phone", event.target.value)}
-            placeholder="Optional"
-            className="mt-2 min-h-12 w-full border-2 border-[#1b120c] bg-white px-3 font-mono text-base font-bold text-[#1b120c] outline-none focus:border-[#ed2b82]"
-          />
-        </label>
-
-        <label className="block">
-          <span className="font-mono text-xs font-black uppercase tracking-[0.12em] text-[#344f20]">
-            Project Type
-          </span>
-          <select
-            name="projectType"
-            value={formData.projectType}
-            onChange={(event) => updateField("projectType", event.target.value)}
-            className="mt-2 min-h-12 w-full border-2 border-[#1b120c] bg-white px-3 font-mono text-base font-bold text-[#1b120c] outline-none focus:border-[#ed2b82]"
-          >
-            {projectTypes.map((type) => (
-              <option key={type} value={type}>
-                {type}
-              </option>
+      <fieldset className="border-t-2 border-[#1b120c]/15 pt-7">
+        <legend className={legendClass}>02 / Your flowers</legend>
+        <fieldset>
+          <legend className="font-mono text-xs font-black uppercase tracking-[0.08em] text-[#344f20]">
+            Color choices — choose one or more
+          </legend>
+          <div className="mt-3 flex flex-wrap gap-2">
+            {colors.map((color) => (
+              <label
+                key={color}
+                className="flex min-h-11 cursor-pointer items-center gap-2 border-2 border-[#1b120c] bg-white px-3 font-mono text-sm font-bold text-[#344f20] has-checked:bg-[#c7da38]/30"
+              >
+                <input
+                  type="checkbox"
+                  name="colors"
+                  value={color}
+                  className="h-4 w-4 accent-[#344f20]"
+                />
+                {color}
+              </label>
             ))}
-          </select>
-        </label>
-
-        <label className="block">
-          <span className="font-mono text-xs font-black uppercase tracking-[0.12em] text-[#344f20]">
-            Desired Date
-          </span>
-          <input
-            type="date"
-            name="date"
-            value={formData.date}
-            onChange={(event) => updateField("date", event.target.value)}
-            className="mt-2 min-h-12 w-full border-2 border-[#1b120c] bg-white px-3 font-mono text-base font-bold text-[#1b120c] outline-none focus:border-[#ed2b82]"
-          />
-        </label>
-
-        <label className="block">
-          <span className="font-mono text-xs font-black uppercase tracking-[0.12em] text-[#344f20]">
-            Budget Range
-          </span>
-          <select
-            name="budget"
-            value={formData.budget}
-            onChange={(event) => updateField("budget", event.target.value)}
-            className="mt-2 min-h-12 w-full border-2 border-[#1b120c] bg-white px-3 font-mono text-base font-bold text-[#1b120c] outline-none focus:border-[#ed2b82]"
-          >
-            {budgetRanges.map((range) => (
-              <option key={range} value={range}>
-                {range}
+          </div>
+        </fieldset>
+        <div className="mt-6 grid gap-5 sm:grid-cols-2">
+          <Field label="Arrangement size">
+            <select
+              name="size"
+              required
+              defaultValue=""
+              aria-describedby="pricing-note"
+              className={inputClass}
+            >
+              <option value="" disabled>
+                Choose a size
               </option>
-            ))}
-          </select>
-        </label>
-      </div>
-
-      <label className="mt-5 block">
-        <span className="font-mono text-xs font-black uppercase tracking-[0.12em] text-[#344f20]">
-          Location or Delivery Area
-        </span>
-        <GooglePlacesAddressInput
-          value={formData.location}
-          onChange={(value) => updateField("location", value)}
-          onPlaceSelect={setSelectedLocation}
-          placeholder="Venue, neighborhood, or delivery area"
-          className="mt-2 min-h-12 w-full border-2 border-[#1b120c] bg-white px-3 font-mono text-base font-bold text-[#1b120c] outline-none focus:border-[#ed2b82]"
-        />
-      </label>
-
-      <label className="mt-5 block">
-        <span className="font-mono text-xs font-black uppercase tracking-[0.12em] text-[#344f20]">
-          Tell Aubrey What You Are Dreaming Up
-        </span>
-        <textarea
-          name="details"
-          required
-          value={formData.details}
-          onChange={(event) => updateField("details", event.target.value)}
-          rows={6}
-          placeholder="Occasion, colors, inspiration, guest count, installation ideas, must-have flowers, or anything helpful."
-          className="mt-2 w-full resize-none border-2 border-[#1b120c] bg-white px-3 py-3 font-mono text-base font-bold leading-6 text-[#1b120c] outline-none focus:border-[#ed2b82]"
-        />
-      </label>
-
-      {submitMessage ? (
-        <p className="mt-4 font-mono text-sm font-bold leading-6 text-[#ed2b82]">
-          {submitMessage}
+              {sizes.map((size) => (
+                <option key={size}>{size}</option>
+              ))}
+            </select>
+          </Field>
+          <Field label="Vase">
+            <select name="vase" required defaultValue="" className={inputClass}>
+              <option value="" disabled>
+                Choose a vase
+              </option>
+              {vases.map((vase) => (
+                <option key={vase}>{vase}</option>
+              ))}
+            </select>
+          </Field>
+          {isEvent && (
+            <Field label="Number of arrangements">
+              <input
+                type="number"
+                name="quantity"
+                min="1"
+                step="1"
+                required
+                placeholder="How many?"
+                className={inputClass}
+              />
+            </Field>
+          )}
+        </div>
+        <p
+          id="pricing-note"
+          className="mt-3 font-mono text-xs font-bold leading-6 text-[#344f20]"
+        >
+          Pricing may change depending on flower choices.
         </p>
-      ) : null}
+        {isProgram && (
+          <div className="mt-6 grid gap-5 border-2 border-[#344f20] bg-white p-4 sm:grid-cols-2">
+            <Field label="How often?">
+              <select
+                name="frequency"
+                required
+                defaultValue="Weekly"
+                className={inputClass}
+              >
+                {frequencies.map((frequency) => (
+                  <option key={frequency}>{frequency}</option>
+                ))}
+              </select>
+            </Field>
+            <Field label="Budget per delivery ($)">
+              <input
+                type="number"
+                name="deliveryBudget"
+                min="1"
+                step="0.01"
+                required
+                placeholder="Your budget"
+                className={inputClass}
+              />
+            </Field>
+          </div>
+        )}
+      </fieldset>
 
-      <button
-        type="submit"
-        disabled={submitStatus === "submitting"}
-        className="mt-7 inline-flex min-h-12 w-full items-center justify-center border-2 border-[#1b120c] bg-[#ed2b82] px-8 py-3 text-center font-mono text-sm font-black uppercase tracking-[0.08em] text-[#fff2df] shadow-[5px_5px_0_#1b120c] transition hover:-translate-y-0.5 disabled:cursor-wait disabled:opacity-60 sm:w-auto"
-      >
-        {submitStatus === "submitting" ? "Sending..." : "Send Custom Inquiry"}
-      </button>
+      <fieldset className="border-t-2 border-[#1b120c]/15 pt-7">
+        <legend className={legendClass}>
+          03 / {isEvent ? "The event" : "Getting your flowers"}
+        </legend>
+        <div className="grid gap-5 sm:grid-cols-2">
+          <Field
+            label={
+              isProgram
+                ? "Preferred first delivery date"
+                : isEvent
+                  ? "Event date"
+                  : "Preferred date"
+            }
+          >
+            <input type="date" name="date" required className={inputClass} />
+          </Field>
+          {!isProgram && (
+            <Field label="Delivery or pickup">
+              <select
+                name="fulfillment"
+                value={fulfillment}
+                onChange={(event) => {
+                  setFulfillment(event.target.value);
+                  setLocation("");
+                  setSelectedLocation(null);
+                }}
+                className={inputClass}
+              >
+                <option>Delivery</option>
+                <option>Pickup</option>
+              </select>
+            </Field>
+          )}
+          <Field label="Preferred time (optional)">
+            <select name="timeWindow" defaultValue="" className={inputClass}>
+              <option value="">No preference</option>
+              {["8am–11am", "11am–2pm", "2pm–5pm", "3pm–6pm"].map((time) => (
+                <option key={time}>{time}</option>
+              ))}
+            </select>
+          </Field>
+        </div>
+        {(isProgram || fulfillment === "Delivery") && (
+          <div className="mt-5">
+            <Field
+              label={isEvent ? "Venue or delivery address" : "Delivery address"}
+            >
+              <GooglePlacesAddressInput
+                value={location}
+                onChange={setLocation}
+                onPlaceSelect={setSelectedLocation}
+                required
+                name="location"
+                placeholder="Street address, city, and ZIP code"
+                className={inputClass}
+              />
+            </Field>
+          </div>
+        )}
+        <div className="mt-5">
+          <Field label="Delivery or pickup notes (optional)">
+            <textarea
+              name="deliveryNotes"
+              rows={2}
+              placeholder="Access instructions, timing, or other helpful details"
+              className={`${inputClass} resize-y py-3`}
+            />
+          </Field>
+        </div>
+      </fieldset>
+
+      <fieldset className="space-y-5 border-t-2 border-[#1b120c]/15 pt-7">
+        <legend className={legendClass}>04 / The finishing touches</legend>
+        <Field label="Flowers to include or avoid (optional)">
+          <input
+            name="flowerRequests"
+            placeholder="Favorites, allergies, or anything to avoid"
+            className={inputClass}
+          />
+        </Field>
+        <Field label="Card message (optional)">
+          <textarea
+            name="cardMessage"
+            rows={2}
+            className={`${inputClass} resize-y py-3`}
+          />
+        </Field>
+        <Field label="Tell Aubrey what you are dreaming up (optional)">
+          <textarea
+            name="details"
+            rows={4}
+            placeholder="Your inspiration, a lookbook arrangement you love, or anything else you'd like Aubrey to know."
+            className={`${inputClass} resize-y py-3`}
+          />
+        </Field>
+      </fieldset>
+
+      <div>
+        <p className="font-mono text-sm font-bold leading-6 text-[#344f20]">
+          {isProgram
+            ? "Aubrey will follow up to confirm your recurring deliveries, budget, and start date."
+            : "Aubrey will follow up to confirm availability, flower choices, and the details."}
+        </p>
+        {errorMessage && (
+          <p
+            role="alert"
+            className="mt-4 font-mono text-sm font-bold leading-6 text-[#a8204e]"
+          >
+            {errorMessage}{" "}
+            <a href={`mailto:${contactDetails.email}`} className="underline">
+              Email Aubrey
+            </a>
+          </p>
+        )}
+        <button
+          type="submit"
+          disabled={status === "submitting"}
+          className="mt-6 inline-flex min-h-12 w-full items-center justify-center border-2 border-[#1b120c] bg-[#ed2b82] px-5 py-3 text-center font-mono text-sm font-black uppercase tracking-[0.08em] text-[#fff2df] shadow-[5px_5px_0_#1b120c] transition hover:-translate-y-0.5 disabled:cursor-wait disabled:opacity-60"
+        >
+          {status === "submitting"
+            ? "Sending..."
+            : isProgram
+              ? "Request recurring deliveries"
+              : isEvent
+                ? "Send event inquiry"
+                : "Send custom order request"}
+        </button>
+      </div>
     </form>
   );
 }

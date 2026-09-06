@@ -2,6 +2,9 @@
 
 These bouquets were intentionally removed from the active lookbook and can be added back later if new site-ready images are provided.
 
+- Star of MUMs
+  - Removed at Aubrey's request in the September 2026 web changes.
+
 - White Gerbera Gladiolus Bouquet
   - Removed because the background may include personal information.
 - Citrus Daisy Posy

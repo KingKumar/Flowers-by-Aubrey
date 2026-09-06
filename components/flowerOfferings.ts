@@ -14,6 +14,37 @@ export type FlowerOffering = {
 
 export const flowerOfferings: FlowerOffering[] = [
   {
+    id: "orange-rose-hydrangea-bouquet",
+    name: "Orange Rose",
+    description:
+      "Orange roses, white hydrangea, ornithogalum, bupleurum, and green textural stems.",
+    image: "/images/IMG_7786.jpg",
+    cardColor: "#c7da38",
+    media: [
+      {
+        type: "image",
+        src: "/images/IMG_7786.jpg",
+        alt: "Orange Rose arrangement in a white ceramic vase",
+      },
+      {
+        type: "image",
+        src: "/images/IMG_7796.jpg",
+        alt: "Orange Rose arrangement alternate view",
+      },
+      {
+        type: "video",
+        src: "/images/IMG_7766.mp4",
+        poster: "/images/IMG_7786.jpg",
+        alt: "Orange Rose arrangement video",
+      },
+      {
+        type: "image",
+        src: "/images/sage-ribbon-vase.png",
+        alt: "Orange Rose arrangement previous photo",
+      },
+    ],
+  },
+  {
     id: "raspberry-rose-garden",
     name: "Raspberry Rose Garden",
     description:
@@ -218,14 +249,6 @@ export const flowerOfferings: FlowerOffering[] = [
     ],
   },
   {
-    id: "orange-rose-hydrangea-bouquet",
-    name: "Orange Rose",
-    description:
-      "Orange roses, white hydrangea, ornithogalum, bupleurum, and green textural stems.",
-    image: "/images/sage-ribbon-vase.png",
-    cardColor: "#c7da38",
-  },
-  {
     id: "pink-tulip-yellow-rose-bouquet",
     name: "Tropical Punch",
     description:
@@ -271,14 +294,6 @@ export const flowerOfferings: FlowerOffering[] = [
     description:
       "Orange lilies, burgundy hanging amaranthus, and strawflowers.",
     image: "/images/IMG_8278.JPG",
-    cardColor: "#ed2b82",
-  },
-  {
-    id: "purple-mum-hydrangea-dome",
-    name: "Star of MUMs",
-    description:
-      "Purple cushion mums, lavender mums, green hydrangea, and a clean rounded shape.",
-    image: "/images/IMG_7949.JPG",
     cardColor: "#ed2b82",
   },
   {

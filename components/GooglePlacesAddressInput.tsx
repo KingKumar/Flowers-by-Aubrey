@@ -26,12 +26,16 @@ export function GooglePlacesAddressInput({
   onPlaceSelect,
   placeholder,
   className,
+  required = false,
+  name,
 }: {
   value: string;
   onChange: (value: string) => void;
   onPlaceSelect: (place: SelectedPlaceDetails | null) => void;
   placeholder: string;
   className: string;
+  required?: boolean;
+  name?: string;
 }) {
   const wrapperRef = useRef<HTMLDivElement | null>(null);
   const [suggestions, setSuggestions] = useState<PlaceSuggestion[]>([]);
@@ -60,9 +64,6 @@ export function GooglePlacesAddressInput({
     const trimmedValue = value.trim();
 
     if (!GOOGLE_MAPS_API_KEY || trimmedValue.length < 3) {
-      setSuggestions([]);
-      setIsOpen(false);
-      setIsLoading(false);
       return;
     }
 
@@ -92,7 +93,7 @@ export function GooglePlacesAddressInput({
               },
             }),
             signal: abortController.signal,
-          }
+          },
         );
 
         if (!response.ok) {
@@ -117,13 +118,13 @@ export function GooglePlacesAddressInput({
               placeId: suggestion.placePrediction?.placeId ?? "",
             }))
             .filter(
-              (suggestion) => suggestion.description && suggestion.placeId
+              (suggestion) => suggestion.description && suggestion.placeId,
             ) ?? [];
 
         setSuggestions(nextSuggestions);
         setIsOpen(Boolean(nextSuggestions.length));
         setActiveIndex(-1);
-      } catch (error) {
+      } catch {
         if (!abortController.signal.aborted) {
           setSuggestions([]);
           setIsOpen(false);
@@ -149,10 +150,10 @@ export function GooglePlacesAddressInput({
     try {
       const response = await fetch(
         `https://places.googleapis.com/v1/places/${encodeURIComponent(
-          suggestion.placeId
+          suggestion.placeId,
         )}?fields=formattedAddress,id,location&key=${encodeURIComponent(
-          GOOGLE_MAPS_API_KEY ?? ""
-        )}`
+          GOOGLE_MAPS_API_KEY ?? "",
+        )}`,
       );
 
       if (!response.ok) {
@@ -175,7 +176,7 @@ export function GooglePlacesAddressInput({
           placeId: result.id ?? suggestion.placeId,
           latitude: result.location?.latitude ?? null,
           longitude: result.location?.longitude ?? null,
-        }
+        },
       );
     } catch {
       onPlaceSelect({
@@ -191,10 +192,16 @@ export function GooglePlacesAddressInput({
     <div ref={wrapperRef} className="relative">
       <input
         type="text"
+        name={name}
+        required={required}
         value={value}
         onChange={(event) => {
           onChange(event.target.value);
           onPlaceSelect(null);
+          setSuggestions([]);
+          setIsOpen(false);
+          setIsLoading(false);
+          setActiveIndex(-1);
         }}
         onFocus={() => {
           if (suggestions.length) {
@@ -209,7 +216,7 @@ export function GooglePlacesAddressInput({
           if (event.key === "ArrowDown") {
             event.preventDefault();
             setActiveIndex((current) =>
-              Math.min(current + 1, suggestions.length - 1)
+              Math.min(current + 1, suggestions.length - 1),
             );
           }
 
