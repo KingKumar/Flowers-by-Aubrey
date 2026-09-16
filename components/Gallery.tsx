@@ -525,13 +525,15 @@ function LookbookImage({
       onTouchEnd={handleTouchEnd}
     >
       <div
-        className="absolute inset-0 z-10 flex bg-white transition-transform duration-700 ease-[cubic-bezier(0.2,0.75,0.2,1)] motion-reduce:duration-0"
-        style={{ transform: `translateX(-${activeMediaIndex * 100}%)` }}
+        className="absolute inset-0 z-10 bg-white"
       >
         {mediaItems.map((item, index) => (
           <div
             key={`${item.src}-${index}`}
-            className="relative h-full w-full shrink-0 bg-white"
+            className={`absolute inset-0 bg-white transition-opacity duration-700 ease-in-out motion-reduce:transition-none ${
+              index === activeMediaIndex ? "opacity-100" : "pointer-events-none opacity-0"
+            }`}
+            aria-hidden={index !== activeMediaIndex}
           >
             <MediaItem
               media={item}

@@ -1,12 +1,5 @@
+import Image from "next/image";
 import Link from "next/link";
-import { HeroArrangementCarousel } from "./HeroArrangementCarousel";
-import { homepageOfferings } from "./flowerOfferings";
-
-const heroArrangements = homepageOfferings.map(({ id, name, image }) => ({
-  id,
-  name,
-  image,
-}));
 
 export function Hero() {
   return (
@@ -37,11 +30,20 @@ export function Hero() {
           </div>
         </div>
 
-        <div className="relative -mx-5 min-w-0 py-6 sm:-mx-8 lg:mx-0 lg:flex lg:min-h-[680px] lg:flex-col lg:justify-center lg:py-10">
-          <div className="absolute -right-16 top-6 h-[86%] w-[70%] bg-[#f24b12]" />
-          <HeroArrangementCarousel arrangements={heroArrangements} />
-          <div className="absolute bottom-12 right-10 z-20 hidden h-28 w-28 items-center justify-center rounded-full border border-[#253712] p-4 text-center font-mono text-xs font-black uppercase leading-4 text-[#253712] lg:flex">
-            Handmade with love
+        <div className="relative min-w-0 py-6 lg:flex lg:min-h-[680px] lg:flex-col lg:justify-center lg:py-10">
+          <div className="relative mx-auto w-full max-w-md shadow-[8px_8px_0_#f24b12] lg:mx-0 lg:w-[min(32vw,28rem)] lg:shadow-[12px_12px_0_#f24b12]">
+            <Image
+              src="/images/IMG_7786.jpg"
+              alt="Orange Rose arrangement in a white ceramic vase"
+              width={1536}
+              height={2142}
+              priority
+              sizes="(min-width: 1400px) 448px, (min-width: 1024px) 32vw, (min-width: 488px) 448px, calc(100vw - 40px)"
+              className="block h-auto w-full"
+            />
+            <div className="absolute bottom-3 right-3 z-10 flex h-20 w-20 items-center justify-center rounded-full border border-[#253712] bg-[#fff2df]/90 p-2 text-center font-mono text-[10px] font-black uppercase leading-3 text-[#253712] lg:bottom-4 lg:right-4 lg:h-28 lg:w-28 lg:p-4 lg:text-xs lg:leading-4">
+              Handmade with love
+            </div>
           </div>
         </div>
       </div>
