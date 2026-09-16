@@ -14,6 +14,14 @@ export type FlowerOffering = {
 
 export const flowerOfferings: FlowerOffering[] = [
   {
+    id: "athenas-rose-garden",
+    name: "Athena's Rose Garden",
+    description:
+      "Coral, blush, cream, and pale yellow roses with white hydrangea, delicate daisy-like blooms, and fresh greenery.",
+    image: "/images/athenas-rose-garden.jpg",
+    cardColor: "#ed2b82",
+  },
+  {
     id: "orange-rose-hydrangea-bouquet",
     name: "Orange Rose",
     description:
