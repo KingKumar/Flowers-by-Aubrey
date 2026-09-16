@@ -40,14 +40,14 @@ export function SiteHeader() {
 
   return (
     <header className="relative z-40 bg-[#fff2df] lg:sticky lg:top-0 lg:shadow-[0_2px_0_rgba(27,18,12,0.12)]">
-      <div className="bg-[#f24b12] px-5 py-2 text-center font-mono text-xs font-black uppercase tracking-[0.12em] text-[#1b120c]">
+      <div className="bg-[#f24b12] px-5 py-2 text-center font-mono text-[10px] font-black uppercase leading-4 tracking-[0.12em] text-[#1b120c] sm:text-xs">
         Los Angeles floral design studio &rarr;
       </div>
-      <div className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-5 py-7 sm:px-8 lg:px-12">
+      <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-5 py-3 sm:px-8 lg:px-12">
         <div aria-hidden="true" className="h-12 w-[88px] shrink-0 lg:hidden" />
         <div
           ref={menuRef}
-          className="fixed left-5 top-[calc(4rem+env(safe-area-inset-top,0px))] z-50 sm:left-8 lg:hidden"
+          className="fixed left-5 top-[calc(2.75rem+env(safe-area-inset-top,0px))] z-50 sm:left-8 lg:hidden"
         >
           <button
             ref={buttonRef}
@@ -87,7 +87,7 @@ export function SiteHeader() {
         </div>
         <nav
           aria-label="Main navigation"
-          className="hidden flex-wrap items-center gap-x-6 gap-y-3 font-mono text-sm font-black text-[#253712] lg:flex"
+          className="hidden flex-wrap items-center gap-x-4 gap-y-3 font-mono text-sm font-black text-[#253712] lg:flex xl:gap-x-6"
         >
           {navigation.map(({ href, label }) => (
             <Link
@@ -104,9 +104,9 @@ export function SiteHeader() {
           href="/"
           aria-label="Aubrey Florals home"
           onClick={() => setMenuOpen(false)}
-          className="shrink-0 text-3xl font-black uppercase leading-none tracking-[0.08em] text-[#f24b12]"
+          className="shrink-0 whitespace-nowrap text-[clamp(1rem,4.6vw,1.5rem)] font-black uppercase leading-none tracking-[0.08em] text-[#f24b12] lg:text-xl xl:text-3xl"
         >
-          Aubrey<span className="block">Florals</span>
+          Aubrey Florals
         </Link>
       </div>
     </header>
